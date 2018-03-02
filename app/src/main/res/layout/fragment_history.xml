@@ -1,10 +1,244 @@
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:scrollbars="none"
     tools:context="works.avijay.com.ipl2018.HistoryFragment">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+        <android.support.v7.widget.CardView
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:cardBackgroundColor="@color/colorWhite"
+            app:cardElevation="4dp">
+            <works.avijay.com.ipl2018.fonts.description_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:textColor="@color/colorDarkText"
+                android:id="@+id/winner_2017_text"
+                android:layout_gravity="top|center"
+                />
+            <ImageView
+                android:layout_marginTop="32sp"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:id="@+id/winner_2017"
+                />
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:cardBackgroundColor="@color/colorWhite"
+            app:cardElevation="4dp">
+            <works.avijay.com.ipl2018.fonts.description_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:textColor="@color/colorDarkText"
+                android:id="@+id/winner_2016_text"
+                android:layout_gravity="top|center"
+                />
+            <ImageView
+                android:layout_marginTop="32sp"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:id="@+id/winner_2016"
+                />
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:cardBackgroundColor="@color/colorWhite"
+            app:cardElevation="4dp">
+            <works.avijay.com.ipl2018.fonts.description_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:textColor="@color/colorDarkText"
+                android:id="@+id/winner_2015_text"
+                android:layout_gravity="top|center"
+                />
+            <ImageView
+                android:layout_marginTop="32sp"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:id="@+id/winner_2015"
+                />
+        </android.support.v7.widget.CardView>
+
+
+        <android.support.v7.widget.CardView
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:cardBackgroundColor="@color/colorWhite"
+            app:cardElevation="4dp">
+            <works.avijay.com.ipl2018.fonts.description_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:textColor="@color/colorDarkText"
+                android:id="@+id/winner_2014_text"
+                android:layout_gravity="top|center"
+                />
+            <ImageView
+                android:layout_marginTop="32sp"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:id="@+id/winner_2014"
+                />
+        </android.support.v7.widget.CardView>
+
+
+        <android.support.v7.widget.CardView
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:cardBackgroundColor="@color/colorWhite"
+            app:cardElevation="4dp">
+            <works.avijay.com.ipl2018.fonts.description_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:textColor="@color/colorDarkText"
+                android:id="@+id/winner_2013_text"
+                android:layout_gravity="top|center"
+                />
+            <ImageView
+                android:layout_marginTop="32sp"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:id="@+id/winner_2013"
+                />
+        </android.support.v7.widget.CardView>
+
+
+        <android.support.v7.widget.CardView
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:cardBackgroundColor="@color/colorWhite"
+            app:cardElevation="4dp">
+            <works.avijay.com.ipl2018.fonts.description_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:textColor="@color/colorDarkText"
+                android:id="@+id/winner_2012_text"
+                android:layout_gravity="top|center"
+                />
+            <ImageView
+                android:layout_marginTop="32sp"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:id="@+id/winner_2012"
+                />
+        </android.support.v7.widget.CardView>
+
+
+        <android.support.v7.widget.CardView
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:cardBackgroundColor="@color/colorWhite"
+            app:cardElevation="4dp">
+            <works.avijay.com.ipl2018.fonts.description_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:textColor="@color/colorDarkText"
+                android:id="@+id/winner_2011_text"
+                android:layout_gravity="top|center"
+                />
+            <ImageView
+                android:layout_marginTop="32sp"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:id="@+id/winner_2011"
+                />
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:cardBackgroundColor="@color/colorWhite"
+            app:cardElevation="4dp">
+            <works.avijay.com.ipl2018.fonts.description_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:textColor="@color/colorDarkText"
+                android:id="@+id/winner_2010_text"
+                android:layout_gravity="top|center"
+                />
+            <ImageView
+                android:layout_marginTop="32sp"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:id="@+id/winner_2010"
+                />
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:cardBackgroundColor="@color/colorWhite"
+            app:cardElevation="4dp">
+            <works.avijay.com.ipl2018.fonts.description_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:textColor="@color/colorDarkText"
+                android:id="@+id/winner_2009_text"
+                android:layout_gravity="top|center"
+                />
+            <ImageView
+                android:layout_marginTop="32sp"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:id="@+id/winner_2009"
+                />
+        </android.support.v7.widget.CardView>
+
+
+        <android.support.v7.widget.CardView
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:cardBackgroundColor="@color/colorWhite"
+            app:cardElevation="4dp">
+            <works.avijay.com.ipl2018.fonts.description_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:textColor="@color/colorDarkText"
+                android:id="@+id/winner_2008_text"
+                android:layout_gravity="top|center"
+                />
+            <ImageView
+                android:layout_marginTop="32sp"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:id="@+id/winner_2008"
+                />
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+
 
 
 

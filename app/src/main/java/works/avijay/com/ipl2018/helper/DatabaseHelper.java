@@ -17,6 +17,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_TEAMS = "ipl_teams";
     private static final String TABLE_SCHEDULE = "ipl_schedule";
     private static final String TABLE_PLAYERS = "ipl_players";
+    private static final String TABLE_CARDS = "ipl_cards";
 
 
     private static final String TEAM_NAME = "team_name";
@@ -43,6 +44,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String PLAYER_TYPE = "player_type";
     private static final String PLAYER_IMAGE = "player_image";
 
+    private static final String CARD_ID = "card_id";
+    private static final String CARD_DESCRIPTION  = "card_description";
+    private static final String CARD_APPROVED = "card_approved";
+    private static final String CARD_DISAPPROVED = "card_disapproved";
+    private static final String CARD_IMAGE = "card_image";
+
 
 
 
@@ -68,6 +75,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 +PLAYER_TEAM+" text, "+PLAYER_TYPE+" text, "+PLAYER_IMAGE+" text);";
         db.execSQL(create_table_players);
 
+
+        String create_cards_table = "create table "+TABLE_CARDS+" ("+CARD_ID+" text primary key, "+CARD_DESCRIPTION+" text, "+CARD_APPROVED+" number, "+CARD_DISAPPROVED+
+                " number, "+CARD_IMAGE+" text);";
+        db.execSQL(create_cards_table);
+
     }
 
     @Override
@@ -75,6 +87,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("drop table if exists "+TABLE_TEAMS);
         db.execSQL("drop table if exists "+TABLE_SCHEDULE);
         db.execSQL("drop table if exists "+TABLE_PLAYERS);
+        db.execSQL("drop table if exists "+TABLE_CARDS);
         onCreate(db);
     }
 
@@ -186,5 +199,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+    public Cursor getPlayerByName(String str){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery("select * from "+TABLE_PLAYERS+" where "+PLAYER_NAME+" like '%"+str+"%' ;",null);
+    }
+
+
+    public void insertIntoCards(String card_id, String description, int approved, int disapproved, String image){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(CARD_ID, card_id);
+        contentValues.put(CARD_DESCRIPTION, description);
+        contentValues.put(CARD_APPROVED, approved);
+        contentValues.put(CARD_DISAPPROVED, disapproved);
+        contentValues.put(CARD_IMAGE, image);
+
+        db.insert(TABLE_CARDS, null, contentValues);
+    }
 
 }

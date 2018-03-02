@@ -41,7 +41,6 @@ public class ScheduleFragment extends Fragment {
     }
 
     View view;
-    static MaterialRefreshLayout materialRefreshLayout;
     static Context context;
     static ListView scheduleList;
     static DatabaseHelper helper;
@@ -56,25 +55,6 @@ public class ScheduleFragment extends Fragment {
         initializeViews();
         populateData();
 
-        Toast.makeText(context, "Swipe to refresh contents", Toast.LENGTH_SHORT).show();
-
-
-        materialRefreshLayout.setMaterialRefreshListener(new MaterialRefreshListener() {
-            @Override
-            public void onRefresh(final MaterialRefreshLayout materialRefreshLayout) {
-                if(isNetworkConnected()){
-                    BackendHelper.fetch_schedule fetch_schedule = new BackendHelper.fetch_schedule();
-                    fetch_schedule.execute(context, false, true);
-                }else {
-                    Snackbar.make(view, "Oops, No Internet connection!", Snackbar.LENGTH_SHORT)
-                            .setAction("Action", null).show();
-                    if(materialRefreshLayout.isShown())
-                        materialRefreshLayout.finishRefresh();
-                }
-
-
-            }
-        });
 
         return view;
     }
@@ -89,15 +69,11 @@ public class ScheduleFragment extends Fragment {
         context = getActivity().getApplicationContext();
         scheduleList = view.findViewById(R.id.scheduleList);
         helper = new DatabaseHelper(context);
-        materialRefreshLayout = view.findViewById(R.id.swipe_refresh);
     }
 
 
     public static void populateData(){
         scheduleAdapter.clear();
-        if(materialRefreshLayout.isShown())
-            materialRefreshLayout.finishRefresh();
-
 
         Cursor cursor = helper.getAllSchedule();
         while (cursor.moveToNext()){
@@ -145,7 +121,13 @@ public class ScheduleFragment extends Fragment {
             match_time.setText(current.getTime());
             match_date.setText(current.getDate());
 
+
+
             switch (current.getTeam1()){
+                case "TBC":
+                    team1.setImageResource(R.drawable.general_player);
+                    break;
+
                 case "CSK":
                     team1.setImageResource(R.drawable.csk_icon);
                     break;
@@ -180,13 +162,16 @@ public class ScheduleFragment extends Fragment {
 
                 case "RR":
                     team1.setImageResource(R.drawable.rr_icon);
-
                     break;
             }
 
 
 
             switch (current.getTeam2()){
+                case "TBC":
+                    team2.setImageResource(R.drawable.general_player);
+                    break;
+
                 case "CSK":
                     team2.setImageResource(R.drawable.csk_icon);
                     break;

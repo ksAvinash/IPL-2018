@@ -1,10 +1,13 @@
 package works.avijay.com.ipl2018;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -57,9 +60,49 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        final SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        searchView.setOnQueryTextListener(
+                new SearchView.OnQueryTextListener(){
+
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        if(query.length() > 0){
+                            SearchPlayersFragment searchPlayersFragment = new SearchPlayersFragment();
+                            Bundle fragment_agruments = new Bundle();
+
+                            fragment_agruments.putString("search", query);
+                            searchPlayersFragment.setArguments(fragment_agruments);
+                            FragmentManager fragmentManager = getSupportFragmentManager();
+                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                            fragmentTransaction.replace(R.id.main_activity_content, searchPlayersFragment).commit();
+                        }
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        if(newText.length() > 0){
+                            SearchPlayersFragment searchPlayersFragment = new SearchPlayersFragment();
+                            Bundle fragment_agruments = new Bundle();
+
+                            fragment_agruments.putString("search", newText);
+                            searchPlayersFragment.setArguments(fragment_agruments);
+                            FragmentManager fragmentManager = getSupportFragmentManager();
+                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                            fragmentTransaction.replace(R.id.main_activity_content, searchPlayersFragment).commit();
+                        }
+                        return false;
+                    }
+                }
+        );
         return true;
     }
 
@@ -126,6 +169,13 @@ public class MainActivity extends AppCompatActivity
                 fragmentManager = getSupportFragmentManager();
                 fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.main_activity_content, suggestQuestionFragment).commit();
+                break;
+
+            case R.id.nav_points:
+                PointsFragment pointsFragment = new PointsFragment();
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.main_activity_content, pointsFragment).commit();
                 break;
         }
 

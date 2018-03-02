@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="works.avijay.com.ipl2018.TeamActivity">
+    tools:context="works.avijay.com.ipl2018.TeamActivity"
+    android:background="@color/colorBackground"
+    >
 
     <ImageView
         android:layout_width="match_parent"

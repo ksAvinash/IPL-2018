@@ -28,14 +28,15 @@
             android:layout_margin="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
+            android:layout_gravity="start|bottom"
             android:orientation="vertical"
             >
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/fan_followers"
+            <works.avijay.com.ipl2018.fonts.description_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:textColor="@color/colorWhite"
+                android:text="FANS"
                 />
             <works.avijay.com.ipl2018.fonts.description_font
                 android:layout_width="wrap_content"

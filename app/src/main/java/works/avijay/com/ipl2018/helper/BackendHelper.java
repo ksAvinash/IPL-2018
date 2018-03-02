@@ -131,10 +131,9 @@ public class BackendHelper {
         }
     }
 
-    public static class fetch_schedule extends AsyncTask<Object, String, String> {
+    public static class fetch_schedule extends AsyncTask<Context, String, String> {
         Context context;
-        boolean insert;
-        boolean stoprefresh;
+
         @Override
         protected void onPostExecute(final String str) {
             super.onPostExecute(str);
@@ -150,25 +149,13 @@ public class BackendHelper {
                                 DatabaseHelper helper = new DatabaseHelper(context);
                                 JSONObject data = object.getJSONObject("data");
                                 JSONArray items = data.getJSONArray("Items");
-                                if(insert){
                                     for (int i = 0; i < data.getInt("Count"); i++) {
                                         JSONObject current = items.getJSONObject(i);
-                                        helper.insertIntoSchedule(current.getInt("match_id"),current.getString("Date"),
+                                        helper.insertIntoSchedule(current.getInt("match_id"), current.getString("Date"),
                                                 current.getString("team1"), current.getString("team2"), current.getString("time"),
                                                 current.getString("venue")
                                         );
                                     }
-                                }else {
-                                    for (int i = 0; i < data.getInt("Count"); i++) {
-                                        JSONObject current = items.getJSONObject(i);
-                                        helper.updateIntoSchedule(current.getInt("match_id"),current.getString("Date"),
-                                                current.getString("team1"), current.getString("team2"), current.getString("time"),
-                                                current.getString("venue")
-                                        );
-                                    }
-                                }
-
-
                                 helper.close();
 
                             } else {
@@ -182,19 +169,16 @@ public class BackendHelper {
                     }
                 }).start();
 
-                //stop the refreshing
-                if(stoprefresh)
-                    ScheduleFragment.populateData();
+
 
 
             }
         }
 
         @Override
-        protected String doInBackground(Object... objects) {
-            context = (Context) objects[0];
-            insert = (boolean) objects[1];
-            stoprefresh = (boolean) objects[2];
+        protected String doInBackground(Context... contexts) {
+            context = (Context) contexts[0];
+
             try{
                 URL url = new URL(context.getResources().getString(R.string.backend_fetch_data));
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -312,7 +296,7 @@ public class BackendHelper {
         }
     }
 
-    public static class upadate_fan_count extends AsyncTask<Object, String, String>{
+    public static class update_fan_count extends AsyncTask<Object, String, String>{
 
         @Override
         protected String doInBackground(Object... objects) {
@@ -393,6 +377,91 @@ public class BackendHelper {
             return null;
         }
     }
+
+
+
+
+    public static class fetch_cards extends AsyncTask<Object, String, String>{
+        Context context;
+        boolean insert;
+        @Override
+        protected void onPostExecute(final String str) {
+            super.onPostExecute(str);
+            if(str != null) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            JSONObject object = new JSONObject(str);
+                            boolean response = object.getBoolean("ipl_fetch_data");
+                            if (response) {
+                                DatabaseHelper helper = new DatabaseHelper(context);
+                                JSONObject data = object.getJSONObject("data");
+                                JSONArray items = data.getJSONArray("Items");
+                                if (insert) {
+                                    Log.d("IPL : TEAMS : ", "INSERTING DATA");
+                                    for (int i = 0; i < data.getInt("Count"); i++) {
+                                        JSONObject current_team = items.getJSONObject(i);
+                                        helper.insertIntoTeamStats(current_team.getString("team_name"),
+                                                current_team.getInt("loss"), current_team.getInt("wins"),
+                                                current_team.getInt("remaining"), current_team.getInt("points"),
+                                                current_team.getString("rate"), current_team.getString("team_image"),
+                                                current_team.getInt("fan_count"));
+
+                                    }
+                                }
+                                helper.close();
+                            } else {
+                                Log.d("IPL : TEAMS : ", "Error fetching team stats");
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }).start();
+            }
+
+        }
+        @Override
+        protected String doInBackground(Object... objects) {
+            context = (Context) objects[0];
+
+            try{
+                URL url = new URL(context.getResources().getString(R.string.backend_cards_fetch));
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setDoOutput(true);
+                conn.setDoInput(true);
+
+                JSONObject jsonParam = new JSONObject();
+                jsonParam.put("type", "app");
+
+
+                DataOutputStream os = new DataOutputStream(conn.getOutputStream());
+                os.writeBytes(jsonParam.toString());
+                os.flush();
+                BufferedReader serverAnswer = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+                String response = serverAnswer.readLine();
+
+                os.close();
+                conn.disconnect();
+
+                return response;
+            }catch (Exception e){
+                Log.d("IPL : CARDS : ", "Error fetching cards");
+                Log.d("IPL : CARDS : ", e.toString());
+            }
+
+            return null;
+        }
+    }
+
+
 
 
 

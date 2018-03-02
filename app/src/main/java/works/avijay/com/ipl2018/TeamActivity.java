@@ -1,6 +1,5 @@
 package works.avijay.com.ipl2018;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -8,10 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,8 +52,8 @@ public class TeamActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Great!, you started following '"+team_name+"'", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-                BackendHelper.upadate_fan_count upadate_fan_count = new BackendHelper.upadate_fan_count();
-                upadate_fan_count.execute(getApplicationContext(), original_name);
+                BackendHelper.update_fan_count update_fan_count = new BackendHelper.update_fan_count();
+                update_fan_count.execute(getApplicationContext(), original_name);
             }
         });
     }
@@ -172,6 +168,14 @@ public class TeamActivity extends AppCompatActivity {
             ImageView player_type = itemView.findViewById(R.id.player_type);
             TextView member_name = itemView.findViewById(R.id.member_name);
             TextView country = itemView.findViewById(R.id.country);
+            TextView member_bidding_price = itemView.findViewById(R.id.member_bidding_price);
+
+
+            long price = current.getPlayer_bidding_price();
+            member_bidding_price.setText((price/10000000.0)+"Cr");
+
+
+
 
             if(!current.isPlayer_capped()){
                 capped.setText("Uncapped");
@@ -189,16 +193,16 @@ public class TeamActivity extends AppCompatActivity {
 
             switch (current.getPlayer_type()) {
                 case "Bowl":
-                    player_type.setImageResource(R.drawable.bowler);
+                    player_type.setImageResource(R.drawable.ball_icon);
                     break;
                 case "AR":
-                    player_type.setImageResource(R.drawable.fab_bat);
+                    player_type.setImageResource(R.drawable.bat_ball_icon);
                     break;
                 case "Bat":
-                    player_type.setImageResource(R.drawable.batsman);
+                    player_type.setImageResource(R.drawable.bat_icon);
                     break;
                 case "WK":
-                    player_type.setImageResource(R.drawable.keeper);
+                    player_type.setImageResource(R.drawable.keeper_icon);
                     break;
             }
 

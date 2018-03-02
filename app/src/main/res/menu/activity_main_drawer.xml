@@ -24,7 +24,7 @@
         <item
             android:id="@+id/nav_history"
             android:icon="@drawable/nav_history"
-            android:title="History" />
+            android:title="Champions" />
     </group>
 
     <group android:checkableBehavior="single"
