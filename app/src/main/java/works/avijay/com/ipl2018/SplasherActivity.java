@@ -31,6 +31,9 @@ public class SplasherActivity extends AppCompatActivity {
 
         MobileAds.initialize(this, "ca-app-pub-9681985190789334~8534666961");
 
+        BackendHelper.fetch_cards fetch_cards = new BackendHelper.fetch_cards();
+        fetch_cards.execute(getApplicationContext());
+
 
         boolean first_fetch = sharedPreferences.getBoolean("first_fetch", true);
         if(first_fetch){
@@ -45,9 +48,6 @@ public class SplasherActivity extends AppCompatActivity {
 
                 BackendHelper.fetch_players fetch_players = new BackendHelper.fetch_players();
                 fetch_players.execute(getApplicationContext());
-
-                BackendHelper.fetch_cards fetch_cards = new BackendHelper.fetch_cards();
-                fetch_cards.execute(getApplicationContext());
             }
         }else {
             BackendHelper.fetch_team_stats fetch_team_stats = new BackendHelper.fetch_team_stats();

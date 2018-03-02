@@ -13,7 +13,7 @@
         android:layout_gravity="center"
         android:textColor="@color/colorDarkText"
         android:textSize="20sp"
-        android:text="Comming soon..."
+        android:text="Coming soon..."
         />
 
 

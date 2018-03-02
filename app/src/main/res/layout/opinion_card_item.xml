@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:paddingBottom="4dp"
+    >
+
+    <android.support.v7.widget.CardView
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        app:cardBackgroundColor="@color/colorWhite"
+        app:cardElevation="4dp"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/card_image"
+            android:alpha="0.85"
+            />
+
+        <works.avijay.com.ipl2018.fonts.description_font
+            android:layout_margin="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/card_description"
+            android:textColor="@color/colorWhite"
+            android:shadowColor="#000000"
+            android:shadowDx="10"
+            android:shadowDy="5"
+            android:shadowRadius="15"
+            android:textSize="30sp"
+            />
+
+
+        <RelativeLayout
+            android:layout_margin="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|bottom"
+            >
+                <com.like.LikeButton
+                    app:icon_size="40dp"
+                    android:id="@+id/like_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:anim_scale_factor="1"
+                    app:like_drawable="@drawable/like_color"
+                    app:unlike_drawable="@drawable/like_white"
+                    android:layout_centerHorizontal="true"
+                    />
+
+                <works.avijay.com.ipl2018.fonts.description_font
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/like_points"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="18sp"
+                    android:layout_below="@+id/like_icon"
+                    android:layout_centerHorizontal="true"
+                    />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_margin="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            >
+            <com.like.LikeButton
+                app:icon_size="40dp"
+                android:id="@+id/dislike_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:anim_scale_factor="1"
+                app:like_drawable="@drawable/dislike_color"
+                app:unlike_drawable="@drawable/dislike_white"
+                android:layout_centerHorizontal="true"
+                />
+            <works.avijay.com.ipl2018.fonts.description_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/dislike_points"
+                android:textColor="@color/colorWhite"
+                android:textSize="18sp"
+                android:layout_below="@+id/dislike_icon"
+                android:layout_centerHorizontal="true"
+                />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+
+
+</RelativeLayout>

@@ -49,6 +49,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CARD_APPROVED = "card_approved";
     private static final String CARD_DISAPPROVED = "card_disapproved";
     private static final String CARD_IMAGE = "card_image";
+    private static final String CARD_SEEN = "card_seen";
 
 
 
@@ -77,7 +78,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
         String create_cards_table = "create table "+TABLE_CARDS+" ("+CARD_ID+" text primary key, "+CARD_DESCRIPTION+" text, "+CARD_APPROVED+" number, "+CARD_DISAPPROVED+
-                " number, "+CARD_IMAGE+" text);";
+                " number, "+CARD_IMAGE+" text, "+CARD_SEEN+" boolean);";
         db.execSQL(create_cards_table);
 
     }
@@ -132,6 +133,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.update(TABLE_TEAMS, contentValues, where, whereArgs);
     }
 
+    public void updateIntoCards(String card_id, String description, long approved, long disapproved, String image) {
+        String where = CARD_ID+"=?";
+        String[] whereArgs = new String[] {card_id};
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(CARD_DESCRIPTION, description);
+        contentValues.put(CARD_APPROVED, approved);
+        contentValues.put(CARD_DISAPPROVED, disapproved);
+        contentValues.put(CARD_IMAGE, image);
+        contentValues.put(CARD_SEEN, false);
+
+        db.update(TABLE_CARDS, contentValues, where, whereArgs);
+
+    }
 
     public void updateIntoSchedule(int match_id, String date, String team1, String team2, String time, String venue){
         String where = SCHEDULE_MATCH_ID+"="+match_id;
@@ -205,17 +222,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public void insertIntoCards(String card_id, String description, int approved, int disapproved, String image){
+    public Cursor getUnseenCards(){
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
+        return db.rawQuery("select * from "+TABLE_CARDS+";", null);
+    }
 
-        contentValues.put(CARD_ID, card_id);
-        contentValues.put(CARD_DESCRIPTION, description);
-        contentValues.put(CARD_APPROVED, approved);
-        contentValues.put(CARD_DISAPPROVED, disapproved);
-        contentValues.put(CARD_IMAGE, image);
 
-        db.insert(TABLE_CARDS, null, contentValues);
+    public void setCardAsSeen(String card_id){
+
+    }
+
+
+
+    public void insertIntoCards(String card_id, String description, long approved, long disapproved, String image){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery("select * from "+TABLE_CARDS+" where "+CARD_ID+" = '"+card_id+"';", null);
+        if(cursor.getCount() > 0){
+            updateIntoCards(card_id, description, approved, disapproved, image);
+        }else{
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(CARD_ID, card_id);
+            contentValues.put(CARD_DESCRIPTION, description);
+            contentValues.put(CARD_APPROVED, approved);
+            contentValues.put(CARD_DISAPPROVED, disapproved);
+            contentValues.put(CARD_IMAGE, image);
+            contentValues.put(CARD_SEEN, false);
+            db.insert(TABLE_CARDS, null, contentValues);
+        }
+        cursor.close();
     }
 
 }

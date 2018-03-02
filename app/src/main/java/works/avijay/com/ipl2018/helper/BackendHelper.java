@@ -381,9 +381,8 @@ public class BackendHelper {
 
 
 
-    public static class fetch_cards extends AsyncTask<Object, String, String>{
+    public static class fetch_cards extends AsyncTask<Context, String, String>{
         Context context;
-        boolean insert;
         @Override
         protected void onPostExecute(final String str) {
             super.onPostExecute(str);
@@ -393,23 +392,20 @@ public class BackendHelper {
                     public void run() {
                         try {
                             JSONObject object = new JSONObject(str);
-                            boolean response = object.getBoolean("ipl_fetch_data");
+                            boolean response = object.getBoolean("ipl_cards_data");
                             if (response) {
                                 DatabaseHelper helper = new DatabaseHelper(context);
                                 JSONObject data = object.getJSONObject("data");
                                 JSONArray items = data.getJSONArray("Items");
-                                if (insert) {
-                                    Log.d("IPL : TEAMS : ", "INSERTING DATA");
+                                    Log.d("IPL : CARDS : ", "INSERTING DATA");
                                     for (int i = 0; i < data.getInt("Count"); i++) {
                                         JSONObject current_team = items.getJSONObject(i);
-                                        helper.insertIntoTeamStats(current_team.getString("team_name"),
-                                                current_team.getInt("loss"), current_team.getInt("wins"),
-                                                current_team.getInt("remaining"), current_team.getInt("points"),
-                                                current_team.getString("rate"), current_team.getString("team_image"),
-                                                current_team.getInt("fan_count"));
-
+                                        helper.insertIntoCards(current_team.getString("card_id"),
+                                                current_team.getString("card_description"), current_team.getLong("card_approved"),
+                                                current_team.getLong("card_disapproved"), current_team.getString("card_image")
+                                                );
                                     }
-                                }
+
                                 helper.close();
                             } else {
                                 Log.d("IPL : TEAMS : ", "Error fetching team stats");
@@ -425,9 +421,8 @@ public class BackendHelper {
 
         }
         @Override
-        protected String doInBackground(Object... objects) {
-            context = (Context) objects[0];
-
+        protected String doInBackground(Context... contexts) {
+            context =  contexts[0];
             try{
                 URL url = new URL(context.getResources().getString(R.string.backend_cards_fetch));
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();

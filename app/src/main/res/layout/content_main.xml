@@ -10,6 +10,13 @@
     android:id="@+id/main_activity_content"
     >
 
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/cardsList"
+        android:scrollbars="none"
+        android:divider="@null"
+        />
 
 
 </android.support.constraint.ConstraintLayout>

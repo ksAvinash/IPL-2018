@@ -5,8 +5,13 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="works.avijay.com.ipl2018.SplasherActivity"
-    android:background="@mipmap/splash_background">
+    >
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.85"
+        android:background="@mipmap/splash_background" />
 
 
 
@@ -17,6 +22,10 @@
         android:textColor="@color/colorWhite"
         android:textSize="60sp"
         android:layout_gravity="center"
+        android:shadowColor="#000000"
+        android:shadowDx="10"
+        android:shadowDy="5"
+        android:shadowRadius="20"
         />
 
 
