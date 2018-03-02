@@ -60,8 +60,6 @@ public class TeamsStatsFragment extends Fragment{
         initializeViews();
         populateData();
 
-        Toast.makeText(context, "Swipe to refresh contents", Toast.LENGTH_SHORT).show();
-
 
         materialRefreshLayout.setMaterialRefreshListener(new MaterialRefreshListener() {
              @Override

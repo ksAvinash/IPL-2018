@@ -10,6 +10,8 @@
     <string name="backend_update_fan_count">https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-update-fan-count</string>
     <string name="backend_suggest_question">https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-suggest-question</string>
     <string name="backend_cards_fetch">https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-fetch-cards</string>
+    <string name="backend_update_cards_count"> https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-update-cards-count</string>
+
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_splasher">IPL 2018</string>

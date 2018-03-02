@@ -22,8 +22,8 @@
             android:icon="@drawable/nav_points"
             android:title="Points Table" />
         <item
-            android:id="@+id/nav_history"
-            android:icon="@drawable/nav_history"
+            android:id="@+id/nav_trophy"
+            android:icon="@drawable/nav_trophy"
             android:title="Champions" />
     </group>
 
@@ -39,5 +39,10 @@
             android:id="@+id/nav_share"
             android:icon="@drawable/nav_share"
             android:title="Share" />
+
+        <item
+            android:id="@+id/nav_rate"
+            android:icon="@drawable/nav_rate"
+            android:title="Rate App" />
     </group>
 </menu>

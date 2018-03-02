@@ -29,7 +29,6 @@ import static android.content.Context.MODE_PRIVATE;
 public class BackendHelper {
 
 
-
     public static class fetch_team_stats extends AsyncTask<Object, String, String> {
         Context context;
         boolean insert;
@@ -341,8 +340,7 @@ public class BackendHelper {
         @Override
         protected String doInBackground(Object... objects) {
             Context context = (Context) objects[0];
-            String email = (String) objects[1];
-            String question = (String) objects[2];
+            String question = (String) objects[1];
             try{
                 URL url = new URL(context.getResources().getString(R.string.backend_suggest_question));
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -353,7 +351,6 @@ public class BackendHelper {
                 conn.setDoInput(true);
 
                 JSONObject jsonParam = new JSONObject();
-                jsonParam.put("email", email);
                 jsonParam.put("question", question);
 
 
@@ -378,8 +375,48 @@ public class BackendHelper {
         }
     }
 
+    public static class update_card_count extends AsyncTask<Object, String, String>{
+
+        @Override
+        protected String doInBackground(Object... objects) {
+            Context context = (Context) objects[0];
+            String card_id = (String) objects[1];
+            String action = (String) objects[2];
+            try{
+                URL url = new URL(context.getResources().getString(R.string.backend_update_cards_count));
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setDoOutput(true);
+                conn.setDoInput(true);
+
+                JSONObject jsonParam = new JSONObject();
+                jsonParam.put("card_id", card_id);
+                jsonParam.put("action", action);
 
 
+
+                DataOutputStream os = new DataOutputStream(conn.getOutputStream());
+                os.writeBytes(jsonParam.toString());
+                os.flush();
+                BufferedReader serverAnswer = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+                String response = serverAnswer.readLine();
+                Log.d("IPL : CARDS : ", "RESPONSE : "+response);
+
+                os.close();
+                conn.disconnect();
+
+                return response;
+            }catch (Exception e){
+                Log.d("IPL : CARDS : ", "Error pushing card response to backend");
+                Log.d("IPL : CARDS : ", e.toString());
+            }
+
+            return null;
+        }
+    }
 
     public static class fetch_cards extends AsyncTask<Context, String, String>{
         Context context;
@@ -455,10 +492,5 @@ public class BackendHelper {
             return null;
         }
     }
-
-
-
-
-
 
 }

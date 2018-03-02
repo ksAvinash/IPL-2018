@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="works.avijay.com.ipl2018.SearchPlayersFragment">
+    tools:context="works.avijay.com.ipl2018.SearchPlayersFragment"
+    android:background="@color/colorBackground">
 
     <ListView
         android:layout_width="match_parent"
