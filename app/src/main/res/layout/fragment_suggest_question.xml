@@ -1,0 +1,41 @@
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="works.avijay.com.ipl2018.SuggestQuestionFragment"
+    >
+
+
+
+    <works.avijay.com.ipl2018.fonts.description_font
+        android:layout_gravity="top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tell us your thoughts about any IPL player or team, we'll share on your behalf and let the community debate on it!"
+        android:textSize="20sp"
+        android:layout_margin="20dp"
+        />
+
+
+    <EditText
+        android:layout_margin="10dp"
+        android:minLines="3"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/question"
+        android:hint="enter your question"
+        />
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="40dp"
+        android:id="@+id/askButton"
+        android:text="ASK"
+        />
+
+</android.support.design.widget.CoordinatorLayout>

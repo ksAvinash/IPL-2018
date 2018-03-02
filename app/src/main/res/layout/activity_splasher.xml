@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="works.avijay.com.ipl2018.SplasherActivity"
+    android:background="@mipmap/splash_background">
+
+
+
+
+    <works.avijay.com.ipl2018.fonts.description_font
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="IPL 2018"
+        android:textColor="@color/colorWhite"
+        android:textSize="60sp"
+        android:layout_gravity="center"
+        />
+
+
+    <com.wang.avi.AVLoadingIndicatorView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        style="@style/AVLoadingIndicatorView"
+        app:indicatorName="SemiCircleSpinIndicator"
+        android:textColor="@color/colorWhite"
+        android:layout_gravity="center"
+        android:layout_marginTop="120dp"
+        />
+
+</android.support.design.widget.CoordinatorLayout>

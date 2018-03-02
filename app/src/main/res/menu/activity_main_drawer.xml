@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/nav_home"
+            android:title="Home" />
+
+        <item
+            android:id="@+id/nav_teams"
+            android:icon="@drawable/nav_teams"
+            android:title="Teams" />
+        <item
+            android:id="@+id/nav_schedule"
+            android:icon="@drawable/nav_schedule"
+            android:title="Schedule" />
+        <item
+            android:id="@+id/nav_points"
+            android:icon="@drawable/nav_points"
+            android:title="Points Table" />
+        <item
+            android:id="@+id/nav_history"
+            android:icon="@drawable/nav_history"
+            android:title="History" />
+    </group>
+
+    <group android:checkableBehavior="single"
+        android:id="@+id/bottomPanel"
+        >
+        <item
+            android:id="@+id/nav_suggestion"
+            android:icon="@drawable/nav_suggest"
+            android:title="Suggest a Question" />
+
+        <item
+            android:id="@+id/nav_share"
+            android:icon="@drawable/nav_share"
+            android:title="Share" />
+    </group>
+</menu>

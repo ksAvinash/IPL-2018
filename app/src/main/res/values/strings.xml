@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">IPL 2018</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="backend_fetch_data">https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-fetch-data</string>
+    <string name="backend_update_fan_count">https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-update-fan-count</string>
+    <string name="backend_suggest_question">https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-suggest-question</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_splasher">IPL 2018</string>
+    <string name="title_activity_team" />
+
+    <string name="rcb_icon">https://s3.ap-south-1.amazonaws.com/ipl-2018/team_images/icon_rcb.jpg</string>
+    <string name="csk_icon">https://s3.ap-south-1.amazonaws.com/ipl-2018/team_images/csk_icon.jpg</string>
+    <string name="srh_icon">https://s3.ap-south-1.amazonaws.com/ipl-2018/team_images/srh_icon.jpg</string>
+    <string name="kkr_icon">https://s3.ap-south-1.amazonaws.com/ipl-2018/team_images/kkr_icon.jpg</string>
+    <string name="rr_icon">https://s3.ap-south-1.amazonaws.com/ipl-2018/team_images/rr_icon.jpg</string>
+    <string name="dd_icon">https://s3.ap-south-1.amazonaws.com/ipl-2018/team_images/dd_icon.jpg</string>
+    <string name="mi_icon">https://s3.ap-south-1.amazonaws.com/ipl-2018/team_images/mi_icon.jpg</string>
+    <string name="k11_icon">https://s3.ap-south-1.amazonaws.com/ipl-2018/team_images/k11_icon.jpg</string>
+
+</resources>
