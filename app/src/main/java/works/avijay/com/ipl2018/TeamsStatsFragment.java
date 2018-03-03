@@ -24,6 +24,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cjj.MaterialRefreshLayout;
 import com.cjj.MaterialRefreshListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 //import com.tuesda.walker.circlerefresh.CircleRefreshLayout;
 
 import java.util.ArrayList;
@@ -49,6 +51,7 @@ public class TeamsStatsFragment extends Fragment{
     static DatabaseHelper helper;
     private static List<teams_list_adapter> teamAdapter = new ArrayList<>();
     static MaterialRefreshLayout materialRefreshLayout;
+    InterstitialAd interstitialAd ;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,6 +62,11 @@ public class TeamsStatsFragment extends Fragment{
 
         initializeViews();
         populateData();
+
+        interstitialAd = new InterstitialAd(context);
+        interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
+        AdRequest adRequest = new AdRequest.Builder().build();
+        interstitialAd.loadAd(adRequest);
 
 
         materialRefreshLayout.setMaterialRefreshListener(new MaterialRefreshListener() {
@@ -78,7 +86,22 @@ public class TeamsStatsFragment extends Fragment{
              }
          });
 
+        showAd();
         return view;
+    }
+
+
+
+    private void showAd() {
+        if(Math.random() > 0.5){
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(interstitialAd.isLoaded())
+                        interstitialAd.show();
+                }
+            }, 1000);
+        }
     }
 
 

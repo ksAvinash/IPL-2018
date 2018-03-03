@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "924256223932",
+    "firebase_url": "https://ipl2018-e2d58.firebaseio.com",
+    "project_id": "ipl2018-e2d58",
+    "storage_bucket": "ipl2018-e2d58.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:924256223932:android:b32ef72499c1b3d5",
+        "android_client_info": {
+          "package_name": "works.avijay.com.ipl2018"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "924256223932-emn5bknrqf6ivav1gostkdfiojnnrd4m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "works.avijay.com.ipl2018",
+            "certificate_hash": "14aa962163f64a4def80d5940b9615d68c53c342"
+          }
+        },
+        {
+          "client_id": "924256223932-qavncidb7hi22vjmpq0taattvas70bdg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcYzM6rLoDhr1wFVZLGee0U2aO_3AFlEU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "924256223932-qavncidb7hi22vjmpq0taattvas70bdg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -18,6 +19,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +38,7 @@ public class TeamActivity extends AppCompatActivity {
     Context context;
     DatabaseHelper helper;
     List<players_list_adapter> playersAdapter = new ArrayList<>();
+    InterstitialAd interstitialAd ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,10 @@ public class TeamActivity extends AppCompatActivity {
         initializeViews();
         populateData();
 
+        interstitialAd = new InterstitialAd(this);
+        interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
+        AdRequest adRequest = new AdRequest.Builder().build();
+        interstitialAd.loadAd(adRequest);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -56,6 +64,21 @@ public class TeamActivity extends AppCompatActivity {
                 update_fan_count.execute(getApplicationContext(), original_name);
             }
         });
+
+        showAd();
+    }
+
+
+    private void showAd() {
+        if(Math.random() > 0.5){
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(interstitialAd.isLoaded())
+                        interstitialAd.show();
+                }
+            }, 2000);
+        }
     }
 
     public void getDetails(){

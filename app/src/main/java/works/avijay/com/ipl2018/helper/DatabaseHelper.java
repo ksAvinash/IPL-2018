@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 /**
  * Created by avinashk on 28/02/18.
@@ -78,7 +79,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
         String create_cards_table = "create table "+TABLE_CARDS+" ("+CARD_ID+" text primary key, "+CARD_DESCRIPTION+" text, "+CARD_APPROVED+" number, "+CARD_DISAPPROVED+
-                " number, "+CARD_IMAGE+" text, "+CARD_SEEN+" boolean);";
+                " number, "+CARD_IMAGE+" text, "+CARD_SEEN+" number);";
         db.execSQL(create_cards_table);
 
     }
@@ -144,11 +145,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(CARD_APPROVED, approved);
         contentValues.put(CARD_DISAPPROVED, disapproved);
         contentValues.put(CARD_IMAGE, image);
-        contentValues.put(CARD_SEEN, false);
 
         db.update(TABLE_CARDS, contentValues, where, whereArgs);
 
     }
+
 
     public void updateIntoSchedule(int match_id, String date, String team1, String team2, String time, String venue){
         String where = SCHEDULE_MATCH_ID+"="+match_id;
@@ -224,12 +225,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getUnseenCards(){
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.rawQuery("select * from "+TABLE_CARDS+";", null);
+        return db.rawQuery("select * from "+TABLE_CARDS+" where "+CARD_SEEN+" = 0;", null);
     }
 
 
-    public void setCardAsSeen(String card_id){
+    public Cursor getSeenCards(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery("select * from "+TABLE_CARDS+" where "+CARD_SEEN+" != 0;", null);
+    }
 
+
+    public void setCardAsSeen(String card_id, int value, int count){
+        String where = CARD_ID+"=?";
+        String[] whereArgs = new String[] {card_id};
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        //value == 1 for approve
+        //value == 2 for disapprove
+        //value == 3 for skipped
+        switch (value){
+            case 1:
+                contentValues.put(CARD_APPROVED, count+1);
+                break;
+            case 2:
+                contentValues.put(CARD_DISAPPROVED, count+1);
+                break;
+        }
+
+        contentValues.put(CARD_SEEN, value);
+
+        db.update(TABLE_CARDS, contentValues, where, whereArgs);
     }
 
 
@@ -247,7 +272,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             contentValues.put(CARD_APPROVED, approved);
             contentValues.put(CARD_DISAPPROVED, disapproved);
             contentValues.put(CARD_IMAGE, image);
-            contentValues.put(CARD_SEEN, false);
+            contentValues.put(CARD_SEEN, 0);
             db.insert(TABLE_CARDS, null, contentValues);
         }
         cursor.close();

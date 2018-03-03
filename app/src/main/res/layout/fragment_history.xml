@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:scrollbars="none"
-    tools:context="works.avijay.com.ipl2018.HistoryFragment"
+    tools:context="works.avijay.com.ipl2018.ChampionsFragment"
     android:background="@color/colorBackground"
     >
 

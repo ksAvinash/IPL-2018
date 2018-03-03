@@ -6,9 +6,17 @@ package works.avijay.com.ipl2018.helper;
 
 public class cards_adapter {
     private String card_id, card_description;
-    private int card_approved, card_disapproved;
+    private int card_approved, card_disapproved, card_seen_value;
     private String card_image;
 
+
+    public int getCard_seen_value() {
+        return card_seen_value;
+    }
+
+    public void setCard_seen_value(int card_seen_value) {
+        this.card_seen_value = card_seen_value;
+    }
 
     public void setCard_id(String card_id) {
         this.card_id = card_id;
@@ -51,12 +59,14 @@ public class cards_adapter {
         return card_image;
     }
 
-    public cards_adapter(String card_id, String card_description, int card_approved, int card_disapproved, String card_image) {
-
+    public cards_adapter(String card_id, String card_description, int card_approved, int card_disapproved, String card_image, int card_seen_value) {
         this.card_id = card_id;
         this.card_description = card_description;
         this.card_approved = card_approved;
         this.card_disapproved = card_disapproved;
         this.card_image = card_image;
+        this.card_seen_value = card_seen_value;
     }
+
+
 }

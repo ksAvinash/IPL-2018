@@ -25,6 +25,10 @@
             android:id="@+id/nav_trophy"
             android:icon="@drawable/nav_trophy"
             android:title="Champions" />
+        <item
+            android:id="@+id/nav_previous_cards"
+            android:icon="@drawable/nav_history"
+            android:title="Previous Cards" />
     </group>
 
     <group android:checkableBehavior="single"

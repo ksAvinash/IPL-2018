@@ -5,15 +5,21 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -26,6 +32,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -33,9 +40,21 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import cn.iwgang.countdownview.CountdownView;
+import works.avijay.com.ipl2018.helper.BackendHelper;
 import works.avijay.com.ipl2018.helper.DatabaseHelper;
 import works.avijay.com.ipl2018.helper.cards_adapter;
 
@@ -45,6 +64,8 @@ public class MainActivity extends AppCompatActivity
     ListView cardsList;
     List<cards_adapter> cardsAdapter = new ArrayList<>();
     Context context;
+    InterstitialAd interstitialAd ;
+    CountdownView mCvCountdownView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +74,8 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         cardsList = findViewById(R.id.cardsList);
         context = getApplicationContext();
+        mCvCountdownView = findViewById(R.id.count_down);
+
 
 
         FloatingActionButton fab =  findViewById(R.id.fab);
@@ -77,19 +100,65 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        loadCards();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                loadCards();
+            }
+        }, 100);
+
+        startCountDown();
+        showAd();
+    }
+
+
+    private void showAd() {
+        interstitialAd = new InterstitialAd(this);
+        interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
+        AdRequest adRequest = new AdRequest.Builder().build();
+        interstitialAd.loadAd(adRequest);
+
+        if(Math.random() > 0.5){
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(interstitialAd.isLoaded())
+                        interstitialAd.show();
+                }
+            }, 2000);
+        }
+    }
+
+    public void startCountDown(){
+        Date date2 = new Date();
+        Date date1 = new Date(118, 3, 7, 20, 0);
+
+        final long mills = date1.getTime() - date2.getTime();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mCvCountdownView.start(mills);
+            }
+        }, 1000);
     }
 
     private void loadCards() {
         cardsAdapter.clear();
-
+        int i=0;
         DatabaseHelper helper = new DatabaseHelper(this);
         Cursor cursor = helper.getUnseenCards();
-        while (cursor.moveToNext()){
-            cardsAdapter.add(new cards_adapter(cursor.getString(0), cursor.getString(1),
-                    cursor.getInt(2), cursor.getInt(3), cursor.getString(4)
+            while (cursor.moveToNext()){
+                i++;
+                if(i <= 20){
+                    cardsAdapter.add(new cards_adapter(cursor.getString(0), cursor.getString(1),
+                            cursor.getInt(2), cursor.getInt(3), cursor.getString(4), cursor.getInt(5)
                     ));
-        }
+                }
+
+
+            }
+
 
         displayCards();
     }
@@ -98,7 +167,6 @@ public class MainActivity extends AppCompatActivity
         ArrayAdapter<cards_adapter> adapter = new myCardsAdapterClass();
         cardsList.setAdapter(adapter);
     }
-
 
 
     public class myCardsAdapterClass extends ArrayAdapter<cards_adapter> {
@@ -116,13 +184,19 @@ public class MainActivity extends AppCompatActivity
                 LayoutInflater inflater = LayoutInflater.from(context);
                 itemView = inflater.inflate(R.layout.opinion_card_item, parent, false);
             }
-            cards_adapter current = cardsAdapter.get(position);
+            final cards_adapter current = cardsAdapter.get(position);
 
             ImageView card_image = itemView.findViewById(R.id.card_image);
             TextView card_description = itemView.findViewById(R.id.card_description);
             TextView like_points = itemView.findViewById(R.id.like_points);
             TextView dislike_points = itemView.findViewById(R.id.dislike_points);
+            final LikeButton like_icon = itemView.findViewById(R.id.like_icon);
+            final LikeButton dislike_icon = itemView.findViewById(R.id.dislike_icon);
+            TextView skip_card = itemView.findViewById(R.id.skip_card);
 
+
+            like_icon.setLiked(false);
+            dislike_icon.setLiked(false);
 
             card_description.setText(current.getCard_description());
             like_points.setText(current.getCard_approved()+"");
@@ -130,21 +204,67 @@ public class MainActivity extends AppCompatActivity
             Glide.with(context).load(current.getCard_image())
                     .thumbnail(0.5f)
                     .centerCrop()
-                    .placeholder(R.drawable.general_player)
                     .crossFade()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(card_image);
 
+            like_icon.setOnLikeListener(new OnLikeListener() {
+                @Override
+                public void liked(LikeButton likeButton) {
+                    BackendHelper.update_card_count update_card_count = new BackendHelper.update_card_count();
+                    update_card_count.execute(context, current.getCard_id(), "approve");
+
+                    DatabaseHelper helper = new DatabaseHelper(context);
+                    helper.setCardAsSeen(current.getCard_id(), 1, current.getCard_approved());
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadCards();
+                        }
+                    }, 600);
+
+                }
+
+                @Override
+                public void unLiked(LikeButton likeButton) {
+
+                }
+            });
+
+            dislike_icon.setOnLikeListener(new OnLikeListener() {
+                @Override
+                public void liked(LikeButton likeButton) {
+                    BackendHelper.update_card_count update_card_count = new BackendHelper.update_card_count();
+                    update_card_count.execute(context, current.getCard_id(), "disapprove");
+
+                    DatabaseHelper helper = new DatabaseHelper(context);
+                    helper.setCardAsSeen(current.getCard_id(),2, current.getCard_disapproved());
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadCards();
+                        }
+                    }, 600);
+                }
+
+                @Override
+                public void unLiked(LikeButton likeButton) {
+
+                }
+            });
+
+            skip_card.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DatabaseHelper helper = new DatabaseHelper(context);
+                    helper.setCardAsSeen(current.getCard_id(),3, 0);
+                    loadCards();
+                }
+            });
 
             return itemView;
         }
-    }
-
-
-
-    private boolean isNetworkConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        return cm.getActiveNetworkInfo() != null;
     }
 
     @Override
@@ -242,16 +362,16 @@ public class MainActivity extends AppCompatActivity
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT,
-                        "Get set watch\n\nWatch-Monitor-Opinion most of IPL-2018 in one app\nDownload:\n" + str);
+                        "Get Set Watch\n\nTrack-Support-Follow all of IPL 2018 in one app!\n\nDownload IPL 2018:\n" + str);
                 sendIntent.setType("text/plain");
                 startActivity(sendIntent);
                 break;
 
             case R.id.nav_trophy:
-                HistoryFragment historyFragment = new HistoryFragment();
+                ChampionsFragment championsFragment = new ChampionsFragment();
                 fragmentManager = getSupportFragmentManager();
                 fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.main_activity_content, historyFragment).addToBackStack(null).commit();
+                fragmentTransaction.replace(R.id.main_activity_content, championsFragment).addToBackStack(null).commit();
                 break;
 
             case R.id.nav_schedule:
@@ -277,6 +397,13 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.nav_rate:
                 rateapp();
+                break;
+
+            case R.id.nav_previous_cards:
+                PreviousCards previousCards = new PreviousCards();
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.main_activity_content, previousCards).addToBackStack(null).commit();
                 break;
         }
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,13 +11,41 @@
     android:id="@+id/main_activity_content"
     >
 
+
+    <cn.iwgang.countdownview.CountdownView
+        android:layout_centerHorizontal="true"
+        android:layout_margin="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:isHideTimeBackground="false"
+        app:isShowDay="true"
+        app:isShowHour="true"
+        app:isShowMinute="true"
+        app:isShowSecond="true"
+        app:timeTextColor="@color/colorWhite"
+        app:timeTextSize="40sp"
+        app:isTimeTextBold="true"
+        app:suffixGravity="center"
+        app:suffixTextColor="@color/colorDarkText"
+        app:suffixTextSize="28sp"
+        app:isSuffixTextBold="true"
+        app:suffixHour=":"
+        app:suffixMinute=":"
+        app:suffixDay=":"
+        app:timeBgColor="@color/colorAccent"
+        app:timeBgSize="55dp"
+        app:timeBgRadius="5dp"
+        android:id="@+id/count_down"
+        />
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/cardsList"
         android:scrollbars="none"
         android:divider="@null"
+        android:layout_below="@+id/count_down"
         />
 
 
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

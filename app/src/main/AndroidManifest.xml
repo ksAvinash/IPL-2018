@@ -28,7 +28,7 @@
         <activity
             android:name=".TeamActivity"
             android:label="@string/title_activity_team"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>
