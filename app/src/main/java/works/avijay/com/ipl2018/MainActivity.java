@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity
         AdRequest adRequest = new AdRequest.Builder().build();
         interstitialAd.loadAd(adRequest);
 
-        if(Math.random() > 0.5){
+        if(Math.random() > 0.8){
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {

@@ -16,6 +16,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import works.avijay.com.ipl2018.helper.BackendHelper;
 
@@ -30,7 +31,7 @@ public class SplasherActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splasher);
 
         MobileAds.initialize(this, "ca-app-pub-9681985190789334~8534666961");
-
+        FirebaseMessaging.getInstance().subscribeToTopic("ipl_all_users");
         BackendHelper.fetch_cards fetch_cards = new BackendHelper.fetch_cards();
         fetch_cards.execute(getApplicationContext());
 

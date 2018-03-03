@@ -64,11 +64,11 @@ public class ScheduleFragment extends Fragment {
         AdRequest adRequest = new AdRequest.Builder().build();
         interstitialAd.loadAd(adRequest);
 
-
-
         showAd();
         return view;
     }
+
+
     private void showAd() {
         if(Math.random() > 0.5){
             new Handler().postDelayed(new Runnable() {
