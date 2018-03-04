@@ -14,6 +14,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.SafeBrowsingResponse;
+import android.webkit.ValueCallback;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -21,6 +27,8 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import works.avijay.com.ipl2018.helper.BackendHelper;
 
 public class SplasherActivity extends AppCompatActivity {
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +40,9 @@ public class SplasherActivity extends AppCompatActivity {
 
         MobileAds.initialize(this, "ca-app-pub-9681985190789334~8534666961");
         FirebaseMessaging.getInstance().subscribeToTopic("ipl_all_users");
+
+
+
         BackendHelper.fetch_cards fetch_cards = new BackendHelper.fetch_cards();
         fetch_cards.execute(getApplicationContext());
 
@@ -65,6 +76,10 @@ public class SplasherActivity extends AppCompatActivity {
             }
         }, 2500);
 
+
+
+
+
     }
 
 
@@ -72,5 +87,7 @@ public class SplasherActivity extends AppCompatActivity {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null;
     }
+
+
 
 }

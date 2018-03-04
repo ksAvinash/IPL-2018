@@ -6,8 +6,8 @@ android {
         applicationId "works.avijay.com.ipl2018"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.01"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -50,6 +50,8 @@ dependencies {
     //count-down library
     compile 'com.github.iwgang:countdownview:2.1.6'
 }
+
+
 
 
 apply plugin: 'com.google.gms.google-services'

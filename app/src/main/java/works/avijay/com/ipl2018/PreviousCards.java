@@ -55,10 +55,6 @@ public class PreviousCards extends Fragment {
 
         initializeViews();
 
-        interstitialAd = new InterstitialAd(context);
-        interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
-        AdRequest adRequest = new AdRequest.Builder().build();
-        interstitialAd.loadAd(adRequest);
 
         BackendHelper.fetch_cards fetch_cards = new BackendHelper.fetch_cards();
         fetch_cards.execute(context);
@@ -71,11 +67,15 @@ public class PreviousCards extends Fragment {
         }, 500);
 
 
-        showAd();
+        //showAd();
         return view;
     }
 
     private void showAd() {
+        interstitialAd = new InterstitialAd(context);
+        interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
+        AdRequest adRequest = new AdRequest.Builder().build();
+        interstitialAd.loadAd(adRequest);
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -142,16 +142,15 @@ public class PreviousCards extends Fragment {
             TextView dislike_points = itemView.findViewById(R.id.dislike_points);
             final LikeButton like_icon = itemView.findViewById(R.id.like_icon);
             final LikeButton dislike_icon = itemView.findViewById(R.id.dislike_icon);
+            TextView skip_card = itemView.findViewById(R.id.skip_card);
 
+            skip_card.setText("");
             if(current.getCard_seen_value() == 1){
                 like_icon.setLiked(true);
                 dislike_icon.setLiked(false);
             }else if(current.getCard_seen_value() == 2){
                 like_icon.setLiked(false);
                 dislike_icon.setLiked(true);
-            }else {
-                like_icon.setLiked(false);
-                dislike_icon.setLiked(false);
             }
 
             card_description.setText(current.getCard_description());

@@ -59,17 +59,21 @@ public class ScheduleFragment extends Fragment {
         initializeViews();
         populateData();
 
-        interstitialAd = new InterstitialAd(context);
-        interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
-        AdRequest adRequest = new AdRequest.Builder().build();
-        interstitialAd.loadAd(adRequest);
 
-        showAd();
+
+        //showAd();
         return view;
     }
 
 
     private void showAd() {
+
+        interstitialAd = new InterstitialAd(context);
+        interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
+        AdRequest adRequest = new AdRequest.Builder().build();
+        interstitialAd.loadAd(adRequest);
+
+
         if(Math.random() > 0.5){
             new Handler().postDelayed(new Runnable() {
                 @Override

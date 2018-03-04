@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
@@ -105,7 +106,7 @@ public class MainActivity extends AppCompatActivity
             public void run() {
                 loadCards();
             }
-        }, 100);
+        }, 50);
 
         startCountDown();
         showAd();
@@ -113,20 +114,26 @@ public class MainActivity extends AppCompatActivity
 
 
     private void showAd() {
-        interstitialAd = new InterstitialAd(this);
-        interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
-        AdRequest adRequest = new AdRequest.Builder().build();
-        interstitialAd.loadAd(adRequest);
+                interstitialAd = new InterstitialAd(context);
+                interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
+                AdRequest adRequest = new AdRequest.Builder().build();
+                interstitialAd.loadAd(adRequest);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
 
-        if(Math.random() > 0.8){
+                        if(interstitialAd.isLoaded())
+                            interstitialAd.show();
+                    }
+                }, 8000);
+
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if(interstitialAd.isLoaded())
-                        interstitialAd.show();
+                    showAd();
                 }
-            }, 2000);
-        }
+            }, 45000);
+
     }
 
     public void startCountDown(){
@@ -178,7 +185,7 @@ public class MainActivity extends AppCompatActivity
 
         @NonNull
         @Override
-        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+        public View getView(int position, final View convertView, @NonNull ViewGroup parent) {
             View itemView = convertView;
             if (itemView == null) {
                 LayoutInflater inflater = LayoutInflater.from(context);
@@ -216,12 +223,13 @@ public class MainActivity extends AppCompatActivity
 
                     DatabaseHelper helper = new DatabaseHelper(context);
                     helper.setCardAsSeen(current.getCard_id(), 1, current.getCard_approved());
+
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             loadCards();
                         }
-                    }, 600);
+                    }, 400);
 
                 }
 
@@ -245,7 +253,7 @@ public class MainActivity extends AppCompatActivity
                         public void run() {
                             loadCards();
                         }
-                    }, 600);
+                    }, 400);
                 }
 
                 @Override
@@ -404,6 +412,20 @@ public class MainActivity extends AppCompatActivity
                 fragmentManager = getSupportFragmentManager();
                 fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.main_activity_content, previousCards).addToBackStack(null).commit();
+                break;
+
+            case R.id.nav_match_updates:
+                MatchHighlightsFragment matchHighlightsFragment = new MatchHighlightsFragment();
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.main_activity_content, matchHighlightsFragment).commit();
+                break;
+
+            case R.id.nav_live_scores:
+                LiveUpdatesFragment liveUpdatesFragment = new LiveUpdatesFragment();
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.main_activity_content, liveUpdatesFragment).commit();
                 break;
         }
 

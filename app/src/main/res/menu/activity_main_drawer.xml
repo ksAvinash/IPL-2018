@@ -17,10 +17,7 @@
             android:id="@+id/nav_schedule"
             android:icon="@drawable/nav_schedule"
             android:title="Schedule" />
-        <item
-            android:id="@+id/nav_points"
-            android:icon="@drawable/nav_points"
-            android:title="Points Table" />
+
         <item
             android:id="@+id/nav_trophy"
             android:icon="@drawable/nav_trophy"
@@ -29,6 +26,19 @@
             android:id="@+id/nav_previous_cards"
             android:icon="@drawable/nav_history"
             android:title="Previous Cards" />
+        <item
+            android:id="@+id/nav_points"
+            android:icon="@drawable/nav_points"
+            android:title="Points Table" />
+        <item
+            android:id="@+id/nav_live_scores"
+            android:icon="@drawable/nav_live_scores"
+            android:title="Live Scores" />
+        <item
+            android:id="@+id/nav_match_updates"
+            android:icon="@drawable/nav_match_highlights"
+            android:title="Match Updates" />
+
     </group>
 
     <group android:checkableBehavior="single"

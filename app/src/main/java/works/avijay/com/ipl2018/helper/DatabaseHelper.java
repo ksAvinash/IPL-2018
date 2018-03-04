@@ -231,7 +231,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getSeenCards(){
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.rawQuery("select * from "+TABLE_CARDS+" where "+CARD_SEEN+" != 0;", null);
+        return db.rawQuery("select * from "+TABLE_CARDS+" where "+CARD_SEEN+" != 0 and "+CARD_SEEN+" != 3;", null);
     }
 
 
@@ -256,6 +256,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.update(TABLE_CARDS, contentValues, where, whereArgs);
     }
+
+
 
 
 

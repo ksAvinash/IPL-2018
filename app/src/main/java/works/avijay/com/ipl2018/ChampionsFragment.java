@@ -39,19 +39,22 @@ public class ChampionsFragment extends Fragment {
 
         initializeViews();
 
-        interstitialAd = new InterstitialAd(context);
-        interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
-        AdRequest adRequest = new AdRequest.Builder().build();
-        interstitialAd.loadAd(adRequest);
+
 
         displayData();
-        showAd();
+        //showAd();
 
         return view;
     }
 
     private void showAd() {
-        if(Math.random() > 0.5){
+        interstitialAd = new InterstitialAd(context);
+        interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
+        AdRequest adRequest = new AdRequest.Builder().build();
+        interstitialAd.loadAd(adRequest);
+
+
+        if(Math.random() > 0.3){
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {

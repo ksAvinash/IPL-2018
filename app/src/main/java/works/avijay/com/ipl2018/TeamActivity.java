@@ -49,10 +49,7 @@ public class TeamActivity extends AppCompatActivity {
         initializeViews();
         populateData();
 
-        interstitialAd = new InterstitialAd(this);
-        interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
-        AdRequest adRequest = new AdRequest.Builder().build();
-        interstitialAd.loadAd(adRequest);
+
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -65,11 +62,17 @@ public class TeamActivity extends AppCompatActivity {
             }
         });
 
-        showAd();
+        //showAd();
     }
 
 
     private void showAd() {
+        interstitialAd = new InterstitialAd(this);
+        interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
+        AdRequest adRequest = new AdRequest.Builder().build();
+        interstitialAd.loadAd(adRequest);
+
+
         if(Math.random() > 0.5){
             new Handler().postDelayed(new Runnable() {
                 @Override
