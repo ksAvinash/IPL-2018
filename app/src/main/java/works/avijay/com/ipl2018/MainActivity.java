@@ -201,6 +201,17 @@ public class MainActivity extends AppCompatActivity
 
             if(current.getCard_type().equals("card")){
                 heart_icon.setVisibility(View.GONE);
+
+                like_icon.setVisibility(View.VISIBLE);
+                dislike_icon.setVisibility(View.VISIBLE);
+
+                like_icon.setLiked(false);
+                dislike_icon.setLiked(false);
+
+                card_description.setText(current.getCard_description());
+                like_points.setText(current.getCard_approved()+"");
+                dislike_points.setText(current.getCard_disapproved()+"");
+
                 like_icon.setOnLikeListener(new OnLikeListener() {
                     @Override
                     public void liked(LikeButton likeButton) {
@@ -248,14 +259,21 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
 
-                like_icon.setLiked(false);
-                dislike_icon.setLiked(false);
+
 
             }else{
-                like_icon.setEnabled(false);
                 heart_icon.setVisibility(View.VISIBLE);
+
+                like_icon.setEnabled(false);
+                dislike_icon.setEnabled(false);
+
                 dislike_icon.setVisibility(View.GONE);
-                dislike_points.setVisibility(View.GONE);
+                like_icon.setVisibility(View.GONE);
+                dislike_points.setText("");
+                card_description.setText("");
+                like_points.setText(current.getCard_approved()+"");
+                dislike_points.setText("");
+
                 heart_icon.setOnLikeListener(new OnLikeListener() {
                     @Override
                     public void liked(LikeButton likeButton) {
@@ -283,9 +301,7 @@ public class MainActivity extends AppCompatActivity
 
 
 
-            card_description.setText(current.getCard_description());
-            like_points.setText(current.getCard_approved()+"");
-            dislike_points.setText(current.getCard_disapproved()+"");
+
             Glide.with(context).load(current.getCard_image())
                     .thumbnail(0.5f)
                     .centerCrop()

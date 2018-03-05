@@ -178,6 +178,11 @@ public class PreviousCards extends Fragment {
             heart_icon.setVisibility(View.GONE);
 
             if(current.getCard_type().equals("card")){
+
+
+                dislike_icon.setVisibility(View.VISIBLE);
+                like_icon.setVisibility(View.VISIBLE);
+
                 if(current.getCard_seen_value() == 1){
                     like_icon.setLiked(true);
                     dislike_icon.setLiked(false);
@@ -185,17 +190,28 @@ public class PreviousCards extends Fragment {
                     like_icon.setLiked(false);
                     dislike_icon.setLiked(true);
                 }
+
+                card_description.setText(current.getCard_description());
+                like_points.setText(current.getCard_approved()+"");
+                dislike_points.setText(current.getCard_disapproved()+"");
+                like_icon.setEnabled(false);
+                dislike_icon.setEnabled(false);
+
             }else {
+                like_icon.setEnabled(false);
+                dislike_icon.setEnabled(false);
+
+                like_icon.setVisibility(View.GONE);
                 dislike_icon.setVisibility(View.GONE);
-                dislike_points.setVisibility(View.GONE);
-                like_icon.setLiked(true);
+
+                card_description.setText("");
+                like_points.setText(current.getCard_approved()+"");
+                dislike_points.setText("");
             }
 
 
 
-            card_description.setText(current.getCard_description());
-            like_points.setText(current.getCard_approved()+"");
-            dislike_points.setText(current.getCard_disapproved()+"");
+
             Glide.with(context).load(current.getCard_image())
                     .thumbnail(0.5f)
                     .centerCrop()
@@ -203,8 +219,7 @@ public class PreviousCards extends Fragment {
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(card_image);
 
-            like_icon.setEnabled(false);
-            dislike_icon.setEnabled(false);
+
 
 
             return itemView;
