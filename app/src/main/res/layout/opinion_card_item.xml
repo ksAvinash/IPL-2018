@@ -54,6 +54,20 @@
             />
 
 
+        <com.like.LikeButton
+            app:icon_size="50dp"
+            android:id="@+id/heart_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:anim_scale_factor="2.5"
+            app:like_drawable="@drawable/heart_like"
+            app:unlike_drawable="@drawable/heart_unlike"
+            android:layout_gravity="center"
+            />
+
+
+
+
         <RelativeLayout
             android:layout_margin="8dp"
             android:layout_width="wrap_content"

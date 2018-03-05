@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import works.avijay.com.ipl2018.PreviousCards;
 import works.avijay.com.ipl2018.R;
 import works.avijay.com.ipl2018.ScheduleFragment;
 import works.avijay.com.ipl2018.TeamsStatsFragment;
@@ -418,8 +419,9 @@ public class BackendHelper {
         }
     }
 
-    public static class fetch_cards extends AsyncTask<Context, String, String>{
+    public static class fetch_cards extends AsyncTask<Object, String, String>{
         Context context;
+        boolean stopRefresh;
         @Override
         protected void onPostExecute(final String str) {
             super.onPostExecute(str);
@@ -439,13 +441,13 @@ public class BackendHelper {
                                         JSONObject current_team = items.getJSONObject(i);
                                         helper.insertIntoCards(current_team.getString("card_id"),
                                                 current_team.getString("card_description"), current_team.getLong("card_approved"),
-                                                current_team.getLong("card_disapproved"), current_team.getString("card_image")
+                                                current_team.getLong("card_disapproved"), current_team.getString("card_image"), current_team.getString("card_type")
                                                 );
                                     }
 
                                 helper.close();
                             } else {
-                                Log.d("IPL : TEAMS : ", "Error fetching team stats");
+                                Log.d("IPL : CARDS : ", "Error fetching  cards");
                             }
 
                         } catch (JSONException e) {
@@ -454,12 +456,18 @@ public class BackendHelper {
 
                     }
                 }).start();
+
+
+                if(stopRefresh){
+                    PreviousCards.loadCards();
+                }
             }
 
         }
         @Override
-        protected String doInBackground(Context... contexts) {
-            context =  contexts[0];
+        protected String doInBackground(Object... objects) {
+            context =  (Context) objects[0];
+            stopRefresh = (boolean) objects[1];
             try{
                 URL url = new URL(context.getResources().getString(R.string.backend_cards_fetch));
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();

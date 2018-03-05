@@ -4,9 +4,11 @@ package works.avijay.com.ipl2018;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.cjj.MaterialRefreshLayout;
+import com.cjj.MaterialRefreshListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.like.LikeButton;
@@ -41,12 +45,14 @@ public class PreviousCards extends Fragment {
     }
 
     View view;
-    Context context;
-    ListView previousCardsList;
-    List<cards_adapter> cardsAdapter = new ArrayList<>();
-    DatabaseHelper helper;
+    static Context context;
+    static ListView previousCardsList;
+    static List<cards_adapter> cardsAdapter = new ArrayList<>();
+    static DatabaseHelper helper;
     int seen_value ;
     InterstitialAd interstitialAd;
+    static MaterialRefreshLayout materialRefreshLayout;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -56,9 +62,6 @@ public class PreviousCards extends Fragment {
         initializeViews();
 
 
-        BackendHelper.fetch_cards fetch_cards = new BackendHelper.fetch_cards();
-        fetch_cards.execute(context);
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -66,6 +69,22 @@ public class PreviousCards extends Fragment {
             }
         }, 500);
 
+        materialRefreshLayout.setMaterialRefreshListener(new MaterialRefreshListener() {
+            @Override
+            public void onRefresh(final MaterialRefreshLayout materialRefreshLayout) {
+                if(isNetworkConnected()){
+                    BackendHelper.fetch_cards fetch_cards = new BackendHelper.fetch_cards();
+                    fetch_cards.execute(context, true);
+                }else {
+                    Snackbar.make(view, "Oops, No Internet connection!", Snackbar.LENGTH_SHORT)
+                            .setAction("Action", null).show();
+                    if(materialRefreshLayout.isShown())
+                        materialRefreshLayout.finishRefresh();
+                }
+
+
+            }
+        });
 
         showAd();
         return view;
@@ -89,21 +108,31 @@ public class PreviousCards extends Fragment {
     }
 
 
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null;
+    }
+
+
     public void initializeViews(){
         context = getActivity().getApplicationContext();
         previousCardsList = view.findViewById(R.id.previousCardsList);
         helper = new DatabaseHelper(context);
+        materialRefreshLayout = view.findViewById(R.id.swipe_refresh);
 
     }
 
 
-    private void loadCards() {
+    public static void loadCards() {
         cardsAdapter.clear();
+        if(materialRefreshLayout.isShown())
+            materialRefreshLayout.finishRefresh();
 
         Cursor cursor = helper.getSeenCards();
         while (cursor.moveToNext()){
             cardsAdapter.add(new cards_adapter(cursor.getString(0), cursor.getString(1),
-                    cursor.getInt(2), cursor.getInt(3), cursor.getString(4), cursor.getInt(5)
+                    cursor.getInt(2), cursor.getInt(3), cursor.getString(4),
+                    cursor.getInt(5), cursor.getString(6)
             ));
 
 
@@ -112,13 +141,13 @@ public class PreviousCards extends Fragment {
         displayCards();
     }
 
-    public void displayCards(){
+    public static  void displayCards(){
         ArrayAdapter<cards_adapter> adapter = new mySeenCardsAdapterClass();
         previousCardsList.setAdapter(adapter);
     }
 
 
-    public class mySeenCardsAdapterClass extends ArrayAdapter<cards_adapter> {
+    public static  class mySeenCardsAdapterClass extends ArrayAdapter<cards_adapter> {
 
         mySeenCardsAdapterClass() {
             super(context, R.layout.opinion_card_item, cardsAdapter);
@@ -140,18 +169,29 @@ public class PreviousCards extends Fragment {
             TextView card_description = itemView.findViewById(R.id.card_description);
             TextView like_points = itemView.findViewById(R.id.like_points);
             TextView dislike_points = itemView.findViewById(R.id.dislike_points);
-            final LikeButton like_icon = itemView.findViewById(R.id.like_icon);
-            final LikeButton dislike_icon = itemView.findViewById(R.id.dislike_icon);
+            LikeButton like_icon = itemView.findViewById(R.id.like_icon);
+            LikeButton dislike_icon = itemView.findViewById(R.id.dislike_icon);
+            LikeButton heart_icon = itemView.findViewById(R.id.heart_icon);
             TextView skip_card = itemView.findViewById(R.id.skip_card);
 
             skip_card.setText("");
-            if(current.getCard_seen_value() == 1){
+            heart_icon.setVisibility(View.GONE);
+
+            if(current.getCard_type().equals("card")){
+                if(current.getCard_seen_value() == 1){
+                    like_icon.setLiked(true);
+                    dislike_icon.setLiked(false);
+                }else if(current.getCard_seen_value() == 2){
+                    like_icon.setLiked(false);
+                    dislike_icon.setLiked(true);
+                }
+            }else {
+                dislike_icon.setVisibility(View.GONE);
+                dislike_points.setVisibility(View.GONE);
                 like_icon.setLiked(true);
-                dislike_icon.setLiked(false);
-            }else if(current.getCard_seen_value() == 2){
-                like_icon.setLiked(false);
-                dislike_icon.setLiked(true);
             }
+
+
 
             card_description.setText(current.getCard_description());
             like_points.setText(current.getCard_approved()+"");

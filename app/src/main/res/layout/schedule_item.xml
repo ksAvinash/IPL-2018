@@ -12,26 +12,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardBackgroundColor="@color/colorWhite"
-        app:cardElevation="4dp"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
         <ImageView
-            android:layout_width="110dp"
-            android:layout_height="110dp"
+            android:layout_width="115dp"
+            android:layout_height="115dp"
             android:id="@+id/team1"
             android:layout_gravity="start|center"
-            android:layout_margin="8dp"
+            android:layout_margin="4dp"
             />
 
 
         <ImageView
-            android:layout_width="110dp"
-            android:layout_height="110dp"
+            android:layout_width="115dp"
+            android:layout_height="115dp"
             android:id="@+id/team2"
             android:layout_gravity="end|center"
-            android:layout_margin="8dp"
+            android:layout_margin="4dp"
             />
 
         <works.avijay.com.ipl2018.fonts.description_font

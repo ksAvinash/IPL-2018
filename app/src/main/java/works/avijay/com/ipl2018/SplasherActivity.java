@@ -68,10 +68,15 @@ public class SplasherActivity extends AppCompatActivity {
 
         if(get_previous_fetch_history()){
             BackendHelper.fetch_cards fetch_cards = new BackendHelper.fetch_cards();
-            fetch_cards.execute(context);
+            fetch_cards.execute(context, false);
 
             BackendHelper.fetch_team_stats fetch_team_stats = new BackendHelper.fetch_team_stats();
             fetch_team_stats.execute(context, false, false);
+
+            Date current_date = new Date();
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putLong("last_fetch_date", current_date.getTime());
+            editor.apply();
         }
 
 

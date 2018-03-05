@@ -155,7 +155,8 @@ public class MainActivity extends AppCompatActivity
                 i++;
                 if(i <= 20){
                     cardsAdapter.add(new cards_adapter(cursor.getString(0), cursor.getString(1),
-                            cursor.getInt(2), cursor.getInt(3), cursor.getString(4), cursor.getInt(5)
+                            cursor.getInt(2), cursor.getInt(3), cursor.getString(4),
+                            cursor.getInt(5), cursor.getString(6)
                     ));
                 }
 
@@ -196,10 +197,91 @@ public class MainActivity extends AppCompatActivity
             final LikeButton like_icon = itemView.findViewById(R.id.like_icon);
             final LikeButton dislike_icon = itemView.findViewById(R.id.dislike_icon);
             TextView skip_card = itemView.findViewById(R.id.skip_card);
+            LikeButton heart_icon = itemView.findViewById(R.id.heart_icon);
+
+            if(current.getCard_type().equals("card")){
+                heart_icon.setVisibility(View.GONE);
+                like_icon.setOnLikeListener(new OnLikeListener() {
+                    @Override
+                    public void liked(LikeButton likeButton) {
+                        BackendHelper.update_card_count update_card_count = new BackendHelper.update_card_count();
+                        update_card_count.execute(context, current.getCard_id(), "approve");
+
+                        DatabaseHelper helper = new DatabaseHelper(context);
+                        helper.setCardAsSeen(current.getCard_id(), 1, current.getCard_approved());
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                loadCards(position);
+                            }
+                        }, 400);
+
+                    }
+
+                    @Override
+                    public void unLiked(LikeButton likeButton) {
+
+                    }
+                });
+
+                dislike_icon.setOnLikeListener(new OnLikeListener() {
+                    @Override
+                    public void liked(LikeButton likeButton) {
+                        BackendHelper.update_card_count update_card_count = new BackendHelper.update_card_count();
+                        update_card_count.execute(context, current.getCard_id(), "disapprove");
+
+                        DatabaseHelper helper = new DatabaseHelper(context);
+                        helper.setCardAsSeen(current.getCard_id(),2, current.getCard_disapproved());
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                loadCards(position);
+                            }
+                        }, 400);
+                    }
+
+                    @Override
+                    public void unLiked(LikeButton likeButton) {
+
+                    }
+                });
+
+                like_icon.setLiked(false);
+                dislike_icon.setLiked(false);
+
+            }else{
+                like_icon.setEnabled(false);
+                heart_icon.setVisibility(View.VISIBLE);
+                dislike_icon.setVisibility(View.GONE);
+                dislike_points.setVisibility(View.GONE);
+                heart_icon.setOnLikeListener(new OnLikeListener() {
+                    @Override
+                    public void liked(LikeButton likeButton) {
+                        BackendHelper.update_card_count update_card_count = new BackendHelper.update_card_count();
+                        update_card_count.execute(context, current.getCard_id(), "approve");
+
+                        DatabaseHelper helper = new DatabaseHelper(context);
+                        helper.setCardAsSeen(current.getCard_id(), 1, current.getCard_approved());
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                loadCards(position);
+                            }
+                        }, 400);
+
+                    }
+
+                    @Override
+                    public void unLiked(LikeButton likeButton) {
+                    }
+                });
+
+            }
 
 
-            like_icon.setLiked(false);
-            dislike_icon.setLiked(false);
 
             card_description.setText(current.getCard_description());
             like_points.setText(current.getCard_approved()+"");
@@ -211,52 +293,7 @@ public class MainActivity extends AppCompatActivity
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(card_image);
 
-            like_icon.setOnLikeListener(new OnLikeListener() {
-                @Override
-                public void liked(LikeButton likeButton) {
-                    BackendHelper.update_card_count update_card_count = new BackendHelper.update_card_count();
-                    update_card_count.execute(context, current.getCard_id(), "approve");
 
-                    DatabaseHelper helper = new DatabaseHelper(context);
-                    helper.setCardAsSeen(current.getCard_id(), 1, current.getCard_approved());
-
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            loadCards(position);
-                        }
-                    }, 400);
-
-                }
-
-                @Override
-                public void unLiked(LikeButton likeButton) {
-
-                }
-            });
-
-            dislike_icon.setOnLikeListener(new OnLikeListener() {
-                @Override
-                public void liked(LikeButton likeButton) {
-                    BackendHelper.update_card_count update_card_count = new BackendHelper.update_card_count();
-                    update_card_count.execute(context, current.getCard_id(), "disapprove");
-
-                    DatabaseHelper helper = new DatabaseHelper(context);
-                    helper.setCardAsSeen(current.getCard_id(),2, current.getCard_disapproved());
-
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            loadCards(position);
-                        }
-                    }, 400);
-                }
-
-                @Override
-                public void unLiked(LikeButton likeButton) {
-
-                }
-            });
 
             skip_card.setOnClickListener(new View.OnClickListener() {
                 @Override
