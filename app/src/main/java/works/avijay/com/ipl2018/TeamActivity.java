@@ -62,7 +62,7 @@ public class TeamActivity extends AppCompatActivity {
             }
         });
 
-        //showAd();
+        showAd();
     }
 
 
@@ -80,7 +80,7 @@ public class TeamActivity extends AppCompatActivity {
                     if(interstitialAd.isLoaded())
                         interstitialAd.show();
                 }
-            }, 2000);
+            }, 4000);
         }
     }
 

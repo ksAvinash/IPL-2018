@@ -242,7 +242,7 @@ public class BackendHelper {
 
                                 SharedPreferences sharedPreferences = context.getSharedPreferences("ipl_sp", MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putBoolean("first_fetch", false);
+                                editor.putBoolean("first_fetch_v2", false);
                                 editor.apply();
                             } else {
                                 Log.d("IPL : PLAYERS : ", "Error fetching players");

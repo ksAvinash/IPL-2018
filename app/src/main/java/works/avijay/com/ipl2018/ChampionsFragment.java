@@ -42,7 +42,7 @@ public class ChampionsFragment extends Fragment {
 
 
         displayData();
-        //showAd();
+        showAd();
 
         return view;
     }
@@ -61,7 +61,7 @@ public class ChampionsFragment extends Fragment {
                     if(interstitialAd.isLoaded())
                         interstitialAd.show();
                 }
-            }, 2000);
+            }, 4000);
         }
     }
 

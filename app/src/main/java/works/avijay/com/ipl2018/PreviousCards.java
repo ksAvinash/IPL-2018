@@ -67,7 +67,7 @@ public class PreviousCards extends Fragment {
         }, 500);
 
 
-        //showAd();
+        showAd();
         return view;
     }
 
@@ -83,7 +83,7 @@ public class PreviousCards extends Fragment {
                 if(interstitialAd.isLoaded())
                     interstitialAd.show();
             }
-        }, 2000);
+        }, 4000);
 
 
     }

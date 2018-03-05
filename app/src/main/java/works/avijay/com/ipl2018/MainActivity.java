@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity
     Context context;
     InterstitialAd interstitialAd ;
     CountdownView mCvCountdownView;
+    boolean ad_valid;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity
         context = getApplicationContext();
         mCvCountdownView = findViewById(R.id.count_down);
 
-
+        ad_valid = true;
 
         FloatingActionButton fab =  findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -114,25 +115,20 @@ public class MainActivity extends AppCompatActivity
 
 
     private void showAd() {
-                interstitialAd = new InterstitialAd(context);
-                interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
-                AdRequest adRequest = new AdRequest.Builder().build();
-                interstitialAd.loadAd(adRequest);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        if(interstitialAd.isLoaded())
-                            interstitialAd.show();
-                    }
-                }, 8000);
-
+        if(Math.random() > 0.4){
+            interstitialAd = new InterstitialAd(context);
+            interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
+            AdRequest adRequest = new AdRequest.Builder().build();
+            interstitialAd.loadAd(adRequest);
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    showAd();
+
+                    if(interstitialAd.isLoaded())
+                        interstitialAd.show();
                 }
-            }, 45000);
+            }, 10000);
+        }
 
     }
 

@@ -51,6 +51,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CARD_DISAPPROVED = "card_disapproved";
     private static final String CARD_IMAGE = "card_image";
     private static final String CARD_SEEN = "card_seen";
+    private static final String CARD_TYPE = "card_seen";
 
 
 
@@ -79,7 +80,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
         String create_cards_table = "create table "+TABLE_CARDS+" ("+CARD_ID+" text primary key, "+CARD_DESCRIPTION+" text, "+CARD_APPROVED+" number, "+CARD_DISAPPROVED+
-                " number, "+CARD_IMAGE+" text, "+CARD_SEEN+" number);";
+                " number, "+CARD_IMAGE+" text, "+CARD_SEEN+" number, "+CARD_TYPE+" text);";
         db.execSQL(create_cards_table);
 
     }

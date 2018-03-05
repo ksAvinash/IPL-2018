@@ -61,7 +61,7 @@ public class ScheduleFragment extends Fragment {
 
 
 
-        //showAd();
+        showAd();
         return view;
     }
 

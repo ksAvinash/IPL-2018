@@ -82,7 +82,7 @@ public class TeamsStatsFragment extends Fragment{
              }
          });
 
-        //showAd();
+        showAd();
         return view;
     }
 
@@ -105,7 +105,7 @@ public class TeamsStatsFragment extends Fragment{
                     if(interstitialAd.isLoaded())
                         interstitialAd.show();
                 }
-            }, 1000);
+            }, 4000);
         }
     }
 
