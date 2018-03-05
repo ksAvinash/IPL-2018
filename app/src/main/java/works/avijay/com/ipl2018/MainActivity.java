@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                loadCards();
+                loadCards(0);
             }
         }, 50);
 
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity
                     if(interstitialAd.isLoaded())
                         interstitialAd.show();
                 }
-            }, 10000);
+            }, 15000);
         }
 
     }
@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity
         }, 1000);
     }
 
-    private void loadCards() {
+    private void loadCards(int position) {
         cardsAdapter.clear();
         int i=0;
         DatabaseHelper helper = new DatabaseHelper(this);
@@ -159,16 +159,16 @@ public class MainActivity extends AppCompatActivity
                     ));
                 }
 
-
             }
 
 
-        displayCards();
+        displayCards(position);
     }
 
-    public void displayCards(){
+    public void displayCards(int position){
         ArrayAdapter<cards_adapter> adapter = new myCardsAdapterClass();
         cardsList.setAdapter(adapter);
+        cardsList.setSelection(position);
     }
 
 
@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity
 
         @NonNull
         @Override
-        public View getView(int position, final View convertView, @NonNull ViewGroup parent) {
+        public View getView(final int position, final View convertView, @NonNull ViewGroup parent) {
             View itemView = convertView;
             if (itemView == null) {
                 LayoutInflater inflater = LayoutInflater.from(context);
@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            loadCards();
+                            loadCards(position);
                         }
                     }, 400);
 
@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            loadCards();
+                            loadCards(position);
                         }
                     }, 400);
                 }
@@ -263,7 +263,7 @@ public class MainActivity extends AppCompatActivity
                 public void onClick(View v) {
                     DatabaseHelper helper = new DatabaseHelper(context);
                     helper.setCardAsSeen(current.getCard_id(),3, 0);
-                    loadCards();
+                    loadCards(position);
                 }
             });
 
