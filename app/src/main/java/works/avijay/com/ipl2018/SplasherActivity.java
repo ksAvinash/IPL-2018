@@ -47,12 +47,18 @@ public class SplasherActivity extends AppCompatActivity {
         MobileAds.initialize(this, "ca-app-pub-9681985190789334~8534666961");
         FirebaseMessaging.getInstance().subscribeToTopic("ipl_all_users");
 
+
+
+
+
+
         boolean first_fetch = sharedPreferences.getBoolean("first_fetch_v2", true);
         if(first_fetch){
             DatabaseHelper helper = new DatabaseHelper(context);
             helper.deleteTables();
 
             if(isNetworkConnected()){
+
                 BackendHelper.fetch_schedule fetch_schedule = new BackendHelper.fetch_schedule();
                 fetch_schedule.execute(context);
 
@@ -61,22 +67,34 @@ public class SplasherActivity extends AppCompatActivity {
 
                 BackendHelper.fetch_players fetch_players = new BackendHelper.fetch_players();
                 fetch_players.execute(context);
+
+                BackendHelper.fetch_cards fetch_cards = new BackendHelper.fetch_cards();
+                fetch_cards.execute(context, false);
+
+                BackendHelper.fetch_setting fetch_setting = new BackendHelper.fetch_setting();
+                fetch_setting.execute(context, "ads");
+
+            }
+        }else if(get_previous_fetch_history()){
+
+            if(isNetworkConnected()){
+                BackendHelper.fetch_cards fetch_cards = new BackendHelper.fetch_cards();
+                fetch_cards.execute(context, false);
+
+                BackendHelper.fetch_team_stats fetch_team_stats = new BackendHelper.fetch_team_stats();
+                fetch_team_stats.execute(context, false, false);
+
+                BackendHelper.fetch_setting fetch_setting = new BackendHelper.fetch_setting();
+                fetch_setting.execute(context, "ads");
+
+                Date current_date = new Date();
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putLong("last_fetch_date", current_date.getTime());
+                editor.apply();
             }
 
-        }
-
-
-        if(get_previous_fetch_history()){
-            BackendHelper.fetch_cards fetch_cards = new BackendHelper.fetch_cards();
-            fetch_cards.execute(context, false);
-
-            BackendHelper.fetch_team_stats fetch_team_stats = new BackendHelper.fetch_team_stats();
-            fetch_team_stats.execute(context, false, false);
-
-            Date current_date = new Date();
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putLong("last_fetch_date", current_date.getTime());
-            editor.apply();
+        }else {
+            Log.d("FETCH AGAIN", "NOT FETCHING ANY DATA");
         }
 
 

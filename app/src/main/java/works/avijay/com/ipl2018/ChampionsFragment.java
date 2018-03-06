@@ -2,6 +2,7 @@ package works.avijay.com.ipl2018;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+
+import static android.content.Context.MODE_PRIVATE;
 
 
 /**
@@ -31,7 +34,7 @@ public class ChampionsFragment extends Fragment {
     TextView winner_2017_text, winner_2016_text, winner_2015_text, winner_2014_text, winner_2013_text, winner_2012_text, winner_2011_text, winner_2010_text, winner_2009_text, winner_2008_text;
     Context context;
     InterstitialAd interstitialAd ;
-
+    float ads_value;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -48,13 +51,12 @@ public class ChampionsFragment extends Fragment {
     }
 
     private void showAd() {
-        interstitialAd = new InterstitialAd(context);
-        interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
-        AdRequest adRequest = new AdRequest.Builder().build();
-        interstitialAd.loadAd(adRequest);
+        if(Math.random() < ads_value){
+            interstitialAd = new InterstitialAd(context);
+            interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
+            AdRequest adRequest = new AdRequest.Builder().build();
+            interstitialAd.loadAd(adRequest);
 
-
-        if(Math.random() > 0.3){
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -69,6 +71,9 @@ public class ChampionsFragment extends Fragment {
 
     public void initializeViews(){
         context = getActivity().getApplicationContext();
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences("ipl_sp", MODE_PRIVATE);
+        ads_value = sharedPreferences.getFloat("ads", (float) 0.2);
 
         winner_2017 = view.findViewById(R.id.winner_2017);
         winner_2016 = view.findViewById(R.id.winner_2016);

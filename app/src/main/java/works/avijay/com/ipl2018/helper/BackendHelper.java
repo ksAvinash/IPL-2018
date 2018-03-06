@@ -419,6 +419,87 @@ public class BackendHelper {
         }
     }
 
+
+
+    public static class fetch_setting extends AsyncTask<Object, String, String>{
+        Context context;
+
+        @Override
+        protected void onPostExecute(final String str) {
+            super.onPostExecute(str);
+
+            if(str!=null){
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            JSONObject object = new JSONObject(str);
+                            boolean response = object.getBoolean("ipl_fetch_settings");
+                            if (response) {
+                                JSONObject data = object.getJSONObject("data");
+                                JSONObject item = data.getJSONObject("Item");
+
+                                SharedPreferences sharedPreferences = context.getSharedPreferences("ipl_sp", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putFloat("ads", (float) item.getDouble("value"));
+                                editor.commit();
+
+                                Log.d("IPL : SETTINGS : ","SUCCESS : "+item.getDouble("value"));
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }).start();
+            }
+
+
+        }
+
+        @Override
+        protected String doInBackground(Object... objects) {
+            context = (Context) objects[0];
+            String setting = (String) objects[1];
+
+            try{
+                URL url = new URL(context.getResources().getString(R.string.backend_fetch_settings));
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setDoOutput(true);
+                conn.setDoInput(true);
+
+                JSONObject jsonParam = new JSONObject();
+                jsonParam.put("setting", setting);
+
+
+
+                DataOutputStream os = new DataOutputStream(conn.getOutputStream());
+                os.writeBytes(jsonParam.toString());
+                os.flush();
+                BufferedReader serverAnswer = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+                String response = serverAnswer.readLine();
+                Log.d("IPL : SETTINGS : ", "RESPONSE : "+response);
+
+                os.close();
+                conn.disconnect();
+
+                return response;
+            }catch (Exception e){
+                Log.d("IPL : SETTINGS : ", "Error fetching settings");
+                Log.d("IPL : SETTINGS : ", e.toString());
+            }
+
+            return null;
+        }
+    }
+
+
+
     public static class fetch_cards extends AsyncTask<Object, String, String>{
         Context context;
         boolean stopRefresh;

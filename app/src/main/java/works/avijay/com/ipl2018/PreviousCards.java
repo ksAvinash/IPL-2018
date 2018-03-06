@@ -3,6 +3,7 @@ package works.avijay.com.ipl2018;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -33,6 +34,8 @@ import works.avijay.com.ipl2018.helper.BackendHelper;
 import works.avijay.com.ipl2018.helper.DatabaseHelper;
 import works.avijay.com.ipl2018.helper.cards_adapter;
 
+import static android.content.Context.MODE_PRIVATE;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -52,7 +55,7 @@ public class PreviousCards extends Fragment {
     int seen_value ;
     InterstitialAd interstitialAd;
     static MaterialRefreshLayout materialRefreshLayout;
-
+    float ads_value;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -91,19 +94,22 @@ public class PreviousCards extends Fragment {
     }
 
     private void showAd() {
-        interstitialAd = new InterstitialAd(context);
-        interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
-        AdRequest adRequest = new AdRequest.Builder().build();
-        interstitialAd.loadAd(adRequest);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if(interstitialAd.isLoaded())
-                    interstitialAd.show();
-            }
-        }, 4000);
+        if(Math.random() < ads_value){
+            interstitialAd = new InterstitialAd(context);
+            interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
+            AdRequest adRequest = new AdRequest.Builder().build();
+            interstitialAd.loadAd(adRequest);
 
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(interstitialAd.isLoaded())
+                        interstitialAd.show();
+                }
+            }, 8000);
+        }
 
     }
 
@@ -119,6 +125,9 @@ public class PreviousCards extends Fragment {
         previousCardsList = view.findViewById(R.id.previousCardsList);
         helper = new DatabaseHelper(context);
         materialRefreshLayout = view.findViewById(R.id.swipe_refresh);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences("ipl_sp", MODE_PRIVATE);
+        ads_value = sharedPreferences.getFloat("ads", (float) 0.2);
 
     }
 

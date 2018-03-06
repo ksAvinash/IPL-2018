@@ -3,6 +3,7 @@ package works.avijay.com.ipl2018;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -35,6 +36,8 @@ import works.avijay.com.ipl2018.helper.BackendHelper;
 import works.avijay.com.ipl2018.helper.DatabaseHelper;
 import works.avijay.com.ipl2018.helper.teams_list_adapter;
 
+import static android.content.Context.MODE_PRIVATE;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -52,7 +55,7 @@ public class TeamsStatsFragment extends Fragment{
     private static List<teams_list_adapter> teamAdapter = new ArrayList<>();
     static MaterialRefreshLayout materialRefreshLayout;
     InterstitialAd interstitialAd ;
-
+    float ads_value;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -89,16 +92,13 @@ public class TeamsStatsFragment extends Fragment{
 
 
     private void showAd() {
-
-        interstitialAd = new InterstitialAd(context);
-        interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
-        AdRequest adRequest = new AdRequest.Builder().build();
-        interstitialAd.loadAd(adRequest);
-
-
+        if(Math.random() < ads_value){
+            interstitialAd = new InterstitialAd(context);
+            interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
+            AdRequest adRequest = new AdRequest.Builder().build();
+            interstitialAd.loadAd(adRequest);
 
 
-        if(Math.random() > 0.5){
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -117,6 +117,9 @@ public class TeamsStatsFragment extends Fragment{
         teamsList = view.findViewById(R.id.teamsList);
         helper = new DatabaseHelper(context);
         materialRefreshLayout = view.findViewById(R.id.swipe_refresh);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences("ipl_sp", MODE_PRIVATE);
+        ads_value = sharedPreferences.getFloat("ads", (float) 0.2);
 
     }
 

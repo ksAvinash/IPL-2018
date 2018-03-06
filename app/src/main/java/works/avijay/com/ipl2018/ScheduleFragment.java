@@ -2,6 +2,7 @@ package works.avijay.com.ipl2018;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -32,6 +33,8 @@ import works.avijay.com.ipl2018.helper.BackendHelper;
 import works.avijay.com.ipl2018.helper.DatabaseHelper;
 import works.avijay.com.ipl2018.helper.schedule_list_adapter;
 
+import static android.content.Context.MODE_PRIVATE;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,7 +52,7 @@ public class ScheduleFragment extends Fragment {
     static DatabaseHelper helper;
     private static List<schedule_list_adapter> scheduleAdapter = new ArrayList<>();
     InterstitialAd interstitialAd ;
-
+    float ads_value;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -68,20 +71,20 @@ public class ScheduleFragment extends Fragment {
 
     private void showAd() {
 
-        interstitialAd = new InterstitialAd(context);
-        interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
-        AdRequest adRequest = new AdRequest.Builder().build();
-        interstitialAd.loadAd(adRequest);
+        if(Math.random() < ads_value){
+            interstitialAd = new InterstitialAd(context);
+            interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
+            AdRequest adRequest = new AdRequest.Builder().build();
+            interstitialAd.loadAd(adRequest);
 
 
-        if(Math.random() > 0.5){
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     if(interstitialAd.isLoaded())
                         interstitialAd.show();
                 }
-            }, 2000);
+            }, 6000);
         }
     }
 
@@ -95,6 +98,9 @@ public class ScheduleFragment extends Fragment {
         context = getActivity().getApplicationContext();
         scheduleList = view.findViewById(R.id.scheduleList);
         helper = new DatabaseHelper(context);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences("ipl_sp", MODE_PRIVATE);
+        ads_value = sharedPreferences.getFloat("ads", (float) 0.2);
     }
 
 

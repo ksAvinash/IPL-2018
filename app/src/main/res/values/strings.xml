@@ -11,7 +11,7 @@
     <string name="backend_suggest_question">https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-suggest-question</string>
     <string name="backend_cards_fetch">https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-fetch-cards</string>
     <string name="backend_update_cards_count"> https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-update-cards-count</string>
-
+    <string name="backend_fetch_settings">https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-fetch-settings</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_splasher">IPL 2018</string>
@@ -27,5 +27,6 @@
     <string name="k11_icon">https://s3.ap-south-1.amazonaws.com/ipl-2018/team_images/k11_icon.jpg</string>
 
     <string name="admob_interstitial_id">ca-app-pub-9681985190789334/8358998025</string>
+    <string name="title_activity_google_sign_in">GoogleSignInActivity</string>
 
 </resources>

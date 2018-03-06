@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity
     Context context;
     InterstitialAd interstitialAd ;
     CountdownView mCvCountdownView;
-    boolean ad_valid;
+    float ads_value;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +79,9 @@ public class MainActivity extends AppCompatActivity
         context = getApplicationContext();
         mCvCountdownView = findViewById(R.id.count_down);
 
-        ad_valid = true;
+
+
+
 
         FloatingActionButton fab =  findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -115,7 +118,18 @@ public class MainActivity extends AppCompatActivity
 
 
     private void showAd() {
-        if(Math.random() > 0.4){
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                SharedPreferences sharedPreferences = getSharedPreferences("ipl_sp", MODE_PRIVATE);
+                ads_value = sharedPreferences.getFloat("ads", (float) 0.2);
+            }
+        }, 100);
+
+
+
+
+        if(Math.random() < ads_value){
             interstitialAd = new InterstitialAd(context);
             interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
             AdRequest adRequest = new AdRequest.Builder().build();
@@ -200,6 +214,7 @@ public class MainActivity extends AppCompatActivity
             LikeButton heart_icon = itemView.findViewById(R.id.heart_icon);
 
             if(current.getCard_type().equals("card")){
+                card_image.setAlpha((float)0.85);
                 heart_icon.setVisibility(View.GONE);
 
                 like_icon.setVisibility(View.VISIBLE);
@@ -262,6 +277,8 @@ public class MainActivity extends AppCompatActivity
 
 
             }else{
+                card_image.setAlpha((float)1.0);
+
                 heart_icon.setVisibility(View.VISIBLE);
 
                 like_icon.setEnabled(false);

@@ -2,6 +2,7 @@ package works.avijay.com.ipl2018;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,7 +40,7 @@ public class TeamActivity extends AppCompatActivity {
     DatabaseHelper helper;
     List<players_list_adapter> playersAdapter = new ArrayList<>();
     InterstitialAd interstitialAd ;
-
+    float ads_value;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,20 +67,20 @@ public class TeamActivity extends AppCompatActivity {
 
 
     private void showAd() {
-        interstitialAd = new InterstitialAd(this);
-        interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
-        AdRequest adRequest = new AdRequest.Builder().build();
-        interstitialAd.loadAd(adRequest);
 
+        if(Math.random() < ads_value){
+            interstitialAd = new InterstitialAd(this);
+            interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
+            AdRequest adRequest = new AdRequest.Builder().build();
+            interstitialAd.loadAd(adRequest);
 
-        if(Math.random() > 0.5){
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     if(interstitialAd.isLoaded())
                         interstitialAd.show();
                 }
-            }, 4000);
+            }, 3000);
         }
     }
 
@@ -138,6 +139,11 @@ public class TeamActivity extends AppCompatActivity {
         playersList = findViewById(R.id.playersList);
         helper = new DatabaseHelper(context);
         playersAdapter.clear();
+
+
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences("ipl_sp", MODE_PRIVATE);
+        ads_value = sharedPreferences.getFloat("ads", (float) 0.2);
 
         Cursor cursor = helper.getTeamMembers(team_name);
         while (cursor.moveToNext()){
