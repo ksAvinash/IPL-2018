@@ -398,17 +398,17 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-        if (id == R.id.action_signin) {
-
-            if(!sharedPreferences.getBoolean("isSignedIn", false)){
-                Intent intent = new Intent(this, GoogleSignInActivity.class);
-                startActivity(intent);
-            }else {
-                Snackbar.make(view, "You've already Signed In", Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
-            }
-            return true;
-        }
+//        if (id == R.id.action_signin) {
+//
+//            if(!sharedPreferences.getBoolean("isSignedIn", false)){
+//                Intent intent = new Intent(this, GoogleSignInActivity.class);
+//                startActivity(intent);
+//            }else {
+//                Snackbar.make(view, "You've already Signed In", Snackbar.LENGTH_SHORT)
+//                        .setAction("Action", null).show();
+//            }
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }

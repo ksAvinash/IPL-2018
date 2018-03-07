@@ -9,7 +9,7 @@
         app:actionViewClass="android.support.v7.widget.SearchView" />
 
 
-    <item android:id="@+id/action_signin"
-        android:title="Sign In"
-        app:showAsAction="never"/>
+    <!--<item android:id="@+id/action_signin"-->
+        <!--android:title="Sign In"-->
+        <!--app:showAsAction="never"/>-->
 </menu>
