@@ -12,6 +12,8 @@
     <string name="backend_cards_fetch">https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-fetch-cards</string>
     <string name="backend_update_cards_count"> https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-update-cards-count</string>
     <string name="backend_fetch_settings">https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-fetch-settings</string>
+    <string name="backend_user_signup">https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-user-signup</string>
+
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_splasher">IPL 2018</string>

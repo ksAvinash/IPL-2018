@@ -20,6 +20,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import works.avijay.com.ipl2018.helper.BackendHelper;
+
 public class GoogleSignInActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
 
     private GoogleApiClient googleApiClient;
@@ -86,15 +88,8 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
 
             Log.i("GOOGLE- SIGNUP", username);
 
-            //store username locally
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("username", username);
-            editor.putBoolean("isSignedIn", true);
-            editor.commit();
-
-            //send username to backend
-            Snackbar.make(view, "Welcome "+username, Snackbar.LENGTH_SHORT)
-                    .setAction("Action", null).show();
+            BackendHelper.user_signup user_signup = new BackendHelper.user_signup();
+            user_signup.execute(context, username, view);
 
 
         }else{

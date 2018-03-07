@@ -3,7 +3,9 @@ package works.avijay.com.ipl2018.helper;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.view.View;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -581,5 +583,92 @@ public class BackendHelper {
             return null;
         }
     }
+
+
+
+    public static class user_signup extends AsyncTask<Object, String, String>{
+
+
+        Context context;
+        String username;
+        View view;
+
+        @Override
+        protected void onPostExecute(final String str) {
+            super.onPostExecute(str);
+
+            if(str != null){
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            JSONObject object = new JSONObject(str);
+                            boolean response = object.getBoolean("ipl_user_signup");
+                            if(response){
+
+                                Snackbar.make(view, "Welcome "+username, Snackbar.LENGTH_SHORT)
+                                        .setAction("Action", null).show();
+
+
+                                SharedPreferences sharedPreferences = context.getSharedPreferences("ipl_sp", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString("username", username);
+                                editor.putBoolean("isSignedIn", true);
+                                editor.commit();
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+            }
+        }
+
+        @Override
+        protected String doInBackground(Object... objects) {
+            context = (Context) objects[0];
+            username = (String) objects[1];
+            view = (View) objects[2];
+            try{
+                URL url = new URL(context.getResources().getString(R.string.backend_user_signup));
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setDoOutput(true);
+                conn.setDoInput(true);
+
+                JSONObject jsonParam = new JSONObject();
+                jsonParam.put("username", username);
+
+
+
+                DataOutputStream os = new DataOutputStream(conn.getOutputStream());
+                os.writeBytes(jsonParam.toString());
+                os.flush();
+                BufferedReader serverAnswer = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+                String response = serverAnswer.readLine();
+                Log.d("IPL : CARDS : ", "RESPONSE : "+response);
+
+                os.close();
+                conn.disconnect();
+
+                return response;
+            }catch (Exception e){
+                Log.d("IPL : CARDS : ", "Error pushing card response to backend");
+                Log.d("IPL : CARDS : ", e.toString());
+            }
+
+            return null;
+        }
+    }
+
+
+
+
+
+
 
 }
