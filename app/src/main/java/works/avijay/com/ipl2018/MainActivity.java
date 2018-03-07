@@ -13,7 +13,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -47,10 +46,6 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -62,6 +57,8 @@ import works.avijay.com.ipl2018.helper.cards_adapter;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+
     DrawerLayout drawer;
     ListView cardsList;
     List<cards_adapter> cardsAdapter = new ArrayList<>();
@@ -69,6 +66,11 @@ public class MainActivity extends AppCompatActivity
     InterstitialAd interstitialAd ;
     CountdownView mCvCountdownView;
     float ads_value;
+    SharedPreferences sharedPreferences;
+    View view;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +81,8 @@ public class MainActivity extends AppCompatActivity
         context = getApplicationContext();
         mCvCountdownView = findViewById(R.id.count_down);
 
+        sharedPreferences = getSharedPreferences("ipl_sp", MODE_PRIVATE);
+        view = findViewById(android.R.id.content);
 
 
 
@@ -110,7 +114,7 @@ public class MainActivity extends AppCompatActivity
             public void run() {
                 loadCards(0);
             }
-        }, 50);
+        }, 100);
 
         startCountDown();
         showAd();
@@ -118,16 +122,9 @@ public class MainActivity extends AppCompatActivity
 
 
     private void showAd() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                SharedPreferences sharedPreferences = getSharedPreferences("ipl_sp", MODE_PRIVATE);
-                ads_value = sharedPreferences.getFloat("ads", (float) 0.2);
-            }
-        }, 100);
+        ads_value = sharedPreferences.getFloat("ads", (float) 0.2);
 
-
-
+        Log.d("ADS : VALUE : ", ads_value+"");
 
         if(Math.random() < ads_value){
             interstitialAd = new InterstitialAd(context);
@@ -141,7 +138,7 @@ public class MainActivity extends AppCompatActivity
                     if(interstitialAd.isLoaded())
                         interstitialAd.show();
                 }
-            }, 15000);
+            }, 10000);
         }
 
     }
@@ -401,9 +398,16 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_signin) {
 
+            if(!sharedPreferences.getBoolean("isSignedIn", false)){
+                Intent intent = new Intent(this, GoogleSignInActivity.class);
+                startActivity(intent);
+            }else {
+                Snackbar.make(view, "You've already Signed In", Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
+            }
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

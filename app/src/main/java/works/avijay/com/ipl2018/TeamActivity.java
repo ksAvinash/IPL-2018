@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,6 +68,7 @@ public class TeamActivity extends AppCompatActivity {
 
 
     private void showAd() {
+        Log.d("ADS : VALUE : ", ads_value+"");
 
         if(Math.random() < ads_value){
             interstitialAd = new InterstitialAd(this);
@@ -251,6 +253,9 @@ public class TeamActivity extends AppCompatActivity {
         }
     }
 
-
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }

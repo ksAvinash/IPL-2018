@@ -32,6 +32,10 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
+    //google sign-in
+    compile 'com.google.android.gms:play-services-auth:11.8.0'
+
+
     //firebase ads library
     compile 'com.google.firebase:firebase-ads:11.8.0'
 
@@ -50,6 +54,7 @@ dependencies {
     //count-down library
     compile 'com.github.iwgang:countdownview:2.1.6'
 }
+
 
 
 
