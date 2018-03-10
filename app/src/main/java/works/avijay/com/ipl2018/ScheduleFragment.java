@@ -40,7 +40,7 @@ import static android.content.Context.MODE_PRIVATE;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ScheduleFragment extends Fragment {
+public class ScheduleFragment extends Fragment implements View.OnClickListener{
 
 
     public ScheduleFragment() {
@@ -52,8 +52,11 @@ public class ScheduleFragment extends Fragment {
     static ListView scheduleList;
     static DatabaseHelper helper;
     private static List<schedule_list_adapter> scheduleAdapter = new ArrayList<>();
+    ImageView team_rcb, team_csk, team_srh, team_rr, team_kkr, team_k11p, team_mi, team_dd ;
     InterstitialAd interstitialAd ;
     float ads_value;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -62,7 +65,6 @@ public class ScheduleFragment extends Fragment {
 
         initializeViews();
         populateData();
-
 
 
         showAd();
@@ -103,6 +105,26 @@ public class ScheduleFragment extends Fragment {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences("ipl_sp", MODE_PRIVATE);
         ads_value = sharedPreferences.getFloat("ads", (float) 0.2);
+
+        team_csk = view.findViewById(R.id.team_csk);
+        team_rcb = view.findViewById(R.id.team_rcb);
+        team_mi = view.findViewById(R.id.team_mi);
+        team_kkr = view.findViewById(R.id.team_kkr);
+        team_rr = view.findViewById(R.id.team_rr);
+        team_srh = view.findViewById(R.id.team_srh);
+        team_k11p = view.findViewById(R.id.team_k11p);
+        team_dd = view.findViewById(R.id.team_dd);
+
+
+        team_csk.setOnClickListener(this);
+        team_rcb.setOnClickListener(this);
+        team_mi.setOnClickListener(this);
+        team_kkr.setOnClickListener(this);
+        team_rr.setOnClickListener(this);
+        team_srh.setOnClickListener(this);
+        team_k11p.setOnClickListener(this);
+        team_dd.setOnClickListener(this);
+
     }
 
 
@@ -117,6 +139,23 @@ public class ScheduleFragment extends Fragment {
                     cursor.getString(4), cursor.getString(5)
             ));
         }
+        cursor.close();
+        displayList();
+    }
+
+
+    public static void populateTeamSpecificData(String team_name){
+        scheduleAdapter.clear();
+
+        Cursor cursor = helper.getScheduleByTeamName(team_name);
+        while (cursor.moveToNext()){
+            scheduleAdapter.add(new schedule_list_adapter(
+                    cursor.getInt(0), cursor.getString(1),
+                    cursor.getString(2), cursor.getString(3),
+                    cursor.getString(4), cursor.getString(5)
+            ));
+        }
+        cursor.close();
 
         displayList();
     }
@@ -125,6 +164,84 @@ public class ScheduleFragment extends Fragment {
     public static void displayList() {
         ArrayAdapter<schedule_list_adapter> adapter = new myScheduleAdapterClass();
         scheduleList.setAdapter(adapter);
+    }
+
+    @Override
+    public void onClick(View view) {
+        disselectAllTeams();
+
+        switch (view.getId()){
+
+            case R.id.team_rcb:
+                team_rcb.setImageResource(R.drawable.rcb_selected);
+                Snackbar.make(view, "Showing only RCB matches", Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
+                populateTeamSpecificData("RCB");
+                break;
+
+            case R.id.team_csk:
+                team_csk.setImageResource(R.drawable.csk_selected);
+                Snackbar.make(view, "Showing only CSK matches", Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
+                populateTeamSpecificData("CSK");
+                break;
+
+            case R.id.team_mi:
+                team_mi.setImageResource(R.drawable.mi_selected);
+                Snackbar.make(view, "Showing only MI matches", Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
+                populateTeamSpecificData("MI");
+                break;
+
+            case R.id.team_kkr:
+                team_kkr.setImageResource(R.drawable.kkr_selected);
+                Snackbar.make(view, "Showing only KKR matches", Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
+                populateTeamSpecificData("KKR");
+                break;
+
+            case R.id.team_rr:
+                team_rr.setImageResource(R.drawable.rr_selected);
+                Snackbar.make(view, "Showing only RR matches", Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
+                populateTeamSpecificData("RR");
+                break;
+
+            case R.id.team_srh:
+                team_srh.setImageResource(R.drawable.srh_selected);
+                Snackbar.make(view, "Showing only SRH matches", Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
+                populateTeamSpecificData("SRH");
+                break;
+
+            case R.id.team_k11p:
+                team_k11p.setImageResource(R.drawable.k11p_selected);
+                Snackbar.make(view, "Showing only K11P matches", Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
+                populateTeamSpecificData("KXIP");
+                break;
+
+            case R.id.team_dd:
+                team_dd.setImageResource(R.drawable.dd_selected);
+                Snackbar.make(view, "Showing only DD matches", Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
+                populateTeamSpecificData("DD");
+                break;
+
+        }
+
+    }
+
+
+    public void disselectAllTeams(){
+        team_csk.setImageResource(R.drawable.csk_disselected);
+        team_rcb.setImageResource(R.drawable.rcb_disselected);
+        team_mi.setImageResource(R.drawable.mi_disselected);
+        team_kkr.setImageResource(R.drawable.kkr_disselected);
+        team_rr.setImageResource(R.drawable.rr_disselected);
+        team_srh.setImageResource(R.drawable.srh_disselected);
+        team_k11p.setImageResource(R.drawable.k11p_disselected);
+        team_dd.setImageResource(R.drawable.dd_disselected);
     }
 
 

@@ -169,7 +169,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
-
     public Cursor getAllTeamStats(){
         SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery("select * from "+TABLE_TEAMS+" order by "+TEAM_FAN_COUNT+" desc;",null);
@@ -210,6 +209,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor getTeamMembers(String team_name){
         SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery("select * from "+TABLE_PLAYERS+" where "+PLAYER_TEAM+" = '"+team_name+"' order by "+PLAYER_BIDDING_PRICE+" desc;", null);
+    }
+
+    public Cursor getScheduleByTeamName(String team){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery("select * from "+TABLE_SCHEDULE+" where "+SCHEDULE_MATCH_TEAM1+" = '"+team+"' or "+SCHEDULE_MATCH_TEAM2+" = '"+team+"' ;", null);
     }
 
 
@@ -282,5 +286,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         cursor.close();
     }
+
+
+
+
 
 }

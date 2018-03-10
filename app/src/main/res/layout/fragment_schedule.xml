@@ -7,8 +7,83 @@
     tools:context="works.avijay.com.ipl2018.ScheduleFragment">
 
 
+    <HorizontalScrollView
+        android:background="@color/colorDarkText"
+        android:scrollbars="none"
+        android:id="@+id/teamsSort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_margin="8dp"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+
+                android:layout_margin="8dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:id="@+id/team_rcb"
+                android:src="@drawable/rcb_disselected"
+                />
+            <ImageView
+                android:layout_margin="8dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:id="@+id/team_csk"
+                android:src="@drawable/csk_disselected"
+                />
+            <ImageView
+                android:layout_margin="8dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:id="@+id/team_mi"
+                android:src="@drawable/mi_disselected"
+                />
+            <ImageView
+                android:layout_margin="8dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:id="@+id/team_kkr"
+                android:src="@drawable/kkr_disselected"
+                />
+            <ImageView
+                android:layout_margin="8dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:id="@+id/team_k11p"
+                android:src="@drawable/k11p_disselected"
+                />
+            <ImageView
+                android:layout_margin="8dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:id="@+id/team_dd"
+                android:src="@drawable/dd_disselected"
+                />
+            <ImageView
+                android:layout_margin="8dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:id="@+id/team_rr"
+                android:src="@drawable/rr_disselected"
+                />
+            <ImageView
+                android:layout_margin="8dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:id="@+id/team_srh"
+                android:src="@drawable/srh_disselected"
+                />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+
 
         <ListView
+            android:layout_below="@id/teamsSort"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/scheduleList"
