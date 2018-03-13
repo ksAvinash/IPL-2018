@@ -21,7 +21,6 @@
             android:layout_height="wrap_content">
 
             <ImageView
-
                 android:layout_margin="8dp"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
@@ -82,7 +81,19 @@
 
 
 
-        <ListView
+    <com.cjj.MaterialRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/swipe_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:overlay="false"
+        app:wave_show="true"
+        android:layout_below="@+id/teamsSort"
+        app:wave_color="@color/colorPrimaryDark"
+        >
+
+    <ListView
             android:layout_below="@id/teamsSort"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -91,6 +102,6 @@
             android:scrollbars="none"
             />
 
-
+    </com.cjj.MaterialRefreshLayout>
 
 </RelativeLayout>

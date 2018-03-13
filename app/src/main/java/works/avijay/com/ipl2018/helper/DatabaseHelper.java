@@ -172,9 +172,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor getAllTeamStats(){
         SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery("select * from "+TABLE_TEAMS+" order by "+TEAM_FAN_COUNT+" desc;",null);
+
     }
 
 
+    public void deleteTableSchedule(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("drop table if exists "+TABLE_SCHEDULE);
+        db.close();
+    }
+
+
+    public void createTableSchedule(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String create_schedule_table = "create table "+TABLE_SCHEDULE+
+                " ("+SCHEDULE_MATCH_ID+" number primary key, "+SCHEDULE_MATCH_DATE+
+                " text, "+SCHEDULE_MATCH_TEAM1+" text, "+SCHEDULE_MATCH_TEAM2+" text, "+SCHEDULE_MATCH_TIME+
+                " text, "+SCHEDULE_MATCH_VENUE+" text)";
+        db.execSQL(create_schedule_table);
+        db.close();
+    }
 
     public void insertIntoSchedule(int match_id, String date, String team1, String team2, String time, String venue){
         SQLiteDatabase db = this.getWritableDatabase();

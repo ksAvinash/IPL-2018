@@ -2,23 +2,27 @@ package works.avijay.com.ipl2018;
 
 import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,15 +41,21 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -68,6 +78,7 @@ public class MainActivity extends AppCompatActivity
     float ads_value;
     SharedPreferences sharedPreferences;
     View view;
+    boolean doubleBackToExitPressedOnce = false;
 
 
 
@@ -143,6 +154,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+
     public void startCountDown(){
         Date date2 = new Date();
         Date date1 = new Date(118, 3, 7, 20, 0);
@@ -156,6 +168,7 @@ public class MainActivity extends AppCompatActivity
             }
         }, 1000);
     }
+
 
     private void loadCards(int position) {
         cardsAdapter.clear();
@@ -176,6 +189,7 @@ public class MainActivity extends AppCompatActivity
 
         displayCards(position);
     }
+
 
     public void displayCards(int position){
         ArrayAdapter<cards_adapter> adapter = new myCardsAdapterClass();
@@ -201,7 +215,9 @@ public class MainActivity extends AppCompatActivity
             }
             final cards_adapter current = cardsAdapter.get(position);
 
-            ImageView card_image = itemView.findViewById(R.id.card_image);
+
+            final CardView card_view = itemView.findViewById(R.id.card_view);
+            final ImageView card_image = itemView.findViewById(R.id.card_image);
             TextView card_description = itemView.findViewById(R.id.card_description);
             TextView like_points = itemView.findViewById(R.id.like_points);
             TextView dislike_points = itemView.findViewById(R.id.dislike_points);
@@ -209,9 +225,13 @@ public class MainActivity extends AppCompatActivity
             final LikeButton dislike_icon = itemView.findViewById(R.id.dislike_icon);
             TextView skip_card = itemView.findViewById(R.id.skip_card);
             LikeButton heart_icon = itemView.findViewById(R.id.heart_icon);
+            ImageView share_card = itemView.findViewById(R.id.share_card);
+
 
             if(current.getCard_type().equals("card")){
                 card_image.setAlpha((float)0.85);
+
+                heart_icon.setEnabled(false);
                 heart_icon.setVisibility(View.GONE);
 
                 like_icon.setVisibility(View.VISIBLE);
@@ -224,6 +244,7 @@ public class MainActivity extends AppCompatActivity
                 like_points.setText(current.getCard_approved()+"");
                 dislike_points.setText(current.getCard_disapproved()+"");
 
+
                 like_icon.setOnLikeListener(new OnLikeListener() {
                     @Override
                     public void liked(LikeButton likeButton) {
@@ -232,6 +253,7 @@ public class MainActivity extends AppCompatActivity
 
                         DatabaseHelper helper = new DatabaseHelper(context);
                         helper.setCardAsSeen(current.getCard_id(), 1, current.getCard_approved());
+
 
                         new Handler().postDelayed(new Runnable() {
                             @Override
@@ -272,10 +294,10 @@ public class MainActivity extends AppCompatActivity
                 });
 
 
-
             }else{
                 card_image.setAlpha((float)1.0);
 
+                heart_icon.setEnabled(true);
                 heart_icon.setVisibility(View.VISIBLE);
 
                 like_icon.setEnabled(false);
@@ -283,7 +305,7 @@ public class MainActivity extends AppCompatActivity
 
                 dislike_icon.setVisibility(View.GONE);
                 like_icon.setVisibility(View.GONE);
-                dislike_points.setText("");
+
                 card_description.setText("");
                 like_points.setText(current.getCard_approved()+"");
                 dislike_points.setText("");
@@ -325,6 +347,7 @@ public class MainActivity extends AppCompatActivity
 
 
 
+
             skip_card.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -333,6 +356,59 @@ public class MainActivity extends AppCompatActivity
                     loadCards(position);
                 }
             });
+
+
+
+            share_card.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+
+                    //take screenshot of the current card
+                    card_view.setDrawingCacheEnabled(true);
+                    Bitmap bitmap = Bitmap.createBitmap(card_view.getDrawingCache());
+                    card_view.setDrawingCacheEnabled(false);
+
+
+
+                    //store the card
+                    File file = null;
+                    if(bitmap != null){
+                        final String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Screenshots";
+                        File dir = new File(dirPath);
+                        if(!dir.exists())
+                            dir.mkdirs();
+                        file = new File(dirPath, current.getCard_id()+".jpg");
+                        try {
+                            FileOutputStream fOut = new FileOutputStream(file);
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+                            fOut.flush();
+                            fOut.close();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+
+                    //share card
+                    Uri uri = Uri.fromFile(file);
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_SEND);
+                    intent.setType("image/jpg");
+                    String str = "https://play.google.com/store/apps/details?id=" + getPackageName();
+                    intent.putExtra(android.content.Intent.EXTRA_TEXT, "Track-Support-Follow all of IPL 2018 in one app!\n\nDownload IPL 2018:\n"+str);
+                    intent.putExtra(Intent.EXTRA_STREAM, uri);
+                    try {
+                        startActivity(Intent.createChooser(intent, "Share Card"));
+                    } catch (ActivityNotFoundException e) {
+                        Toast.makeText(context, "No App Available", Toast.LENGTH_SHORT).show();
+                    }
+
+
+                }
+            });
+
+
 
             return itemView;
         }
@@ -344,9 +420,22 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if(doubleBackToExitPressedOnce)
+                super.onBackPressed();
+
+            this.doubleBackToExitPressedOnce = true;
+            Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    doubleBackToExitPressedOnce=false;
+                }
+            }, 1000);
+
         }
     }
+
 
 
     @Override
@@ -394,6 +483,8 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -402,6 +493,8 @@ public class MainActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -494,6 +587,8 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 
     private void rateapp() {
         Uri uri = Uri.parse("market://details?id=" + context.getPackageName());

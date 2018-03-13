@@ -37,7 +37,7 @@
         <item
             android:id="@+id/nav_match_updates"
             android:icon="@drawable/nav_match_highlights"
-            android:title="Match Updates" />
+            android:title="Match Highlights" />
 
     </group>
 

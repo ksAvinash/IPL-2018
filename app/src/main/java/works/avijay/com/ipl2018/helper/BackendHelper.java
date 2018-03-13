@@ -17,6 +17,7 @@ import java.net.URL;
 
 import works.avijay.com.ipl2018.PreviousCards;
 import works.avijay.com.ipl2018.R;
+import works.avijay.com.ipl2018.ScheduleFragment;
 import works.avijay.com.ipl2018.TeamsStatsFragment;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -130,9 +131,9 @@ public class BackendHelper {
         }
     }
 
-    public static class fetch_schedule extends AsyncTask<Context, String, String> {
+    public static class fetch_schedule extends AsyncTask<Object, String, String> {
         Context context;
-
+        boolean stoprefresh;
         @Override
         protected void onPostExecute(final String str) {
             super.onPostExecute(str);
@@ -169,14 +170,18 @@ public class BackendHelper {
                 }).start();
 
 
+                if(stoprefresh)
+                    ScheduleFragment.populateData();
+
 
 
             }
         }
 
         @Override
-        protected String doInBackground(Context... contexts) {
-            context = (Context) contexts[0];
+        protected String doInBackground(Object... objects) {
+            context = (Context) objects[0];
+            stoprefresh = (boolean) objects[1];
 
             try{
                 URL url = new URL(context.getResources().getString(R.string.backend_fetch_data));

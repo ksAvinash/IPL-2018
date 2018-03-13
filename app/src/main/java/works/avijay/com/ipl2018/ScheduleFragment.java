@@ -55,7 +55,7 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
     ImageView team_rcb, team_csk, team_srh, team_rr, team_kkr, team_k11p, team_mi, team_dd ;
     InterstitialAd interstitialAd ;
     float ads_value;
-
+    static MaterialRefreshLayout materialRefreshLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,8 +68,34 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
 
 
         showAd();
+
+
+        materialRefreshLayout.setMaterialRefreshListener(new MaterialRefreshListener() {
+            @Override
+            public void onRefresh(final MaterialRefreshLayout materialRefreshLayout) {
+                if(isNetworkConnected()){
+                    //delete and recreate the schedule table
+                    helper.deleteTableSchedule();
+                    helper.createTableSchedule();
+
+                    //fetch the data from the backend
+                    BackendHelper.fetch_schedule fetch_schedule = new BackendHelper.fetch_schedule();
+                    fetch_schedule.execute(context, true);
+                }else {
+                    Snackbar.make(view, "Oops, No Internet connection!", Snackbar.LENGTH_SHORT)
+                            .setAction("Action", null).show();
+                    if(materialRefreshLayout.isShown())
+                        materialRefreshLayout.finishRefresh();
+                }
+            }
+        });
+
+
         return view;
     }
+
+
+
 
 
     private void showAd() {
@@ -114,7 +140,7 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
         team_srh = view.findViewById(R.id.team_srh);
         team_k11p = view.findViewById(R.id.team_k11p);
         team_dd = view.findViewById(R.id.team_dd);
-
+        materialRefreshLayout = view.findViewById(R.id.swipe_refresh);
 
         team_csk.setOnClickListener(this);
         team_rcb.setOnClickListener(this);
@@ -130,6 +156,8 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
 
     public static void populateData(){
         scheduleAdapter.clear();
+            if(materialRefreshLayout.isShown())
+                materialRefreshLayout.finishRefresh();
 
         Cursor cursor = helper.getAllSchedule();
         while (cursor.moveToNext()){

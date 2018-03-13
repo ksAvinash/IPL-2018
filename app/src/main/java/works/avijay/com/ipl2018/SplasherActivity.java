@@ -60,7 +60,7 @@ public class SplasherActivity extends AppCompatActivity {
             if(isNetworkConnected()){
 
                 BackendHelper.fetch_schedule fetch_schedule = new BackendHelper.fetch_schedule();
-                fetch_schedule.execute(context);
+                fetch_schedule.execute(context, false);
 
                 BackendHelper.fetch_team_stats fetch_team_stats = new BackendHelper.fetch_team_stats();
                 fetch_team_stats.execute(context, true, false);
@@ -81,8 +81,6 @@ public class SplasherActivity extends AppCompatActivity {
                 BackendHelper.fetch_cards fetch_cards = new BackendHelper.fetch_cards();
                 fetch_cards.execute(context, false);
 
-                BackendHelper.fetch_team_stats fetch_team_stats = new BackendHelper.fetch_team_stats();
-                fetch_team_stats.execute(context, false, false);
 
                 BackendHelper.fetch_setting fetch_setting = new BackendHelper.fetch_setting();
                 fetch_setting.execute(context, "ads");
