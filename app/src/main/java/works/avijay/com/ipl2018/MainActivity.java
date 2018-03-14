@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -57,7 +58,6 @@ import works.avijay.com.ipl2018.helper.cards_adapter;
 
 
 
-
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -74,7 +74,6 @@ public class MainActivity extends AppCompatActivity
     boolean doubleBackToExitPressedOnce = false;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +88,9 @@ public class MainActivity extends AppCompatActivity
         view = findViewById(android.R.id.content);
 
 
+        //allow sharing cards
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
 
 
         FloatingActionButton fab =  findViewById(R.id.fab);
@@ -388,8 +390,8 @@ public class MainActivity extends AppCompatActivity
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_SEND);
                     intent.setType("image/jpeg");
-                    //String str = "https://play.google.com/store/apps/details?id=" + getPackageName();
-//                    intent.putExtra(android.content.Intent.EXTRA_TEXT, "Track-Support-Follow all of IPL 2018 in one app!\n\nDownload IPL 2018:\n"+str);
+                    String str = "https://play.google.com/store/apps/details?id=" + getPackageName();
+                    intent.putExtra(android.content.Intent.EXTRA_TEXT, "Track-Support-Follow all of IPL 2018 in one app!\n\nDownload IPL 2018:\n"+str);
                     intent.putExtra(Intent.EXTRA_STREAM, uri);
                     try {
                         startActivity(Intent.createChooser(intent, "Share Card"));
@@ -422,7 +424,7 @@ public class MainActivity extends AppCompatActivity
                     super.onBackPressed();
 
                 this.doubleBackToExitPressedOnce = true;
-                Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Double tap BACK to exit", Toast.LENGTH_SHORT).show();
 
                 new Handler().postDelayed(new Runnable() {
                     @Override

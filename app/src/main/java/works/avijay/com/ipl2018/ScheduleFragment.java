@@ -155,17 +155,23 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
         scheduleAdapter.clear();
             if(materialRefreshLayout.isShown())
                 materialRefreshLayout.finishRefresh();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Cursor cursor = helper.getAllSchedule();
+                while (cursor.moveToNext()){
+                    scheduleAdapter.add(new schedule_list_adapter(
+                            cursor.getInt(0), cursor.getString(1),
+                            cursor.getString(2), cursor.getString(3),
+                            cursor.getString(4), cursor.getString(5)
+                    ));
+                }
+                cursor.close();
+                displayList();
+            }
+        }, 50);
 
-        Cursor cursor = helper.getAllSchedule();
-        while (cursor.moveToNext()){
-            scheduleAdapter.add(new schedule_list_adapter(
-                    cursor.getInt(0), cursor.getString(1),
-                    cursor.getString(2), cursor.getString(3),
-                    cursor.getString(4), cursor.getString(5)
-            ));
-        }
-        cursor.close();
-        displayList();
+
     }
 
 
