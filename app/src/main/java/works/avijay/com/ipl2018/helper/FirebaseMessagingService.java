@@ -15,8 +15,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import javax.net.ssl.HttpsURLConnection;
-
 import works.avijay.com.ipl2018.MainActivity;
 import works.avijay.com.ipl2018.R;
 
