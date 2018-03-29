@@ -4,17 +4,84 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="works.avijay.com.ipl2018.PointsFragment"
-    android:background="@color/colorBackground"
+    android:background="@color/colorWhite"
     >
+        <com.cjj.MaterialRefreshLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/swipe_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:overlay="false"
+            app:wave_show="true"
+            app:wave_color="@color/colorPrimaryDark"
+            >
+                <android.support.design.widget.CoordinatorLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="20dp"
+                    >
+                        <works.avijay.com.ipl2018.fonts.description_font
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Team"
+                            android:textSize="18sp"
+                            android:textColor="@color/colorAccent"
+                            android:layout_gravity="start|top"
+                            />
 
-    <works.avijay.com.ipl2018.fonts.description_font
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textColor="@color/colorDarkText"
-        android:textSize="20sp"
-        android:text="Coming soon..."
-        />
+                        <works.avijay.com.ipl2018.fonts.description_font
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rate"
+                            android:textSize="18sp"
+                            android:textColor="@color/colorAccent"
+                            android:layout_gravity="end|top"
+                            />
+
+                        <works.avijay.com.ipl2018.fonts.description_font
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Points"
+                            android:textSize="18sp"
+                            android:textColor="@color/colorAccent"
+                            android:layout_gravity="end|top"
+                            android:layout_marginRight="70dp"
+                            />
+
+                        <works.avijay.com.ipl2018.fonts.description_font
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rem"
+                            android:textSize="18sp"
+                            android:textColor="@color/colorAccent"
+                            android:layout_gravity="end|top"
+                            android:layout_marginRight="140dp"
+                            />
+
+                        <works.avijay.com.ipl2018.fonts.description_font
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Played"
+                            android:textSize="17sp"
+                            android:textColor="@color/colorAccent"
+                            android:layout_gravity="end|top"
+                            android:layout_marginRight="210dp"
+                            />
+
+                        <ListView
+                            android:layout_marginTop="30sp"
+                            android:id="@+id/pointsList"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scrollbars="none"
+                            />
+                </android.support.design.widget.CoordinatorLayout>
+        </com.cjj.MaterialRefreshLayout>
 
 
-</android.support.design.widget.CoordinatorLayout>
+
+    </android.support.design.widget.CoordinatorLayout>
+
+
+

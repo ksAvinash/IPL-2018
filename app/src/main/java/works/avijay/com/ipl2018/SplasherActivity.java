@@ -53,7 +53,7 @@ public class SplasherActivity extends AppCompatActivity {
                 fetch_schedule.execute(context, false);
 
                 BackendHelper.fetch_team_stats fetch_team_stats = new BackendHelper.fetch_team_stats();
-                fetch_team_stats.execute(context, true, false);
+                fetch_team_stats.execute(context, true, false, false);
 
                 BackendHelper.fetch_players fetch_players = new BackendHelper.fetch_players();
                 fetch_players.execute(context);

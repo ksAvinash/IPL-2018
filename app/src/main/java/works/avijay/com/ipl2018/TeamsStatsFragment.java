@@ -74,7 +74,7 @@ public class TeamsStatsFragment extends Fragment{
              public void onRefresh(final MaterialRefreshLayout materialRefreshLayout) {
                 if(isNetworkConnected()){
                     BackendHelper.fetch_team_stats fetch_team_stats = new BackendHelper.fetch_team_stats();
-                    fetch_team_stats.execute(context, false, true);
+                    fetch_team_stats.execute(context, false, true, false);
                 }else {
                     Snackbar.make(view, "Oops, No Internet connection!", Snackbar.LENGTH_SHORT)
                                 .setAction("Action", null).show();

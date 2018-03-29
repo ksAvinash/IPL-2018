@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import works.avijay.com.ipl2018.PointsFragment;
 import works.avijay.com.ipl2018.PreviousCards;
 import works.avijay.com.ipl2018.R;
 import works.avijay.com.ipl2018.ScheduleFragment;
@@ -33,7 +34,7 @@ public class BackendHelper {
     public static class fetch_team_stats extends AsyncTask<Object, String, String> {
         Context context;
         boolean insert;
-        boolean stoprefresh;
+        boolean stoprefreshTeamsFragment, stoprefreshPointsFragment;
         @Override
         protected void onPostExecute(final String str) {
             super.onPostExecute(str);
@@ -85,8 +86,10 @@ public class BackendHelper {
                     }).start();
 
                     //stop the refreshing
-                    if(stoprefresh)
+                    if(stoprefreshTeamsFragment)
                         TeamsStatsFragment.populateData();
+                    else if(stoprefreshPointsFragment)
+                        PointsFragment.populateData();
 
             }
         }
@@ -95,8 +98,8 @@ public class BackendHelper {
         protected String doInBackground(Object... objects) {
             context = (Context) objects[0];
             insert = (boolean) objects[1];
-            stoprefresh = (boolean) objects[2];
-
+            stoprefreshTeamsFragment = (boolean) objects[2];
+            stoprefreshPointsFragment = (boolean) objects[3];
             try{
                 URL url = new URL(context.getResources().getString(R.string.backend_fetch_data));
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();

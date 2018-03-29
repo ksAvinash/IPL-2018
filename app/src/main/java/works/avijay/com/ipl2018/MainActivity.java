@@ -1,13 +1,16 @@
 package works.avijay.com.ipl2018;
 
+import android.Manifest;
 import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -15,6 +18,7 @@ import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -113,6 +117,8 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
 
 
         new Handler().postDelayed(new Runnable() {
@@ -357,47 +363,98 @@ public class MainActivity extends AppCompatActivity
             share_card.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+                        {
+                            //take screenshot of the current card
+                            card_view.setDrawingCacheEnabled(true);
+                            Bitmap bitmap = Bitmap.createBitmap(card_view.getDrawingCache());
+                            card_view.setDrawingCacheEnabled(false);
 
 
-                    //take screenshot of the current card
-                    card_view.setDrawingCacheEnabled(true);
-                    Bitmap bitmap = Bitmap.createBitmap(card_view.getDrawingCache());
-                    card_view.setDrawingCacheEnabled(false);
+
+                            //store the card
+                            File file = null;
+                            if(bitmap != null){
+                                final String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Screenshots";
+                                File dir = new File(dirPath);
+                                if(!dir.exists())
+                                    dir.mkdirs();
+                                file = new File(dirPath, current.getCard_id()+".jpg");
+                                try {
+                                    FileOutputStream fOut = new FileOutputStream(file);
+                                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+                                    fOut.flush();
+                                    fOut.close();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+
+                            //share card
+                            Uri uri = Uri.fromFile(file);
+                            Intent intent = new Intent();
+                            intent.setAction(Intent.ACTION_SEND);
+                            intent.setType("image/jpeg");
+                            String str = "https://play.google.com/store/apps/details?id=" + getPackageName();
+                            intent.putExtra(android.content.Intent.EXTRA_TEXT, "What do you say ?\n\nDownload IPL 2018:\n"+str);
+                            intent.putExtra(Intent.EXTRA_STREAM, uri);
+                            try {
+                                startActivity(Intent.createChooser(intent, "Share Card"));
+                            } catch (ActivityNotFoundException e) {
+                                Toast.makeText(context, "No App Available", Toast.LENGTH_SHORT).show();
+                            }
+                        }else {
+                            ActivityCompat.requestPermissions(MainActivity.this,
+                                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 909);
+                            Toast.makeText(context, "Enable Storage permissions!", Toast.LENGTH_SHORT).show();
+
+
+                        }
+                    }else {
+                        //take screenshot of the current card
+                        card_view.setDrawingCacheEnabled(true);
+                        Bitmap bitmap = Bitmap.createBitmap(card_view.getDrawingCache());
+                        card_view.setDrawingCacheEnabled(false);
 
 
 
-                    //store the card
-                    File file = null;
-                    if(bitmap != null){
-                        final String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Screenshots";
-                        File dir = new File(dirPath);
-                        if(!dir.exists())
-                            dir.mkdirs();
-                        file = new File(dirPath, current.getCard_id()+".jpg");
+                        //store the card
+                        File file = null;
+                        if(bitmap != null){
+                            final String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Screenshots";
+                            File dir = new File(dirPath);
+                            if(!dir.exists())
+                                dir.mkdirs();
+                            file = new File(dirPath, current.getCard_id()+".jpg");
+                            try {
+                                FileOutputStream fOut = new FileOutputStream(file);
+                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+                                fOut.flush();
+                                fOut.close();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+
+                        //share card
+                        Uri uri = Uri.fromFile(file);
+                        Intent intent = new Intent();
+                        intent.setAction(Intent.ACTION_SEND);
+                        intent.setType("image/jpeg");
+                        String str = "https://play.google.com/store/apps/details?id=" + getPackageName();
+                        intent.putExtra(android.content.Intent.EXTRA_TEXT, "What do you say ?\n\nDownload IPL 2018:\n"+str);
+                        intent.putExtra(Intent.EXTRA_STREAM, uri);
                         try {
-                            FileOutputStream fOut = new FileOutputStream(file);
-                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
-                            fOut.flush();
-                            fOut.close();
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                            startActivity(Intent.createChooser(intent, "Share Card"));
+                        } catch (ActivityNotFoundException e) {
+                            Toast.makeText(context, "No App Available", Toast.LENGTH_SHORT).show();
                         }
                     }
 
 
-                    //share card
-                    Uri uri = Uri.fromFile(file);
-                    Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_SEND);
-                    intent.setType("image/jpeg");
-                    String str = "https://play.google.com/store/apps/details?id=" + getPackageName();
-                    intent.putExtra(android.content.Intent.EXTRA_TEXT, "Track-Support-Follow all of IPL 2018 in one app!\n\nDownload IPL 2018:\n"+str);
-                    intent.putExtra(Intent.EXTRA_STREAM, uri);
-                    try {
-                        startActivity(Intent.createChooser(intent, "Share Card"));
-                    } catch (ActivityNotFoundException e) {
-                        Toast.makeText(context, "No App Available", Toast.LENGTH_SHORT).show();
-                    }
 
 
                 }
@@ -576,10 +633,13 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case R.id.nav_live_scores:
-                LiveUpdatesFragment liveUpdatesFragment = new LiveUpdatesFragment();
-                fragmentManager = getSupportFragmentManager();
-                fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.main_activity_content, liveUpdatesFragment).commit();
+//                LiveUpdatesFragment liveUpdatesFragment = new LiveUpdatesFragment();
+//                fragmentManager = getSupportFragmentManager();
+//                fragmentTransaction = fragmentManager.beginTransaction();
+//                fragmentTransaction.replace(R.id.main_activity_content, liveUpdatesFragment).commit();
+
+                intent = new Intent(MainActivity.this, LiveScores.class);
+                startActivity(intent);
                 break;
         }
 

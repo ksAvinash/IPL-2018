@@ -32,5 +32,6 @@
 
     <string name="admob_interstitial_id">ca-app-pub-9681985190789334/8358998025</string>
     <string name="title_activity_google_sign_in">GoogleSignInActivity</string>
+    <string name="title_activity_live_scores">LiveScores</string>
 
 </resources>

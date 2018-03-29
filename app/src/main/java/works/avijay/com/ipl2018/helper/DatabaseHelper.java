@@ -171,9 +171,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor getAllTeamStats(){
         SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery("select * from "+TABLE_TEAMS+" order by "+TEAM_FAN_COUNT+" desc;",null);
-
     }
 
+
+    public Cursor getAllTeamPoints(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery("select * from "+TABLE_TEAMS+" order by "+TEAM_POINTS+" desc, "+TEAM_RATE+" desc",null);
+    }
 
     public void deleteTableSchedule(){
         SQLiteDatabase db = this.getWritableDatabase();

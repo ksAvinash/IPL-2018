@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    >
+
+
+
+        <works.avijay.com.ipl2018.fonts.description_font
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="team1"
+            android:id="@+id/points_team_name"
+            android:layout_gravity="start|center"
+            android:textSize="16sp"
+            />
+
+        <works.avijay.com.ipl2018.fonts.description_font
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="9.67"
+            android:layout_gravity="end|center"
+            android:id="@+id/points_rate"
+            android:textSize="16sp"
+            android:layout_marginRight="5dp"
+            />
+
+        <works.avijay.com.ipl2018.fonts.description_font
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10"
+            android:layout_gravity="end|center"
+            android:id="@+id/points_points"
+            android:layout_marginRight="80dp"
+            android:textSize="16sp"
+            />
+
+        <works.avijay.com.ipl2018.fonts.description_font
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3"
+            android:layout_gravity="end|center"
+            android:id="@+id/points_remaining_matches"
+            android:layout_marginRight="150dp"
+            android:textSize="16sp"
+            />
+
+        <works.avijay.com.ipl2018.fonts.description_font
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="11"
+            android:layout_gravity="end|center"
+            android:id="@+id/points_played_matches"
+            android:layout_marginRight="220dp"
+            android:textSize="16sp"
+            />
+
+</android.support.v7.widget.CardView>
