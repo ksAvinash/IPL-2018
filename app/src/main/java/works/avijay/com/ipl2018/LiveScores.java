@@ -23,7 +23,6 @@ public class LiveScores extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         initializeViews();
-
     }
 
 
@@ -37,4 +36,10 @@ public class LiveScores extends AppCompatActivity {
         matchesTab.setupWithViewPager(matchesPager);
     }
 
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }

@@ -13,11 +13,21 @@ import android.view.WindowManager;
 
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Vector;
 
 import works.avijay.com.ipl2018.helper.BackendHelper;
+import works.avijay.com.ipl2018.helper.Cricbuzz;
 import works.avijay.com.ipl2018.helper.DatabaseHelper;
 
 public class SplasherActivity extends AppCompatActivity {
@@ -38,6 +48,46 @@ public class SplasherActivity extends AppCompatActivity {
         FirebaseMessaging.getInstance().subscribeToTopic("ipl_all_users");
 
 
+
+        if(isNetworkConnected()){
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Cricbuzz cricbuzz = new Cricbuzz();
+                        Vector<HashMap<String,String>> matches = cricbuzz.matches();
+                        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+                        String data = gson.toJson(matches);
+                        try {
+                            JSONArray matches_list = new JSONArray(data);
+                            int match_id = 1;
+                            for(int i=0; i<matches_list.length(); i++){
+                                JSONObject match = matches_list.getJSONObject(i);
+                                String mchstate = match.getString("mchstate");
+                                String match_type = match.getString("type");
+
+                                //CHANGE TO IPL DURING 3.0 RELEASE
+                                if(mchstate.equals("inprogress") && match_type.equals("TEST")){
+                                    Log.d("VALID MATCH", match.getInt("id")+"");
+                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                    editor.putInt("match"+match_id, match.getInt("id"));
+                                    editor.commit();
+                                    match_id++;
+                                }
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+
+        }
 
 
 
@@ -97,6 +147,8 @@ public class SplasherActivity extends AppCompatActivity {
 
 
     }
+
+
 
 
     private boolean isNetworkConnected() {

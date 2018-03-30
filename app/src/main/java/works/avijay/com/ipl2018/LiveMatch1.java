@@ -1,7 +1,12 @@
 package works.avijay.com.ipl2018;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.cjj.MaterialRefreshLayout;
+import com.cjj.MaterialRefreshListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -36,84 +43,107 @@ public class LiveMatch1 extends Fragment {
 
     View view;
     TextView current_team, current_score, match_description,
-            batsman1_name, batsman1_balls, batsman1_4s, batsman1_6s, batsman1_sr,
-            batsman2_name, batsman2_balls, batsman2_4s, batsman2_6s, batsman2_sr;
+            batsman1_name, batsman1_balls, batsman1_4s, batsman1_6s, batsman1_sr, batsman1_runs,
+            batsman2_name, batsman2_balls, batsman2_4s, batsman2_6s, batsman2_sr, batsman2_runs;
+    Context context;
+    int match_id;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view =  inflater.inflate(R.layout.fragment_live_match1, container, false);
-
         initializeViews();
-        populateData();
+
+        if(isNetworkConnected())
+            new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                populateData();
+            }
+        }, 200);
 
         return view;
     }
 
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null;
+    }
+
+
     private void initializeViews() {
+        context = getActivity().getApplicationContext();
+
         match_description = view.findViewById(R.id.match_description);
         current_team = view.findViewById(R.id.current_team);
         current_score = view.findViewById(R.id.current_score);
 
         batsman1_name = view.findViewById(R.id.batsman1_name);
+        batsman1_runs = view.findViewById(R.id.batsman1_runs);
         batsman1_balls = view.findViewById(R.id.batsman1_balls);
         batsman1_4s = view.findViewById(R.id.batsman1_4s);
         batsman1_6s = view.findViewById(R.id.batsman1_6s);
         batsman1_sr = view.findViewById(R.id.batsman1_sr);
 
         batsman2_name = view.findViewById(R.id.batsman2_name);
+        batsman2_runs = view.findViewById(R.id.batsman2_runs);
         batsman2_balls = view.findViewById(R.id.batsman2_balls);
         batsman2_4s = view.findViewById(R.id.batsman2_4s);
         batsman2_6s = view.findViewById(R.id.batsman2_6s);
         batsman2_sr = view.findViewById(R.id.batsman2_sr);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences("ipl_sp", Context.MODE_PRIVATE);
+        match_id = sharedPreferences.getInt("match1", 0);
+
     }
 
 
 
-    private void populateData(){
-        try {
+private void populateData(){
+
+    try {
             Cricbuzz cricbuzz = new Cricbuzz();
-
-//            Vector<HashMap<String,String>> matches = cricbuzz.matches();
+            Map<String,Map> score = cricbuzz.livescore(match_id+"");
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-//            Log.d("MATCHES", matches.toString());
+            String data = gson.toJson(score);
 
-            Map<String,Map> score = cricbuzz.livescore("19872");
-            String json = gson.toJson(score);
-            JSONObject data = new JSONObject(json);
-            Log.d("MATCH1", data.toString());
-            JSONObject match_info = data.getJSONObject("matchinfo");
-            String ipl_check = match_info.getString("type");
+            JSONObject _data = new JSONObject(data);
+            JSONObject matchinfo = _data.getJSONObject("matchinfo");
+            match_description.setText(matchinfo.getString("mchdesc"));
 
-            if(ipl_check.equals("T20")){
-                String match_status = match_info.getString("mchstate");
-                //if(match_status.equals("inprogress")){
-                    match_description.setText(match_info.getString("mchdesc"));
+            JSONObject batting = _data.getJSONObject("batting");
+            JSONArray team = batting.getJSONArray("team");
+            JSONObject _team = team.getJSONObject(0);
+            current_team.setText(_team.getString("team"));
 
-                    JSONObject batting = data.getJSONObject("batting");
-                    JSONArray team = batting.getJSONArray("team");
-                    JSONArray live_score = batting.getJSONArray("score");
+            JSONArray _score = batting.getJSONArray("score");
+            JSONObject __score = _score.getJSONObject(0);
+            current_score.setText(__score.getString("runs")+"-"+__score.getString("wickets")+" ("+__score.getString("overs")+")");
 
-                    JSONObject _current_team = team.getJSONObject(0);
-                    current_team.setText(_current_team.getString("team"));
+            JSONArray batsmen = batting.getJSONArray("batsman");
+            JSONObject bat1 = batsmen.getJSONObject(0);
+            batsman1_name.setText(bat1.getString("name"));
+            batsman1_4s.setText(bat1.getString("fours"));
+            batsman1_6s.setText(bat1.getString("six"));
+            batsman1_balls.setText(bat1.getString("balls"));
+            batsman1_runs.setText(bat1.getString("runs"));
+            double bat1_sr = (float)Integer.parseInt(bat1.getString("runs")) * 100 / Integer.parseInt(bat1.getString("balls"));
+            batsman1_sr.setText(bat1_sr+"");
 
-                    JSONObject _current_score = live_score.getJSONObject(0);
-                    current_score.setText(_current_score.getString("runs")+" - "+_current_score.getString("wickets")+"  ("+_current_score.getString("overs")+")");
-//                }else{
-//                    Log.d("MATCH1", "NO ACTIVE MATCHES");
-//                }
-            }else{
-                Log.d("MATCH1", "NO ACTIVE MATCHES");
+            JSONObject bat2 = batsmen.getJSONObject(1);
+            batsman2_name.setText(bat2.getString("name"));
+            batsman2_4s.setText(bat2.getString("fours"));
+            batsman2_6s.setText(bat2.getString("six"));
+            batsman2_balls.setText(bat2.getString("balls"));
+            batsman2_runs.setText(bat2.getString("runs"));
+            double bat2_sr = (float)Integer.parseInt(bat2.getString("runs")) * 100 / Integer.parseInt(bat2.getString("balls"));
+            batsman2_sr.setText(bat2_sr+"");
+
+            } catch (IOException e){
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
 
-
-        } catch (IOException e) {
-            Log.d("MATCH1", e.toString());
-            e.printStackTrace();
-        } catch (JSONException e) {
-            Log.d("MATCH1", e.toString());
-            e.printStackTrace();
-        }
     }
-
 }

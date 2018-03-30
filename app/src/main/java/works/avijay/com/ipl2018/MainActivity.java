@@ -625,12 +625,6 @@ public class MainActivity extends AppCompatActivity
                 fragmentTransaction.replace(R.id.main_activity_content, previousCards).addToBackStack(null).commit();
                 break;
 
-            case R.id.nav_match_updates:
-                MatchHighlightsFragment matchHighlightsFragment = new MatchHighlightsFragment();
-                fragmentManager = getSupportFragmentManager();
-                fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.main_activity_content, matchHighlightsFragment).commit();
-                break;
 
             case R.id.nav_live_scores:
 //                LiveUpdatesFragment liveUpdatesFragment = new LiveUpdatesFragment();

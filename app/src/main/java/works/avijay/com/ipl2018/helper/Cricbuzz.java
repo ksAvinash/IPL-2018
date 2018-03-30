@@ -25,7 +25,7 @@ public class Cricbuzz {
 
     public Document getxml(final String url) throws IOException {
         try {
-            new fetch_cricbuzz().execute().get();
+            new fetch_cricbuzz().execute(url).get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -34,11 +34,11 @@ public class Cricbuzz {
         return doc;
     }
 
-    public static class fetch_cricbuzz extends AsyncTask<Void, Void, Void> {
+    public static class fetch_cricbuzz extends AsyncTask<String, Void, Void> {
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected Void doInBackground(String... strings) {
             try {
-                 doc = Jsoup.connect("http://synd.cricbuzz.com/j2me/1.0/livematches.xml").get();
+                 doc = Jsoup.connect(strings[0]).get();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -84,14 +84,13 @@ public class Cricbuzz {
         try {
             Document doc = getxml(url);
             String query = String.format("match[id = %s]", mid);
-            //Log.d("DOCUMENT", doc.toString());
 
             Element match = doc.select(query).get(0);
-            //Log.d("MATCH", match.toString());
             score.put("matchinfo",matchinfo(match));
 
             String commurl = match.attr("datapath") + "commentary.xml";
             doc = getxml(commurl);
+
             Element mscr = doc.select("mscr").get(0);
             Element batting = mscr.select("bttm").get(0);
             Element bowling = mscr.select("blgtm").get(0);
