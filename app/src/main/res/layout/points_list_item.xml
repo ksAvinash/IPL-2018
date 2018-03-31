@@ -2,7 +2,7 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="50dp"
     >
         <works.avijay.com.ipl2018.fonts.description_font
             android:layout_width="wrap_content"
@@ -11,6 +11,7 @@
             android:id="@+id/points_team_name"
             android:layout_gravity="start|center"
             android:textSize="16sp"
+            android:textColor="@color/colorDarkText"
             />
 
         <works.avijay.com.ipl2018.fonts.description_font
@@ -21,6 +22,7 @@
             android:id="@+id/points_rate"
             android:textSize="16sp"
             android:layout_marginRight="5dp"
+            android:textColor="@color/colorDarkText"
             />
 
         <works.avijay.com.ipl2018.fonts.description_font
@@ -31,6 +33,7 @@
             android:id="@+id/points_points"
             android:layout_marginRight="80dp"
             android:textSize="16sp"
+            android:textColor="@color/colorDarkText"
             />
 
         <works.avijay.com.ipl2018.fonts.description_font
@@ -41,6 +44,7 @@
             android:id="@+id/points_remaining_matches"
             android:layout_marginRight="150dp"
             android:textSize="16sp"
+            android:textColor="@color/colorDarkText"
             />
 
         <works.avijay.com.ipl2018.fonts.description_font
@@ -51,6 +55,7 @@
             android:id="@+id/points_played_matches"
             android:layout_marginRight="220dp"
             android:textSize="16sp"
+            android:textColor="@color/colorDarkText"
             />
 
 </android.support.design.widget.CoordinatorLayout>

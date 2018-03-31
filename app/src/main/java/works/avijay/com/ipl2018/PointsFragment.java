@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -49,6 +50,7 @@ public class PointsFragment extends Fragment {
     private static  ListView pointsList;
     private static List<points_adapter> pointsAdapter = new ArrayList<>();
     private static MaterialRefreshLayout materialRefreshLayout;
+    static DatabaseHelper helper;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -56,7 +58,13 @@ public class PointsFragment extends Fragment {
 
         initializeViews();
 
-        populateData();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                populateData();
+            }
+        }, 50);
 
         materialRefreshLayout.setMaterialRefreshListener(new MaterialRefreshListener() {
             @Override
@@ -87,7 +95,7 @@ public class PointsFragment extends Fragment {
         context = getActivity().getApplicationContext();
         pointsList = view.findViewById(R.id.pointsList);
         materialRefreshLayout = view.findViewById(R.id.swipe_refresh);
-
+        helper = new DatabaseHelper(context);
     }
 
     public static void populateData(){
@@ -96,7 +104,6 @@ public class PointsFragment extends Fragment {
         if(materialRefreshLayout.isShown())
             materialRefreshLayout.finishRefresh();
 
-        DatabaseHelper helper = new DatabaseHelper(context);
         Cursor cursor = helper.getAllTeamPoints();
         while (cursor.moveToNext()){
             pointsAdapter.add(new points_adapter(
@@ -107,6 +114,9 @@ public class PointsFragment extends Fragment {
                     cursor.getDouble(5) //rate
             ));
         }
+
+
+
 
         displayList();
     }
@@ -144,7 +154,7 @@ public class PointsFragment extends Fragment {
 
             switch (current.getTeam_name()){
                 case "KINGS XI PUNJAB":
-                        points_team_name.setText("K11P");
+                        points_team_name.setText("KXIP");
                     break;
 
                 case "CHENNAI SUPER KINGS":

@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
             android:textSize="16sp"
-            android:text="SKIP CARD"
+            android:text="NOT SURE"
             android:id="@+id/skip_card"
             android:textColor="@color/colorWhite"
             android:shadowColor="#000000"

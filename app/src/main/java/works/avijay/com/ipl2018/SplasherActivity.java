@@ -68,8 +68,8 @@ public class SplasherActivity extends AppCompatActivity {
                                 String mchstate = match.getString("mchstate");
                                 String match_type = match.getString("type");
 
-                                //CHANGE TO IPL DURING 3.0 RELEASE
-                                if(mchstate.equals("inprogress") && match_type.equals("TEST")){
+                                //CHANGE TO IPL DURING 3.0 RELEASE mchstate.equals("inprogress") &&
+                                if( match_type.equals("TEST")){
                                     Log.d("VALID MATCH", match.getInt("id")+"");
                                     SharedPreferences.Editor editor = sharedPreferences.edit();
                                     editor.putInt("match"+match_id, match.getInt("id"));
