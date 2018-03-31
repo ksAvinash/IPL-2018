@@ -35,6 +35,10 @@
             android:icon="@drawable/nav_live_scores"
             android:title="Live Scores" />
 
+        <item
+            android:id="@+id/nav_match_results"
+            android:icon="@drawable/nav_match_highlights"
+            android:title="Match Results" />
 
     </group>
 

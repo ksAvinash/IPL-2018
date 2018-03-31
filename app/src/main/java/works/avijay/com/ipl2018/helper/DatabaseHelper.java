@@ -35,6 +35,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String SCHEDULE_MATCH_TEAM2 = "team2";
     private static final String SCHEDULE_MATCH_TIME = "time";
     private static final String SCHEDULE_MATCH_VENUE = "venue";
+    private static final String SCHEDULE_MATCH_WIN_TEAM = "win_team";
+    private static final String SCHEDULE_MATCH_WIN_DESCRIPTION = "win_description";
+    private static final String SCHEDULE_MATCH_TEAM1_PREDICTIONS = "team1_predictions";
+    private static final String SCHEDULE_MATCH_TEAM2_PREDICTIONS = "team2_predictions";
+
 
     private static final String PLAYER_NAME = "player_name";
     private static final String PLAYER_BIDDING_PRICE = "player_bidding_price";
@@ -69,7 +74,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String create_schedule_table = "create table "+TABLE_SCHEDULE+
                 " ("+SCHEDULE_MATCH_ID+" number primary key, "+SCHEDULE_MATCH_DATE+
                 " text, "+SCHEDULE_MATCH_TEAM1+" text, "+SCHEDULE_MATCH_TEAM2+" text, "+SCHEDULE_MATCH_TIME+
-                " text, "+SCHEDULE_MATCH_VENUE+" text)";
+                " text, "+SCHEDULE_MATCH_VENUE+" text, "+SCHEDULE_MATCH_WIN_TEAM+" text, "+SCHEDULE_MATCH_WIN_DESCRIPTION+" text, " +
+                ""+SCHEDULE_MATCH_TEAM1_PREDICTIONS+" number, "+SCHEDULE_MATCH_TEAM2_PREDICTIONS+" number)";
         db.execSQL(create_schedule_table);
 
         String create_table_players = "create table "+TABLE_PLAYERS+" ("+PLAYER_NAME+" text primary key, "
@@ -191,12 +197,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String create_schedule_table = "create table "+TABLE_SCHEDULE+
                 " ("+SCHEDULE_MATCH_ID+" number primary key, "+SCHEDULE_MATCH_DATE+
                 " text, "+SCHEDULE_MATCH_TEAM1+" text, "+SCHEDULE_MATCH_TEAM2+" text, "+SCHEDULE_MATCH_TIME+
-                " text, "+SCHEDULE_MATCH_VENUE+" text)";
+                " text, "+SCHEDULE_MATCH_VENUE+" text, "+SCHEDULE_MATCH_WIN_TEAM+" text, "+SCHEDULE_MATCH_WIN_DESCRIPTION+" text, " +
+                ""+SCHEDULE_MATCH_TEAM1_PREDICTIONS+" number, "+SCHEDULE_MATCH_TEAM2_PREDICTIONS+" number)";
         db.execSQL(create_schedule_table);
         db.close();
     }
 
-    public void insertIntoSchedule(int match_id, String date, String team1, String team2, String time, String venue){
+    public void insertIntoSchedule(int match_id, String date, String team1, String team2, String time, String venue, String win_team, String win_description, int team1_predictions, int team2_predictions){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -206,6 +213,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(SCHEDULE_MATCH_TEAM2, team2);
         contentValues.put(SCHEDULE_MATCH_TIME, time);
         contentValues.put(SCHEDULE_MATCH_VENUE, venue);
+        contentValues.put(SCHEDULE_MATCH_WIN_TEAM, win_team);
+        contentValues.put(SCHEDULE_MATCH_WIN_DESCRIPTION, win_description);
+        contentValues.put(SCHEDULE_MATCH_TEAM1_PREDICTIONS, team1_predictions);
+        contentValues.put(SCHEDULE_MATCH_TEAM2_PREDICTIONS, team2_predictions);
+
         db.insert(TABLE_SCHEDULE, null, contentValues);
     }
 
@@ -236,10 +248,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery("select * from "+TABLE_SCHEDULE+" where "+SCHEDULE_MATCH_TEAM1+" = '"+team+"' or "+SCHEDULE_MATCH_TEAM2+" = '"+team+"' ;", null);
     }
 
+    public Cursor getMatchResultsByTeamName(String team){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery("select * from "+TABLE_SCHEDULE+" where "+SCHEDULE_MATCH_TEAM1+" = '"+team+"' or "+SCHEDULE_MATCH_TEAM2+" = '"+team+"' order by "+SCHEDULE_MATCH_ID+" desc;", null);
+    }
 
     public Cursor getAllSchedule(){
         SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery("select * from "+TABLE_SCHEDULE+" order by "+SCHEDULE_MATCH_ID+";", null);
+    }
+
+    public Cursor getAllMatchResults(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery("select * from "+TABLE_SCHEDULE+" order by "+SCHEDULE_MATCH_ID+" desc;", null);
     }
 
 

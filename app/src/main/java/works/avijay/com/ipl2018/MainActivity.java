@@ -627,13 +627,15 @@ public class MainActivity extends AppCompatActivity
 
 
             case R.id.nav_live_scores:
-//                LiveUpdatesFragment liveUpdatesFragment = new LiveUpdatesFragment();
-//                fragmentManager = getSupportFragmentManager();
-//                fragmentTransaction = fragmentManager.beginTransaction();
-//                fragmentTransaction.replace(R.id.main_activity_content, liveUpdatesFragment).commit();
-
                 intent = new Intent(MainActivity.this, LiveScores.class);
                 startActivity(intent);
+                break;
+
+            case R.id.nav_match_results:
+                MatchResultsFragment resultsFragment = new MatchResultsFragment();
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.main_activity_content, resultsFragment).addToBackStack(null).commit();
                 break;
         }
 

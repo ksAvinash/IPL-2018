@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import works.avijay.com.ipl2018.MatchResultsFragment;
 import works.avijay.com.ipl2018.PointsFragment;
 import works.avijay.com.ipl2018.PreviousCards;
 import works.avijay.com.ipl2018.R;
@@ -136,7 +137,7 @@ public class BackendHelper {
 
     public static class fetch_schedule extends AsyncTask<Object, String, String> {
         Context context;
-        boolean stoprefresh;
+        boolean stoprefreshSchedule, stoprefreshMatchResult;
         @Override
         protected void onPostExecute(final String str) {
             super.onPostExecute(str);
@@ -156,7 +157,8 @@ public class BackendHelper {
                                         JSONObject current = items.getJSONObject(i);
                                         helper.insertIntoSchedule(current.getInt("match_id"), current.getString("Date"),
                                                 current.getString("team1"), current.getString("team2"), current.getString("time"),
-                                                current.getString("venue")
+                                                current.getString("venue"), current.optString("win_team"), current.optString("win_description"),
+                                                current.optInt("team1_predictions"), current.optInt("team2_predictions")
                                         );
                                     }
                                 helper.close();
@@ -173,9 +175,10 @@ public class BackendHelper {
                 }).start();
 
 
-                if(stoprefresh)
+                if(stoprefreshSchedule)
                     ScheduleFragment.populateData();
-
+                else if(stoprefreshMatchResult)
+                    MatchResultsFragment.populateData();
 
 
             }
@@ -184,8 +187,8 @@ public class BackendHelper {
         @Override
         protected String doInBackground(Object... objects) {
             context = (Context) objects[0];
-            stoprefresh = (boolean) objects[1];
-
+            stoprefreshSchedule = (boolean) objects[1];
+            stoprefreshMatchResult = (boolean) objects[2];
             try{
                 URL url = new URL(context.getResources().getString(R.string.backend_fetch_data));
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();

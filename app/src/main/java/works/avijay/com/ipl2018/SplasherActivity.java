@@ -100,7 +100,7 @@ public class SplasherActivity extends AppCompatActivity {
             if(isNetworkConnected()){
 
                 BackendHelper.fetch_schedule fetch_schedule = new BackendHelper.fetch_schedule();
-                fetch_schedule.execute(context, false);
+                fetch_schedule.execute(context, false, false);
 
                 BackendHelper.fetch_team_stats fetch_team_stats = new BackendHelper.fetch_team_stats();
                 fetch_team_stats.execute(context, true, false, false);

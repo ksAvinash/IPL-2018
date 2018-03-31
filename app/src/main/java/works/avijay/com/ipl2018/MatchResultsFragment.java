@@ -37,33 +37,30 @@ import static android.content.Context.MODE_PRIVATE;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ScheduleFragment extends Fragment implements View.OnClickListener{
+public class MatchResultsFragment extends Fragment implements View.OnClickListener{
 
 
-    public ScheduleFragment() {
+    public MatchResultsFragment() {
         // Required empty public constructor
     }
 
     View view;
     static Context context;
-    static ListView scheduleList;
+    static ListView matchResultsList;
     static DatabaseHelper helper;
-    private static List<schedule_list_adapter> scheduleAdapter = new ArrayList<>();
-    ImageView team_rcb, team_csk, team_srh, team_rr, team_kkr, team_k11p, team_mi, team_dd ;
-    InterstitialAd interstitialAd ;
     float ads_value;
+    ImageView team_rcb, team_csk, team_srh, team_rr, team_kkr, team_k11p, team_mi, team_dd ;
     static MaterialRefreshLayout materialRefreshLayout;
+    InterstitialAd interstitialAd ;
+    private static List<schedule_list_adapter> scheduleAdapter = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         view =  inflater.inflate(R.layout.fragment_schedule, container, false);
 
         initializeViews();
         populateData();
-
-
         showAd();
 
 
@@ -77,7 +74,7 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
 
                     //fetch the data from the backend
                     BackendHelper.fetch_schedule fetch_schedule = new BackendHelper.fetch_schedule();
-                    fetch_schedule.execute(context, true, false);
+                    fetch_schedule.execute(context, false, true);
                 }else {
                     Snackbar.make(view, "Oops, No Internet connection!", Snackbar.LENGTH_SHORT)
                             .setAction("Action", null).show();
@@ -88,11 +85,9 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
         });
 
 
+
         return view;
     }
-
-
-
 
 
     private void showAd() {
@@ -111,7 +106,7 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
                     if(interstitialAd.isLoaded())
                         interstitialAd.show();
                 }
-            }, 6000);
+            }, 2000);
         }
     }
 
@@ -123,7 +118,7 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
 
     public void initializeViews(){
         context = getActivity().getApplicationContext();
-        scheduleList = view.findViewById(R.id.scheduleList);
+        matchResultsList = view.findViewById(R.id.scheduleList);
         helper = new DatabaseHelper(context);
 
         SharedPreferences sharedPreferences = context.getSharedPreferences("ipl_sp", MODE_PRIVATE);
@@ -150,23 +145,113 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
 
     }
 
+    @Override
+    public void onClick(View view) {
+        disselectAllTeams();
+        switch (view.getId()){
+
+            case R.id.team_rcb:
+                team_rcb.setImageResource(R.drawable.rcb_selected);
+                Snackbar.make(view, "Showing only RCB match results", Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
+                populateTeamSpecificMatchResult("RCB");
+                break;
+
+            case R.id.team_csk:
+                team_csk.setImageResource(R.drawable.csk_selected);
+                Snackbar.make(view, "Showing only CSK match results", Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
+                populateTeamSpecificMatchResult("CSK");
+                break;
+
+            case R.id.team_mi:
+                team_mi.setImageResource(R.drawable.mi_selected);
+                Snackbar.make(view, "Showing only MI match results", Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
+                populateTeamSpecificMatchResult("MI");
+                break;
+
+            case R.id.team_kkr:
+                team_kkr.setImageResource(R.drawable.kkr_selected);
+                Snackbar.make(view, "Showing only KKR match results", Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
+                populateTeamSpecificMatchResult("KKR");
+                break;
+
+            case R.id.team_rr:
+                team_rr.setImageResource(R.drawable.rr_selected);
+                Snackbar.make(view, "Showing only RR match results", Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
+                populateTeamSpecificMatchResult("RR");
+                break;
+
+            case R.id.team_srh:
+                team_srh.setImageResource(R.drawable.srh_selected);
+                Snackbar.make(view, "Showing only SRH match results", Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
+                populateTeamSpecificMatchResult("SRH");
+                break;
+
+            case R.id.team_k11p:
+                team_k11p.setImageResource(R.drawable.k11p_selected);
+                Snackbar.make(view, "Showing only K11P match results", Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
+                populateTeamSpecificMatchResult("KXIP");
+                break;
+
+            case R.id.team_dd:
+                team_dd.setImageResource(R.drawable.dd_selected);
+                Snackbar.make(view, "Showing only DD match results", Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
+                populateTeamSpecificMatchResult("DD");
+                break;
+
+        }
+
+    }
+
+    public static void populateTeamSpecificMatchResult(String team_name){
+        scheduleAdapter.clear();
+
+        Cursor cursor = helper.getMatchResultsByTeamName(team_name);
+        while (cursor.moveToNext()) {
+            if (!cursor.getString(6).equals("")) {
+
+                scheduleAdapter.add(new schedule_list_adapter(
+                        cursor.getInt(0), cursor.getString(1),
+                        cursor.getString(2), cursor.getString(3),
+                        cursor.getString(4), cursor.getString(5),
+                        cursor.getString(6), cursor.getString(7),
+                        cursor.getInt(8), cursor.getInt(9)
+                ));
+            }
+        }
+        cursor.close();
+        displayList();
+    }
+
+
 
     public static void populateData(){
         scheduleAdapter.clear();
-            if(materialRefreshLayout.isShown())
-                materialRefreshLayout.finishRefresh();
+        if(materialRefreshLayout.isShown())
+            materialRefreshLayout.finishRefresh();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 Cursor cursor = helper.getAllSchedule();
                 while (cursor.moveToNext()){
-                    scheduleAdapter.add(new schedule_list_adapter(
-                            cursor.getInt(0), cursor.getString(1),
-                            cursor.getString(2), cursor.getString(3),
-                            cursor.getString(4), cursor.getString(5),
-                            cursor.getString(6), cursor.getString(7),
-                            cursor.getInt(8), cursor.getInt(9)
-                    ));
+                    Log.d("CURSOR", cursor.getString(6));
+                    if(!cursor.getString(6).equals("")){
+                        scheduleAdapter.add(new schedule_list_adapter(
+                                cursor.getInt(0), cursor.getString(1),
+                                cursor.getString(2), cursor.getString(3),
+                                cursor.getString(4), cursor.getString(5),
+                                cursor.getString(6), cursor.getString(7),
+                                cursor.getInt(8), cursor.getInt(9)
+                        ));
+                    }
+
                 }
                 cursor.close();
                 displayList();
@@ -176,95 +261,9 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
 
     }
 
-
-    public static void populateTeamSpecificData(String team_name){
-        scheduleAdapter.clear();
-
-        Cursor cursor = helper.getScheduleByTeamName(team_name);
-        while (cursor.moveToNext()){
-            scheduleAdapter.add(new schedule_list_adapter(
-                    cursor.getInt(0), cursor.getString(1),
-                    cursor.getString(2), cursor.getString(3),
-                    cursor.getString(4), cursor.getString(5),
-                    cursor.getString(6), cursor.getString(7),
-                    cursor.getInt(8), cursor.getInt(9)
-            ));
-        }
-        cursor.close();
-
-        displayList();
-    }
-
-
     public static void displayList() {
-        ArrayAdapter<schedule_list_adapter> adapter = new myScheduleAdapterClass();
-        scheduleList.setAdapter(adapter);
-    }
-
-    @Override
-    public void onClick(View view) {
-        disselectAllTeams();
-
-        switch (view.getId()){
-
-            case R.id.team_rcb:
-                team_rcb.setImageResource(R.drawable.rcb_selected);
-                Snackbar.make(view, "Showing only RCB matches", Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
-                populateTeamSpecificData("RCB");
-                break;
-
-            case R.id.team_csk:
-                team_csk.setImageResource(R.drawable.csk_selected);
-                Snackbar.make(view, "Showing only CSK matches", Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
-                populateTeamSpecificData("CSK");
-                break;
-
-            case R.id.team_mi:
-                team_mi.setImageResource(R.drawable.mi_selected);
-                Snackbar.make(view, "Showing only MI matches", Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
-                populateTeamSpecificData("MI");
-                break;
-
-            case R.id.team_kkr:
-                team_kkr.setImageResource(R.drawable.kkr_selected);
-                Snackbar.make(view, "Showing only KKR matches", Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
-                populateTeamSpecificData("KKR");
-                break;
-
-            case R.id.team_rr:
-                team_rr.setImageResource(R.drawable.rr_selected);
-                Snackbar.make(view, "Showing only RR matches", Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
-                populateTeamSpecificData("RR");
-                break;
-
-            case R.id.team_srh:
-                team_srh.setImageResource(R.drawable.srh_selected);
-                Snackbar.make(view, "Showing only SRH matches", Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
-                populateTeamSpecificData("SRH");
-                break;
-
-            case R.id.team_k11p:
-                team_k11p.setImageResource(R.drawable.k11p_selected);
-                Snackbar.make(view, "Showing only K11P matches", Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
-                populateTeamSpecificData("KXIP");
-                break;
-
-            case R.id.team_dd:
-                team_dd.setImageResource(R.drawable.dd_selected);
-                Snackbar.make(view, "Showing only DD matches", Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
-                populateTeamSpecificData("DD");
-                break;
-
-        }
-
+        ArrayAdapter<schedule_list_adapter> adapter = new myMatchResultsAdapterClass();
+        matchResultsList.setAdapter(adapter);
     }
 
 
@@ -280,9 +279,10 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
     }
 
 
-    public static class myScheduleAdapterClass extends ArrayAdapter<schedule_list_adapter> {
 
-        myScheduleAdapterClass() {
+    public static class myMatchResultsAdapterClass extends ArrayAdapter<schedule_list_adapter> {
+
+        myMatchResultsAdapterClass() {
             super(context, R.layout.schedule_item, scheduleAdapter);
         }
 
@@ -300,16 +300,15 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
             ImageView team1 = itemView.findViewById(R.id.team1);
             ImageView team2 = itemView.findViewById(R.id.team2);
             TextView match_venu = itemView.findViewById(R.id.match_venue);
-            TextView match_time = itemView.findViewById(R.id.match_time);
             TextView match_date = itemView.findViewById(R.id.match_date);
 
-            match_venu.setText("Venue : "+current.getVenue());
-            match_time.setText(current.getTime());
+            match_venu.setText(current.getWin_description());
             match_date.setText(current.getDate());
 
+            String win_team = current.getWin_team(), team_1 = current.getTeam1(), team_2 = current.getTeam2();
 
 
-            switch (current.getTeam1()){
+            switch (team_1){
                 case "TBC":
                     team1.setImageResource(R.drawable.general_player);
                     break;
@@ -333,7 +332,6 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
 
                 case "SRH":
                     team1.setImageResource(R.drawable.srh_icon);
-
                     break;
 
                 case "DD":
@@ -353,7 +351,7 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
 
 
 
-            switch (current.getTeam2()){
+            switch (team_2){
                 case "TBC":
                     team2.setImageResource(R.drawable.general_player);
                     break;
@@ -372,7 +370,6 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
 
                 case "KXIP":
                     team2.setImageResource(R.drawable.k11_icon);
-
                     break;
 
                 case "SRH":
@@ -392,16 +389,100 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
 
                 case "RR":
                     team2.setImageResource(R.drawable.rr_icon);
-
                     break;
             }
+
+            switch (win_team){
+                case "RCB":
+                    if(team_1.equals("RCB")){
+                        team2.setAlpha((float) 0.3);
+                        team1.setAlpha((float) 1);
+                    }else{
+                        team1.setAlpha((float) 0.3);
+                        team2.setAlpha((float) 1);
+                    }
+                    break;
+
+                case "CSK":
+                    if(team_1.equals("CSK")){
+                        team2.setAlpha((float) 0.3);
+                        team1.setAlpha((float) 1);
+                    }else{
+                        team1.setAlpha((float) 0.3);
+                        team2.setAlpha((float) 1);
+                    }
+                    break;
+
+                case "SRH":
+                    if(team_1.equals("SRH")){
+                        team2.setAlpha((float) 0.3);
+                        team1.setAlpha((float) 1);
+                    }else{
+                        team1.setAlpha((float) 0.3);
+                        team2.setAlpha((float) 1);
+                    }
+                    break;
+
+                case "MI":
+                    if(team_1.equals("MI")){
+                        team2.setAlpha((float) 0.3);
+                        team1.setAlpha((float) 1);
+                    }else{
+                        team1.setAlpha((float) 0.3);
+                        team2.setAlpha((float) 1);
+                    }
+                    break;
+
+                case "KXIP":
+                    if(team_1.equals("KXIP")){
+                        team2.setAlpha((float) 0.3);
+                        team1.setAlpha((float) 1);
+                    }else{
+                        team1.setAlpha((float) 0.3);
+                        team2.setAlpha((float) 1);
+                    }
+                    break;
+
+                case "KKR":
+                    if(team_1.equals("KKR")){
+                        team2.setAlpha((float) 0.3);
+                        team1.setAlpha((float) 1);
+                    }else{
+                        team1.setAlpha((float) 0.3);
+                        team2.setAlpha((float) 1);
+                    }
+                    break;
+
+                case "DD":
+                    if(team_1.equals("DD")){
+                        team2.setAlpha((float) 0.3);
+                        team1.setAlpha((float) 1);
+                    }else{
+                        team1.setAlpha((float) 0.3);
+                        team2.setAlpha((float) 1);
+                    }
+                    break;
+
+                case "RR":
+                    if(team_1.equals("RR")){
+                        team2.setAlpha((float) 0.3);
+                        team1.setAlpha((float) 1);
+                    }else{
+                        team1.setAlpha((float) 0.3);
+                        team2.setAlpha((float) 1);
+                    }
+                    break;
+
+                default:
+                    team1.setAlpha((float) 1);
+                    team2.setAlpha((float) 1);
+            }
+
 
 
 
             return itemView;
         }
     }
-
-
 
 }
