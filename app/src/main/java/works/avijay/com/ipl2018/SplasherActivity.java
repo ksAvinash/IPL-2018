@@ -12,6 +12,11 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -35,6 +40,10 @@ public class SplasherActivity extends AppCompatActivity {
 
     SharedPreferences sharedPreferences;
     Context context;
+    FirebaseDatabase firebaseDatabase;
+    DatabaseReference databaseReference;
+    ValueEventListener mylistener;
+    String match_type_firebase = "IPL";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,51 +53,35 @@ public class SplasherActivity extends AppCompatActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splasher);
 
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("match1", 0);
+        editor.putInt("match2", 0);
+        editor.commit();
+
         MobileAds.initialize(this, "ca-app-pub-9681985190789334~8534666961");
         FirebaseMessaging.getInstance().subscribeToTopic("ipl_all_users");
 
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference("match_type");
 
 
-        if(isNetworkConnected()){
+        mylistener = databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String value = dataSnapshot.getValue(String.class);
+                match_type_firebase = value;
+                Log.d("FIREBASE", "Value is: " + value);
+                getCricbuzzMatches();
+            }
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Cricbuzz cricbuzz = new Cricbuzz();
-                        Vector<HashMap<String,String>> matches = cricbuzz.matches();
-                        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-                        String data = gson.toJson(matches);
-                        try {
-                            JSONArray matches_list = new JSONArray(data);
-                            int match_id = 1;
-                            for(int i=0; i<matches_list.length(); i++){
-                                JSONObject match = matches_list.getJSONObject(i);
-                                String mchstate = match.getString("mchstate");
-                                String match_type = match.getString("type");
-
-                                //CHANGE TO IPL DURING 3.0 RELEASE mchstate.equals("inprogress") &&
-                                if( match_type.equals("TEST")){
-                                    Log.d("VALID MATCH", match.getInt("id")+"");
-                                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                                    editor.putInt("match"+match_id, match.getInt("id"));
-                                    editor.commit();
-                                    match_id++;
-                                }
-
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }catch (IOException e){
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
-
-        }
-
+            @Override
+            public void onCancelled(DatabaseError error) {
+                match_type_firebase = "IPL";
+                Log.w("FIREBASE", "Failed to read value.", error.toException());
+                getCricbuzzMatches();
+            }
+        });
 
 
 
@@ -126,7 +119,7 @@ public class SplasherActivity extends AppCompatActivity {
                 fetch_setting.execute(context, "ads");
 
                 Date current_date = new Date();
-                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor = sharedPreferences.edit();
                 editor.putLong("last_fetch_date", current_date.getTime());
                 editor.apply();
             }
@@ -139,6 +132,7 @@ public class SplasherActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                databaseReference.removeEventListener(mylistener);
                 Intent intent = new Intent(SplasherActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
@@ -147,6 +141,52 @@ public class SplasherActivity extends AppCompatActivity {
 
 
     }
+
+
+
+
+
+
+    public void getCricbuzzMatches(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                    Cricbuzz cricbuzz = new Cricbuzz();
+                    Vector<HashMap<String,String>> matches = cricbuzz.matches();
+                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+                    String data = gson.toJson(matches);
+                    try {
+                        JSONArray matches_list = new JSONArray(data);
+                        int match_id = 1;
+                        for(int i=0; i<matches_list.length(); i++){
+                            JSONObject match = matches_list.getJSONObject(i);
+                            String mchstate = match.getString("mchstate");
+                            String match_type = match.getString("type");
+
+                            //CHANGE TO IPL DURING 3.0 RELEASE
+                            if( mchstate.equals("inprogress") && match_type.equals(match_type_firebase)){
+                                Log.d("VALID MATCH", match.getInt("id")+"");
+                                editor.putInt("match"+match_id, match.getInt("id"));
+                                editor.commit();
+                                match_id++;
+                            }
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+    }
+
 
 
 
@@ -175,6 +215,9 @@ public class SplasherActivity extends AppCompatActivity {
         }
 
     }
+
+
+
 
 
 }

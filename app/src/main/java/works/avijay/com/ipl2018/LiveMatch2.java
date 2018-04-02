@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +52,8 @@ public class LiveMatch2 extends Fragment {
             bowler1_name, bowler1_overs, bowler1_maidens, bowler1_runs, bowler1_wickets, bowler1_economy,
             bowler2_name, bowler2_overs, bowler2_maidens, bowler2_runs, bowler2_wickets, bowler2_economy;
 
+    CardView team_score_card, batting_score_card, bowling_score_card;
+
 
     Context context;
     int match_id;
@@ -80,7 +83,7 @@ public class LiveMatch2 extends Fragment {
                         refresh_scores.setEnabled(true);
                         refresh_scores.setLiked(false);
                     }
-                }, 5000);
+                }, 4000);
                 Snackbar.make(view, "Refreshing scores..", Snackbar.LENGTH_SHORT)
                         .setAction("Action", null).show();
 
@@ -143,78 +146,94 @@ public class LiveMatch2 extends Fragment {
 
         refresh_scores = view.findViewById(R.id.refresh_scores);
 
+        team_score_card = view.findViewById(R.id.team_score_card);
+        batting_score_card = view.findViewById(R.id.batting_score_card);
+        bowling_score_card = view.findViewById(R.id.bowling_score_card);
+
     }
 
 
 
     private void populateData(){
-        try {
-            DecimalFormat format = new DecimalFormat("###.##");
+        if(match_id == 0){
+            team_score_card.setVisibility(View.GONE);
+            batting_score_card.setVisibility(View.GONE);
+            bowling_score_card.setVisibility(View.GONE);
+        }else{
+            try {
+                DecimalFormat format = new DecimalFormat("###.##");
+                Cricbuzz cricbuzz = new Cricbuzz();
+                Map<String,Map> score = cricbuzz.livescore(match_id+"");
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                String data = gson.toJson(score);
 
-            Cricbuzz cricbuzz = new Cricbuzz();
-            Map<String,Map> score = cricbuzz.livescore(match_id+"");
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            String data = gson.toJson(score);
+                JSONObject _data = new JSONObject(data);
+                JSONObject matchinfo = _data.getJSONObject("matchinfo");
+                match_description.setText(matchinfo.getString("mchdesc"));
 
-            JSONObject _data = new JSONObject(data);
-            JSONObject matchinfo = _data.getJSONObject("matchinfo");
-            match_description.setText(matchinfo.getString("mchdesc"));
+                JSONObject batting = _data.getJSONObject("batting");
+                JSONArray team = batting.getJSONArray("team");
+                JSONObject _team = team.getJSONObject(0);
+                current_team.setText(_team.getString("team"));
 
-            JSONObject batting = _data.getJSONObject("batting");
-            JSONArray team = batting.getJSONArray("team");
-            JSONObject _team = team.getJSONObject(0);
-            current_team.setText(_team.getString("team"));
+                JSONArray _score = batting.getJSONArray("score");
+                JSONObject __score = _score.getJSONObject(0);
+                current_score.setText(__score.getString("runs")+"-"+__score.getString("wickets")+" ("+__score.getString("overs")+")");
 
-            JSONArray _score = batting.getJSONArray("score");
-            JSONObject __score = _score.getJSONObject(0);
-            current_score.setText(__score.getString("runs")+"-"+__score.getString("wickets")+" ("+__score.getString("overs")+")");
+                JSONArray batsmen = batting.getJSONArray("batsman");
+                JSONObject bat1 = batsmen.getJSONObject(0);
+                batsman1_name.setText(bat1.getString("name"));
+                batsman1_4s.setText(bat1.getString("fours"));
+                batsman1_6s.setText(bat1.getString("six"));
+                batsman1_balls.setText(bat1.getString("balls"));
+                batsman1_runs.setText(bat1.getString("runs"));
+                double bat1_sr = (float)Integer.parseInt(bat1.getString("runs")) * 100 / Integer.parseInt(bat1.getString("balls"));
+                batsman1_sr.setText(format.format(bat1_sr));
 
-            JSONArray batsmen = batting.getJSONArray("batsman");
-            JSONObject bat1 = batsmen.getJSONObject(0);
-            batsman1_name.setText(bat1.getString("name"));
-            batsman1_4s.setText(bat1.getString("fours"));
-            batsman1_6s.setText(bat1.getString("six"));
-            batsman1_balls.setText(bat1.getString("balls"));
-            batsman1_runs.setText(bat1.getString("runs"));
-            double bat1_sr = (float)Integer.parseInt(bat1.getString("runs")) * 100 / Integer.parseInt(bat1.getString("balls"));
-            batsman1_sr.setText(format.format(bat1_sr));
+                JSONObject bowling = _data.getJSONObject("bowling");
+                JSONArray bowlers = bowling.getJSONArray("bowler");
+                JSONObject ball1 = bowlers.getJSONObject(0);
+                bowler1_name.setText(ball1.getString("name"));
+                bowler1_overs.setText(ball1.getString("overs"));
+                bowler1_maidens.setText(ball1.getString("maidens"));
+                bowler1_wickets.setText(ball1.getString("wickets"));
+                bowler1_runs.setText(ball1.getString("runs"));
+                double ball1_eco = Integer.parseInt(ball1.getString("runs")) / Double.parseDouble(ball1.getString("overs"));
+                bowler1_economy.setText(format.format(ball1_eco));
 
-            JSONObject bowling = _data.getJSONObject("bowling");
-            JSONArray bowlers = bowling.getJSONArray("bowler");
-            JSONObject ball1 = bowlers.getJSONObject(0);
-            bowler1_name.setText(ball1.getString("name"));
-            bowler1_overs.setText(ball1.getString("overs"));
-            bowler1_maidens.setText(ball1.getString("maidens"));
-            bowler1_wickets.setText(ball1.getString("wickets"));
-            bowler1_runs.setText(ball1.getString("runs"));
-            double ball1_eco = Integer.parseInt(ball1.getString("runs")) / Double.parseDouble(ball1.getString("overs"));
-            bowler1_economy.setText(format.format(ball1_eco));
+                JSONObject bat2 = batsmen.getJSONObject(1);
+                batsman2_name.setText(bat2.getString("name"));
+                batsman2_4s.setText(bat2.getString("fours"));
+                batsman2_6s.setText(bat2.getString("six"));
+                batsman2_balls.setText(bat2.getString("balls"));
+                batsman2_runs.setText(bat2.getString("runs"));
+                double bat2_sr = (float)Integer.parseInt(bat2.getString("runs")) * 100 / Integer.parseInt(bat2.getString("balls"));
+                batsman2_sr.setText(format.format(bat2_sr));
 
-            JSONObject bat2 = batsmen.getJSONObject(1);
-            batsman2_name.setText(bat2.getString("name"));
-            batsman2_4s.setText(bat2.getString("fours"));
-            batsman2_6s.setText(bat2.getString("six"));
-            batsman2_balls.setText(bat2.getString("balls"));
-            batsman2_runs.setText(bat2.getString("runs"));
-            double bat2_sr = Integer.parseInt(bat2.getString("runs")) * 100 / Integer.parseInt(bat2.getString("balls"));
-            batsman2_sr.setText(format.format(bat2_sr));
+                JSONObject ball2 = bowlers.getJSONObject(1);
+                bowler2_name.setText(ball2.getString("name"));
+                bowler2_overs.setText(ball2.getString("overs"));
+                bowler2_maidens.setText(ball2.getString("maidens"));
+                bowler2_wickets.setText(ball2.getString("wickets"));
+                bowler2_runs.setText(ball2.getString("runs"));
+                double ball2_eco = Integer.parseInt(ball2.getString("runs")) / Double.parseDouble(ball2.getString("overs"));
+                bowler2_economy.setText(format.format(ball2_eco));
 
-            JSONObject ball2 = bowlers.getJSONObject(1);
-            bowler2_name.setText(ball2.getString("name"));
-            bowler2_overs.setText(ball2.getString("overs"));
-            bowler2_maidens.setText(ball2.getString("maidens"));
-            bowler2_wickets.setText(ball2.getString("wickets"));
-            bowler2_runs.setText(ball2.getString("runs"));
-            double ball2_eco = (float)Integer.parseInt(ball2.getString("runs")) / Double.parseDouble(ball2.getString("overs"));
-            bowler2_economy.setText(format.format(ball2_eco));
-
-
-        } catch (IOException e){
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (NumberFormatException e){
-            e.printStackTrace();
+            } catch (IOException e){
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (NumberFormatException e){
+                e.printStackTrace();
+            }
         }
+
     }
+
+
+
+
+
+
+
 }

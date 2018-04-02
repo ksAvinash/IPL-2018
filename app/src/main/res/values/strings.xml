@@ -15,7 +15,7 @@
     <string name="backend_user_signup">https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-user-signup</string>
     <string name="backend_validate_username">https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-validate-username</string>
     <string name="backend_check_existing_user">https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-check-existing-user</string>
-
+    <string name="backend_update_match_predictions">https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-update-match-predictions</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_splasher">IPL 2018</string>

@@ -10,6 +10,11 @@
             android:title="Home" />
 
         <item
+            android:id="@+id/nav_live_scores"
+            android:icon="@drawable/nav_live_scores"
+            android:title="Live Scores" />
+
+        <item
             android:id="@+id/nav_teams"
             android:icon="@drawable/nav_teams"
             android:title="Teams" />
@@ -30,10 +35,7 @@
             android:id="@+id/nav_points"
             android:icon="@drawable/nav_points"
             android:title="Points Table" />
-        <item
-            android:id="@+id/nav_live_scores"
-            android:icon="@drawable/nav_live_scores"
-            android:title="Live Scores" />
+
 
         <item
             android:id="@+id/nav_match_results"
