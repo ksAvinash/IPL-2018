@@ -19,6 +19,8 @@ import android.widget.TextView;
 
 import com.cjj.MaterialRefreshLayout;
 import com.cjj.MaterialRefreshListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.like.LikeButton;
@@ -52,13 +54,14 @@ public class LiveMatch1 extends Fragment {
             batsman1_name, batsman1_balls, batsman1_4s, batsman1_6s, batsman1_sr, batsman1_runs,
             batsman2_name, batsman2_balls, batsman2_4s, batsman2_6s, batsman2_sr, batsman2_runs,
             bowler1_name, bowler1_overs, bowler1_maidens, bowler1_runs, bowler1_wickets, bowler1_economy,
-            bowler2_name, bowler2_overs, bowler2_maidens, bowler2_runs, bowler2_wickets, bowler2_economy;
+            bowler2_name, bowler2_overs, bowler2_maidens, bowler2_runs, bowler2_wickets, bowler2_economy, coming_soon;
 
     CardView team_score_card, batting_score_card, bowling_score_card;
-
+    float ads_value;
     Context context;
     int match_id;
     LikeButton refresh_scores;
+    InterstitialAd interstitialAd ;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -90,6 +93,7 @@ public class LiveMatch1 extends Fragment {
                         .setAction("Action", null).show();
 
                 populateData();
+                showAd();
             }
 
             @Override
@@ -102,6 +106,28 @@ public class LiveMatch1 extends Fragment {
         return view;
     }
 
+
+    private void showAd() {
+        Log.d("ADS : VALUE : ", ads_value+"");
+
+        if(Math.random() < ads_value){
+            interstitialAd = new InterstitialAd(context);
+            interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
+            AdRequest adRequest = new AdRequest.Builder().build();
+            interstitialAd.loadAd(adRequest);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    if(interstitialAd.isLoaded())
+                        interstitialAd.show();
+                }
+            }, 3000);
+        }
+
+    }
+
+
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null;
@@ -113,6 +139,7 @@ public class LiveMatch1 extends Fragment {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences("ipl_sp", Context.MODE_PRIVATE);
         match_id = sharedPreferences.getInt("match1", 0);
+        ads_value = sharedPreferences.getFloat("ads", (float) 0.2);
 
         match_description = view.findViewById(R.id.match_description);
         current_team = view.findViewById(R.id.current_team);
@@ -153,6 +180,8 @@ public class LiveMatch1 extends Fragment {
         batting_score_card = view.findViewById(R.id.batting_score_card);
         bowling_score_card = view.findViewById(R.id.bowling_score_card);
 
+        coming_soon = view.findViewById(R.id.coming_soon);
+
     }
 
 
@@ -161,6 +190,7 @@ public class LiveMatch1 extends Fragment {
             team_score_card.setVisibility(View.GONE);
             batting_score_card.setVisibility(View.GONE);
             bowling_score_card.setVisibility(View.GONE);
+            coming_soon.setText("Coming soon..!");
         }else{
             try {
                 DecimalFormat format = new DecimalFormat("###.##");

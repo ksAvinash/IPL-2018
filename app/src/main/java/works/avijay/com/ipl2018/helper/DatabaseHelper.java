@@ -245,7 +245,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getScheduleByTeamName(String team){
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.rawQuery("select * from "+TABLE_SCHEDULE+" where "+SCHEDULE_MATCH_TEAM1+" = '"+team+"' or "+SCHEDULE_MATCH_TEAM2+" = '"+team+"' ;", null);
+        return db.rawQuery("select * from "+TABLE_SCHEDULE+" where "+SCHEDULE_MATCH_TEAM1+" = '"+team+"' or "+SCHEDULE_MATCH_TEAM2+" = '"+team+"' order by "+SCHEDULE_MATCH_ID+";", null);
     }
 
     public Cursor getMatchResultsByTeamName(String team){

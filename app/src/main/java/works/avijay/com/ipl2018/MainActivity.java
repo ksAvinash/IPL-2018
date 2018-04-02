@@ -36,6 +36,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -77,7 +78,6 @@ public class MainActivity extends AppCompatActivity
     View view;
     boolean doubleBackToExitPressedOnce = false;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,11 +101,8 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (drawer.isDrawerOpen(GravityCompat.START)) {
-                    drawer.closeDrawer(GravityCompat.START);
-                } else {
-                    drawer.openDrawer(GravityCompat.START);
-                }
+                Intent intent = new Intent(MainActivity.this, LiveScores.class);
+                startActivity(intent);
             }
         });
 
@@ -150,7 +147,7 @@ public class MainActivity extends AppCompatActivity
                     if(interstitialAd.isLoaded())
                         interstitialAd.show();
                 }
-            }, 10000);
+            }, 5000);
         }
 
     }
@@ -165,7 +162,18 @@ public class MainActivity extends AppCompatActivity
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                mCvCountdownView.start(mills);
+                if(mills > 0){
+                    mCvCountdownView.start(mills);
+                    mCvCountdownView.setOnCountdownEndListener(new CountdownView.OnCountdownEndListener() {
+                        @Override
+                        public void onEnd(CountdownView cv) {
+                            mCvCountdownView.setVisibility(View.GONE);
+
+                        }
+                    });
+                }else{
+                    mCvCountdownView.setVisibility(View.GONE);
+                }
             }
         }, 1000);
     }

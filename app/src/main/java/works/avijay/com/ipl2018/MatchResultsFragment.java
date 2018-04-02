@@ -75,6 +75,7 @@ public class MatchResultsFragment extends Fragment implements View.OnClickListen
                     //fetch the data from the backend
                     BackendHelper.fetch_schedule fetch_schedule = new BackendHelper.fetch_schedule();
                     fetch_schedule.execute(context, false, true);
+                    disselectAllTeams();
                 }else {
                     Snackbar.make(view, "Oops, No Internet connection!", Snackbar.LENGTH_SHORT)
                             .setAction("Action", null).show();

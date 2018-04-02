@@ -53,7 +53,6 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
     InterstitialAd interstitialAd ;
     float ads_value;
     static MaterialRefreshLayout materialRefreshLayout;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -78,6 +77,7 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
                     //fetch the data from the backend
                     BackendHelper.fetch_schedule fetch_schedule = new BackendHelper.fetch_schedule();
                     fetch_schedule.execute(context, true, false);
+                    disselectAllTeams();
                 }else {
                     Snackbar.make(view, "Oops, No Internet connection!", Snackbar.LENGTH_SHORT)
                             .setAction("Action", null).show();
@@ -103,17 +103,18 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
             interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
             AdRequest adRequest = new AdRequest.Builder().build();
             interstitialAd.loadAd(adRequest);
-
-
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
+
                     if(interstitialAd.isLoaded())
                         interstitialAd.show();
                 }
-            }, 6000);
+            }, 2000);
         }
+
     }
+
 
 
     private boolean isNetworkConnected() {

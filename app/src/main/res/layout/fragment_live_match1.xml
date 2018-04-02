@@ -485,5 +485,13 @@
 
 
 
+    <works.avijay.com.ipl2018.fonts.description_font
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/coming_soon"
+        android:layout_gravity="center"
+        android:textSize="24sp"
+        />
+
 </android.support.design.widget.CoordinatorLayout>
 
