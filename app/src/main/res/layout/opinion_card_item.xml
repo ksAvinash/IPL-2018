@@ -98,7 +98,6 @@
                     app:anim_scale_factor="1"
                     app:like_drawable="@drawable/heart_like"
                     app:unlike_drawable="@drawable/heart_unlike"
-                    android:layout_centerHorizontal="true"
                     />
 
             </RelativeLayout>

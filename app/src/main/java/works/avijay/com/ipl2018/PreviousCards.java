@@ -28,6 +28,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.like.LikeButton;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -175,6 +176,7 @@ public class PreviousCards extends Fragment {
                 itemView = inflater.inflate(R.layout.opinion_card_item, parent, false);
             }
             final cards_adapter current = cardsAdapter.get(position);
+            DecimalFormat decimalFormat = new DecimalFormat("###.#");
 
             ImageView card_image = itemView.findViewById(R.id.card_image);
             TextView card_description = itemView.findViewById(R.id.card_description);
@@ -203,8 +205,18 @@ public class PreviousCards extends Fragment {
                 }
 
                 card_description.setText(current.getCard_description());
-                like_points.setText(current.getCard_approved()+"");
-                dislike_points.setText(current.getCard_disapproved()+"");
+
+                if(current.getCard_approved()<1000)
+                    like_points.setText(current.getCard_approved()+"");
+                else
+                    like_points.setText(decimalFormat.format(current.getCard_approved()/1000.0)+"K");
+
+                if(current.getCard_disapproved()<1000)
+                    dislike_points.setText(current.getCard_disapproved()+"");
+                else
+                    dislike_points.setText(decimalFormat.format(current.getCard_disapproved()/1000.0)+"K");
+
+
                 like_icon.setEnabled(false);
                 dislike_icon.setEnabled(false);
 
@@ -216,7 +228,12 @@ public class PreviousCards extends Fragment {
                 dislike_icon.setVisibility(View.GONE);
 
                 card_description.setText("");
-                like_points.setText(current.getCard_approved()+"");
+
+                if(current.getCard_approved()<1000)
+                    like_points.setText(current.getCard_approved()+"");
+                else
+                    like_points.setText(decimalFormat.format(current.getCard_approved()/1000.0)+"K");
+
                 dislike_points.setText("");
             }
 

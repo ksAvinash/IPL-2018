@@ -51,6 +51,7 @@ import com.like.OnLikeListener;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -154,6 +155,7 @@ public class MainActivity extends AppCompatActivity
 
 
     public void startCountDown(){
+        mCvCountdownView.setVisibility(View.GONE);
         Date date2 = new Date();
         Date date1 = new Date(118, 3, 7, 20, 0);
 
@@ -163,6 +165,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void run() {
                 if(mills > 0){
+                    mCvCountdownView.setVisibility(View.VISIBLE);
                     mCvCountdownView.start(mills);
                     mCvCountdownView.setOnCountdownEndListener(new CountdownView.OnCountdownEndListener() {
                         @Override
@@ -171,8 +174,6 @@ public class MainActivity extends AppCompatActivity
 
                         }
                     });
-                }else{
-                    mCvCountdownView.setVisibility(View.GONE);
                 }
             }
         }, 1000);
@@ -224,6 +225,7 @@ public class MainActivity extends AppCompatActivity
             }
             final cards_adapter current = cardsAdapter.get(position);
 
+            DecimalFormat decimalFormat = new DecimalFormat("###.#");
 
             final CardView card_view = itemView.findViewById(R.id.card_view);
             final ImageView card_image = itemView.findViewById(R.id.card_image);
@@ -249,8 +251,15 @@ public class MainActivity extends AppCompatActivity
                 dislike_icon.setLiked(false);
 
                 card_description.setText(current.getCard_description());
-                like_points.setText(current.getCard_approved()+"");
-                dislike_points.setText(current.getCard_disapproved()+"");
+                if(current.getCard_approved()<1000)
+                    like_points.setText(current.getCard_approved()+"");
+                else
+                    like_points.setText(decimalFormat.format(current.getCard_approved()/1000.0)+"K");
+
+                if(current.getCard_disapproved()<1000)
+                    dislike_points.setText(current.getCard_disapproved()+"");
+                else
+                    dislike_points.setText(decimalFormat.format(current.getCard_disapproved()/1000.0)+"K");
 
 
                 like_icon.setOnLikeListener(new OnLikeListener() {
@@ -316,7 +325,10 @@ public class MainActivity extends AppCompatActivity
 
 
                 card_description.setText("");
-                like_points.setText(current.getCard_approved()+"");
+                if(current.getCard_approved()<1000)
+                    like_points.setText(current.getCard_approved()+"");
+                else
+                    like_points.setText(decimalFormat.format(current.getCard_approved()/1000.0)+"K");
                 dislike_points.setText("");
 
                 heart_icon.setOnLikeListener(new OnLikeListener() {

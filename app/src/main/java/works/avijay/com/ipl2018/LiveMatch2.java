@@ -100,7 +100,6 @@ public class LiveMatch2 extends Fragment {
             }
         });
 
-
         return view;
     }
 
@@ -179,17 +178,22 @@ public class LiveMatch2 extends Fragment {
 
         coming_soon = view.findViewById(R.id.coming_soon);
 
+        team_score_card.setVisibility(View.GONE);
+        batting_score_card.setVisibility(View.GONE);
+        bowling_score_card.setVisibility(View.GONE);
+
     }
 
 
 
     private void populateData(){
         if(match_id == 0){
-            team_score_card.setVisibility(View.GONE);
-            batting_score_card.setVisibility(View.GONE);
-            bowling_score_card.setVisibility(View.GONE);
             coming_soon.setText("Coming soon..!");
         }else{
+            team_score_card.setVisibility(View.VISIBLE);
+            batting_score_card.setVisibility(View.VISIBLE);
+            bowling_score_card.setVisibility(View.VISIBLE);
+
             try {
                 DecimalFormat format = new DecimalFormat("###.##");
                 Cricbuzz cricbuzz = new Cricbuzz();

@@ -60,7 +60,7 @@ public class SplasherActivity extends AppCompatActivity {
         editor.commit();
 
         MobileAds.initialize(this, "ca-app-pub-9681985190789334~8534666961");
-        FirebaseMessaging.getInstance().subscribeToTopic("ipl_all_users");
+        FirebaseMessaging.getInstance().subscribeToTopic("ipl_all_users_2");
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("match_type");

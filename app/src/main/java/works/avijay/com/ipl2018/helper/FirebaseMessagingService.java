@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import works.avijay.com.ipl2018.LiveScores;
 import works.avijay.com.ipl2018.MainActivity;
 import works.avijay.com.ipl2018.R;
 
@@ -29,13 +30,37 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
         if (remoteMessage.getData().size() > 0) {
             Log.d("FIREBASE", "Message data payload: " + remoteMessage.getData());
-            Bitmap bitmap = getBitmapfromUrl(remoteMessage.getData().get("image_url"));
-            createNotification(remoteMessage.getData().get("title"), bitmap);
+
+            if(remoteMessage.getData().get("notification_type").equals("card")){
+                Bitmap bitmap = getBitmapfromUrl(remoteMessage.getData().get("image_url"));
+                createCardNotification(remoteMessage.getData().get("title"), bitmap);
+            }else if(remoteMessage.getData().get("notification_type").equals("score")){
+                createScoreNotification(remoteMessage.getData().get("title"));
+            }
         }
     }
 
 
-    public void createNotification(String title, Bitmap image){
+    public void createScoreNotification(String title){
+        Intent intent = new Intent(this, LiveScores.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);
+
+        notificationBuilder.setContentTitle(title);
+        notificationBuilder.setContentText(title);
+        notificationBuilder.setAutoCancel(true);
+        notificationBuilder.setSmallIcon(R.drawable.bat_ball_icon);
+        notificationBuilder.setContentIntent(pendingIntent);
+
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(0, notificationBuilder.build());
+    }
+
+
+    public void createCardNotification(String title, Bitmap image){
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
@@ -52,7 +77,6 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(0, notificationBuilder.build());
-
     }
 
 
@@ -64,8 +88,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             connection.setDoInput(true);
             connection.connect();
             InputStream input = connection.getInputStream();
-            Bitmap bitmap = BitmapFactory.decodeStream(input);
-            return bitmap;
+            return BitmapFactory.decodeStream(input);
 
         } catch (Exception e) {
             e.printStackTrace();
