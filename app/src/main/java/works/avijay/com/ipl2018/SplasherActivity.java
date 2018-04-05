@@ -73,6 +73,7 @@ public class SplasherActivity extends AppCompatActivity {
                 match_type_firebase = value;
                 Log.d("FIREBASE", "Value is: " + value);
                 getCricbuzzMatches();
+                databaseReference.removeEventListener(mylistener);
             }
 
             @Override
@@ -80,12 +81,13 @@ public class SplasherActivity extends AppCompatActivity {
                 match_type_firebase = "IPL";
                 Log.w("FIREBASE", "Failed to read value.", error.toException());
                 getCricbuzzMatches();
+                databaseReference.removeEventListener(mylistener);
             }
         });
 
 
 
-        boolean first_fetch = sharedPreferences.getBoolean("first_fetch_v2", true);
+        boolean first_fetch = sharedPreferences.getBoolean("first_fetch_v4", true);
         if(first_fetch){
             DatabaseHelper helper = new DatabaseHelper(context);
             helper.deleteTables();
@@ -132,7 +134,6 @@ public class SplasherActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                databaseReference.removeEventListener(mylistener);
                 Intent intent = new Intent(SplasherActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
@@ -159,6 +160,7 @@ public class SplasherActivity extends AppCompatActivity {
                     Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
                     String data = gson.toJson(matches);
+                    Log.d("DATA", data);
                     try {
                         JSONArray matches_list = new JSONArray(data);
                         int match_id = 1;
@@ -168,7 +170,7 @@ public class SplasherActivity extends AppCompatActivity {
                             String match_type = match.getString("type");
 
                             //CHANGE TO IPL DURING 3.0 RELEASE
-                            if( mchstate.equals("inprogress") && match_type.equals(match_type_firebase)){
+                            if((mchstate.equals("inprogress") || mchstate.equals("innings break")) && match_type.equals(match_type_firebase)){
                                 Log.d("VALID MATCH", match.getInt("id")+"");
                                 editor.putInt("match"+match_id, match.getInt("id"));
                                 editor.commit();

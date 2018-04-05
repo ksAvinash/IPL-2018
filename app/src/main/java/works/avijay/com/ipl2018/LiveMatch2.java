@@ -10,10 +10,13 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cjj.MaterialRefreshLayout;
 import com.cjj.MaterialRefreshListener;
@@ -22,7 +25,10 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.like.LikeButton;
+import com.like.OnAnimationEndListener;
 import com.like.OnLikeListener;
+
+import junit.framework.Test;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -80,6 +86,7 @@ public class LiveMatch2 extends Fragment {
         refresh_scores.setOnLikeListener(new OnLikeListener() {
             @Override
             public void liked(LikeButton likeButton) {
+                Log.d("LONG CLICK", "GREAT");
                 refresh_scores.setEnabled(false);
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -100,8 +107,10 @@ public class LiveMatch2 extends Fragment {
             }
         });
 
+
         return view;
     }
+
 
     private void showAd() {
         Log.d("ADS : VALUE : ", ads_value+"");
@@ -188,7 +197,7 @@ public class LiveMatch2 extends Fragment {
 
     private void populateData(){
         if(match_id == 0){
-            coming_soon.setText("Coming soon..!");
+            coming_soon.setText("No active matches..");
         }else{
             team_score_card.setVisibility(View.VISIBLE);
             batting_score_card.setVisibility(View.VISIBLE);

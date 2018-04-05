@@ -60,429 +60,481 @@
 
     <android.support.v7.widget.CardView
         android:id="@+id/batting_score_card"
-        android:layout_marginTop="98dp"
+        android:layout_marginTop="96dp"
         android:layout_width="match_parent"
         android:layout_height="90dp"
         app:cardBackgroundColor="@color/colorWhite"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
-        <works.avijay.com.ipl2018.fonts.description_font
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start|top"
-            android:textSize="20sp"
-            android:textColor="@color/colorAccent"
-            android:text="Batting"
             android:layout_marginLeft="10dp"
-            />
+            >
+            <works.avijay.com.ipl2018.fonts.description_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@color/colorAccent"
+                android:text="Batting"
+                />
+            <works.avijay.com.ipl2018.fonts.scores_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_marginTop="33dp"
+                android:textSize="16sp"
+                android:id="@+id/batsman1_name"
+                android:textStyle="bold"
+                />
 
-        <works.avijay.com.ipl2018.fonts.description_font
+            <works.avijay.com.ipl2018.fonts.scores_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorDarkText"
+                android:layout_marginTop="63dp"
+                android:textSize="16sp"
+                android:id="@+id/batsman2_name"
+                android:textStyle="bold"
+                />
+        </RelativeLayout>
+
+
+
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|top"
-            android:textSize="20sp"
-            android:textColor="@color/colorAccent"
-            android:text="R"
             android:layout_marginRight="210dp"
-            />
+            android:layout_gravity="end|top"
+            >
+            <works.avijay.com.ipl2018.fonts.description_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@color/colorAccent"
+                android:text="R"
+                android:layout_centerHorizontal="true"
+                />
+            <works.avijay.com.ipl2018.fonts.scores_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_marginTop="33dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:id="@+id/batsman1_runs"
+                android:layout_centerHorizontal="true"
+                />
+            <works.avijay.com.ipl2018.fonts.scores_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorDarkText"
+                android:layout_marginTop="63dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:id="@+id/batsman2_runs"
+                android:layout_centerHorizontal="true"
+                />
+        </RelativeLayout>
 
-        <works.avijay.com.ipl2018.fonts.description_font
+
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|top"
-            android:textSize="20sp"
-            android:textColor="@color/colorAccent"
-            android:text="B"
             android:layout_marginRight="160dp"
-            />
+            android:layout_gravity="end|top"
+            >
+            <works.avijay.com.ipl2018.fonts.description_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@color/colorAccent"
+                android:text="B"
+                android:layout_centerHorizontal="true"
+                />
+            <works.avijay.com.ipl2018.fonts.scores_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorDarkText"
+                android:layout_marginTop="33dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:id="@+id/batsman1_balls"
+                android:layout_centerHorizontal="true"
+                />
+            <works.avijay.com.ipl2018.fonts.scores_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorDarkText"
+                android:layout_marginTop="63dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:id="@+id/batsman2_balls"
+                android:layout_centerHorizontal="true"
+                />
+        </RelativeLayout>
 
-        <works.avijay.com.ipl2018.fonts.description_font
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|top"
-            android:textSize="20sp"
-            android:textColor="@color/colorAccent"
-            android:text="4s"
             android:layout_marginRight="110dp"
-            />
+            android:layout_gravity="end|top"
+            >
+            <works.avijay.com.ipl2018.fonts.description_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@color/colorAccent"
+                android:text="4s"
+                android:layout_centerHorizontal="true"
+                />
+            <works.avijay.com.ipl2018.fonts.scores_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorDarkText"
+                android:layout_marginTop="33dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:id="@+id/batsman1_4s"
+                android:layout_centerHorizontal="true"
+                />
+            <works.avijay.com.ipl2018.fonts.scores_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorDarkText"
+                android:layout_marginTop="63dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:id="@+id/batsman2_4s"
+                android:layout_centerHorizontal="true"
+                />
+        </RelativeLayout>
 
-        <works.avijay.com.ipl2018.fonts.description_font
+
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|top"
-            android:textSize="20sp"
-            android:textColor="@color/colorAccent"
-            android:text="6s"
             android:layout_marginRight="60dp"
-            />
+            android:layout_gravity="end|top"
+            >
+            <works.avijay.com.ipl2018.fonts.description_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@color/colorAccent"
+                android:text="6s"
+                android:layout_centerHorizontal="true"
+                />
+            <works.avijay.com.ipl2018.fonts.scores_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorDarkText"
+                android:layout_marginTop="33dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:id="@+id/batsman1_6s"
+                android:layout_centerHorizontal="true"
+                />
+            <works.avijay.com.ipl2018.fonts.scores_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorDarkText"
+                android:layout_marginTop="63dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:id="@+id/batsman2_6s"
+                android:layout_centerHorizontal="true"
+                />
+        </RelativeLayout>
 
-        <works.avijay.com.ipl2018.fonts.description_font
+
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|top"
-            android:textSize="20sp"
-            android:textColor="@color/colorAccent"
-            android:text="SR"
             android:layout_marginRight="10dp"
-            />
-
+            android:layout_gravity="end|top"
+            >
+            <works.avijay.com.ipl2018.fonts.description_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@color/colorAccent"
+                android:text="SR"
+                android:layout_centerHorizontal="true"
+                />
+            <works.avijay.com.ipl2018.fonts.scores_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorDarkText"
+                android:layout_marginTop="33dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:id="@+id/batsman1_sr"
+                android:layout_centerHorizontal="true"
+                />
+            <works.avijay.com.ipl2018.fonts.scores_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorDarkText"
+                android:layout_marginTop="63dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:id="@+id/batsman2_sr"
+                android:layout_centerHorizontal="true"
+                />
+        </RelativeLayout>
 
 
         <View style="@style/Divider"
-            android:layout_marginTop="30dp" />
+            android:layout_marginTop="31dp" />
 
-
-        <works.avijay.com.ipl2018.fonts.scores_font
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimaryDark"
-            android:layout_marginTop="32dp"
-            android:textSize="16sp"
-            android:id="@+id/batsman1_name"
-            android:layout_marginLeft="15sp"
-            android:textStyle="bold"
-            />
-        <works.avijay.com.ipl2018.fonts.scores_font
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimaryDark"
-            android:layout_gravity="end"
-            android:layout_marginTop="32dp"
-            android:layout_marginRight="210dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:id="@+id/batsman1_runs"
-            />
-        <works.avijay.com.ipl2018.fonts.scores_font
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorDarkText"
-            android:layout_gravity="end"
-            android:layout_marginTop="32dp"
-            android:layout_marginRight="160dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:id="@+id/batsman1_balls"
-            />
-        <works.avijay.com.ipl2018.fonts.scores_font
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorDarkText"
-            android:layout_gravity="end"
-            android:layout_marginTop="32dp"
-            android:layout_marginRight="110dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:id="@+id/batsman1_4s"
-            />
-        <works.avijay.com.ipl2018.fonts.scores_font
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorDarkText"
-            android:layout_marginTop="32dp"
-            android:layout_marginRight="60dp"
-            android:layout_gravity="end"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:id="@+id/batsman1_6s"
-            />
-        <works.avijay.com.ipl2018.fonts.scores_font
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorDarkText"
-            android:layout_gravity="end"
-            android:layout_marginTop="32dp"
-            android:layout_marginRight="10dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:id="@+id/batsman1_sr"
-            />
 
         <View style="@style/Divider"
-            android:layout_marginTop="60dp" />
-
-
-        <works.avijay.com.ipl2018.fonts.scores_font
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorDarkText"
-            android:layout_marginTop="62dp"
-            android:textSize="16sp"
-            android:id="@+id/batsman2_name"
-            android:layout_marginLeft="15sp"
-            android:textStyle="bold"
-            />
-        <works.avijay.com.ipl2018.fonts.scores_font
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorDarkText"
-            android:layout_marginTop="62dp"
-            android:layout_marginRight="210dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:id="@+id/batsman2_runs"
-            android:layout_gravity="end"
-            />
-        <works.avijay.com.ipl2018.fonts.scores_font
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorDarkText"
-            android:layout_marginTop="62dp"
-            android:layout_marginRight="160dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:id="@+id/batsman2_balls"
-            android:layout_gravity="end"
-            />
-        <works.avijay.com.ipl2018.fonts.scores_font
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorDarkText"
-            android:layout_marginTop="62dp"
-            android:layout_marginRight="110dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:id="@+id/batsman2_4s"
-            android:layout_gravity="end"
-            />
-        <works.avijay.com.ipl2018.fonts.scores_font
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorDarkText"
-            android:layout_marginTop="62dp"
-            android:layout_marginRight="60dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:id="@+id/batsman2_6s"
-            android:layout_gravity="end"
-            />
-        <works.avijay.com.ipl2018.fonts.scores_font
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorDarkText"
-            android:layout_gravity="end"
-            android:layout_marginTop="62dp"
-            android:layout_marginRight="10dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:id="@+id/batsman2_sr"
-            />
+            android:layout_marginTop="61dp" />
 
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
+        android:layout_below="@+id/batting_score_card"
         android:id="@+id/bowling_score_card"
-        android:layout_marginTop="196dp"
+        android:layout_marginTop="192dp"
         android:layout_width="match_parent"
         android:layout_height="90dp"
         app:cardBackgroundColor="@color/colorWhite"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
-        <works.avijay.com.ipl2018.fonts.description_font
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="start|top"
-            android:textSize="20sp"
-            android:textColor="@color/colorAccent"
-            android:text="Bowler"
             android:layout_marginLeft="10dp"
-            />
+            android:layout_gravity="start|top"
+            >
+            <works.avijay.com.ipl2018.fonts.description_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@color/colorAccent"
+                android:text="Bowler"
+                />
+            <works.avijay.com.ipl2018.fonts.scores_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_marginTop="32dp"
+                android:textSize="16sp"
+                android:id="@+id/bowler1_name"
+                android:textStyle="bold"
+                />
+            <works.avijay.com.ipl2018.fonts.scores_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorDarkText"
+                android:layout_marginTop="63dp"
+                android:textSize="16sp"
+                android:id="@+id/bowler2_name"
+                android:textStyle="bold"
+                />
+        </RelativeLayout>
 
-        <works.avijay.com.ipl2018.fonts.description_font
+
+
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|top"
-            android:textSize="20sp"
-            android:textColor="@color/colorAccent"
-            android:text="O"
             android:layout_marginRight="210dp"
-            />
+            android:layout_gravity="end|top"
+            >
+            <works.avijay.com.ipl2018.fonts.description_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@color/colorAccent"
+                android:text="O"
+                android:layout_centerHorizontal="true"
+                />
 
-        <works.avijay.com.ipl2018.fonts.description_font
+            <works.avijay.com.ipl2018.fonts.scores_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_marginTop="33dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:id="@+id/bowler1_overs"
+                android:layout_centerHorizontal="true"
+                />
+            <works.avijay.com.ipl2018.fonts.scores_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorDarkText"
+                android:layout_marginTop="63dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:id="@+id/bowler2_overs"
+                android:layout_centerHorizontal="true"
+                />
+        </RelativeLayout>
+
+
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|top"
-            android:textSize="20sp"
-            android:textColor="@color/colorAccent"
-            android:text="M"
             android:layout_marginRight="160dp"
-            />
+            android:layout_gravity="end|top"
+            >
+            <works.avijay.com.ipl2018.fonts.description_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@color/colorAccent"
+                android:text="M"
+                android:layout_centerHorizontal="true"
+                />
+            <works.avijay.com.ipl2018.fonts.scores_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorDarkText"
+                android:layout_marginTop="33dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:id="@+id/bowler1_maidens"
+                android:layout_centerHorizontal="true"
+                />
+            <works.avijay.com.ipl2018.fonts.scores_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorDarkText"
+                android:layout_marginTop="63dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:id="@+id/bowler2_maidens"
+                android:layout_centerHorizontal="true"
+                />
+        </RelativeLayout>
 
-        <works.avijay.com.ipl2018.fonts.description_font
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|top"
-            android:textSize="20sp"
-            android:textColor="@color/colorAccent"
-            android:text="W"
             android:layout_marginRight="110dp"
-            />
+            android:layout_gravity="end|top"
+            >
+            <works.avijay.com.ipl2018.fonts.description_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@color/colorAccent"
+                android:text="W"
+                android:layout_centerHorizontal="true"
+                />
+            <works.avijay.com.ipl2018.fonts.scores_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorDarkText"
+                android:layout_marginTop="33dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:id="@+id/bowler1_wickets"
+                android:layout_centerHorizontal="true"
+                />
+            <works.avijay.com.ipl2018.fonts.scores_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorDarkText"
+                android:layout_marginTop="63dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:id="@+id/bowler2_wickets"
+                android:layout_centerHorizontal="true"
+                />
+        </RelativeLayout>
 
-        <works.avijay.com.ipl2018.fonts.description_font
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|top"
-            android:textSize="20sp"
-            android:textColor="@color/colorAccent"
-            android:text="R"
             android:layout_marginRight="60dp"
-            />
+            android:layout_gravity="end|top"
+            >
+            <works.avijay.com.ipl2018.fonts.description_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@color/colorAccent"
+                android:text="R"
+                android:layout_centerHorizontal="true"
+                />
+            <works.avijay.com.ipl2018.fonts.scores_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorDarkText"
+                android:layout_marginTop="33dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:id="@+id/bowler1_runs"
+                android:layout_centerHorizontal="true"
+                />
 
-        <works.avijay.com.ipl2018.fonts.description_font
+            <works.avijay.com.ipl2018.fonts.scores_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorDarkText"
+                android:layout_marginTop="63dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:id="@+id/bowler2_runs"
+                android:layout_centerHorizontal="true"
+                />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|top"
-            android:textSize="20sp"
-            android:textColor="@color/colorAccent"
-            android:text="EC"
             android:layout_marginRight="10dp"
-            />
+            android:layout_gravity="end|top"
+            >
+            <works.avijay.com.ipl2018.fonts.description_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@color/colorAccent"
+                android:text="EC"
+                android:layout_centerHorizontal="true"
+                />
 
+            <works.avijay.com.ipl2018.fonts.scores_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorDarkText"
+                android:layout_marginTop="33dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:id="@+id/bowler1_economy"
+                android:layout_centerHorizontal="true"
+                />
 
+            <works.avijay.com.ipl2018.fonts.scores_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorDarkText"
+                android:layout_marginTop="63dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:id="@+id/bowler2_economy"
+                android:layout_centerHorizontal="true"
+                />
+        </RelativeLayout>
 
 
         <View style="@style/Divider"
-            android:layout_marginTop="30dp" />
+            android:layout_marginTop="31dp" />
 
-        <works.avijay.com.ipl2018.fonts.scores_font
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimaryDark"
-            android:layout_marginTop="32dp"
-            android:textSize="16sp"
-            android:id="@+id/bowler1_name"
-            android:layout_marginLeft="15sp"
-            android:textStyle="bold"
-            />
-        <works.avijay.com.ipl2018.fonts.scores_font
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimaryDark"
-            android:layout_marginTop="32dp"
-            android:layout_marginRight="210dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:id="@+id/bowler1_overs"
-            android:layout_gravity="end"
-            />
-        <works.avijay.com.ipl2018.fonts.scores_font
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorDarkText"
-            android:layout_marginTop="32dp"
-            android:layout_marginRight="160dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:id="@+id/bowler1_maidens"
-            android:layout_gravity="end"
-            />
-        <works.avijay.com.ipl2018.fonts.scores_font
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorDarkText"
-            android:layout_marginTop="32dp"
-            android:layout_marginRight="110dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:id="@+id/bowler1_wickets"
-            android:layout_gravity="end"
-            />
-        <works.avijay.com.ipl2018.fonts.scores_font
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorDarkText"
-            android:layout_marginTop="32dp"
-            android:layout_marginRight="60dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:id="@+id/bowler1_runs"
-            android:layout_gravity="end"
-            />
-        <works.avijay.com.ipl2018.fonts.scores_font
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorDarkText"
-            android:layout_marginTop="32dp"
-            android:layout_marginRight="10dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:id="@+id/bowler1_economy"
-            android:layout_gravity="end"
-            />
 
         <View style="@style/Divider"
-            android:layout_marginTop="60dp" />
+            android:layout_marginTop="61dp" />
 
-
-        <works.avijay.com.ipl2018.fonts.scores_font
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorDarkText"
-            android:layout_marginTop="62dp"
-            android:textSize="16sp"
-            android:id="@+id/bowler2_name"
-            android:layout_marginLeft="15sp"
-            android:textStyle="bold"
-            />
-        <works.avijay.com.ipl2018.fonts.scores_font
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorDarkText"
-            android:layout_marginTop="62dp"
-            android:layout_marginRight="210dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:id="@+id/bowler2_overs"
-            android:layout_gravity="end"
-            />
-        <works.avijay.com.ipl2018.fonts.scores_font
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorDarkText"
-            android:layout_marginTop="62dp"
-            android:layout_marginRight="160dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:id="@+id/bowler2_maidens"
-            android:layout_gravity="end"
-            />
-        <works.avijay.com.ipl2018.fonts.scores_font
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorDarkText"
-            android:layout_marginTop="62dp"
-            android:layout_marginRight="110dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:id="@+id/bowler2_wickets"
-            android:layout_gravity="end"
-            />
-        <works.avijay.com.ipl2018.fonts.scores_font
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorDarkText"
-            android:layout_marginTop="62dp"
-            android:layout_marginRight="60dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:id="@+id/bowler2_runs"
-            android:layout_gravity="end"
-            />
-        <works.avijay.com.ipl2018.fonts.scores_font
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorDarkText"
-            android:layout_marginTop="62dp"
-            android:layout_marginRight="10dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:id="@+id/bowler2_economy"
-            android:layout_gravity="end"
-            />
     </android.support.v7.widget.CardView>
-
 
 
     <works.avijay.com.ipl2018.fonts.description_font
@@ -493,5 +545,37 @@
         android:textSize="24sp"
         />
 
-</android.support.design.widget.CoordinatorLayout>
 
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/chatList"
+        />
+
+    <LinearLayout
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#fff"
+        >
+        <EditText
+            android:id="@+id/push_message"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:layout_marginRight="60dp"
+            />
+        <ImageButton
+            android:id="@+id/push_icon"
+            android:layout_marginLeft="-60dp"
+            style="?android:buttonBarButtonStyle"
+            android:paddingBottom="5dp"
+            android:src="@drawable/icon_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>

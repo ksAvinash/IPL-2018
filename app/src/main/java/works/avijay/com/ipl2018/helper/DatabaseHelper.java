@@ -56,6 +56,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CARD_IMAGE = "card_image";
     private static final String CARD_SEEN = "card_seen";
     private static final String CARD_TYPE = "card_type";
+    private static final String CARD_PRIORITY = "card_priority";
+    private static final String CARD_TEAM = "card_team";
 
 
 
@@ -85,7 +87,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
         String create_cards_table = "create table "+TABLE_CARDS+" ("+CARD_ID+" text primary key, "+CARD_DESCRIPTION+" text, "+CARD_APPROVED+" number, "+CARD_DISAPPROVED+
-                " number, "+CARD_IMAGE+" text, "+CARD_SEEN+" number, "+CARD_TYPE+" text);";
+                " number, "+CARD_IMAGE+" text, "+CARD_SEEN+" number, "+CARD_TYPE+" text, "+CARD_PRIORITY+" number, "+CARD_TEAM+" text);";
         db.execSQL(create_cards_table);
 
     }
@@ -122,6 +124,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+
     public void updateIntoTeamStats(String team_name, int loss, int wins, int remaining, int points, String rate, String team_image, int fan_count){
         String where = TEAM_NAME+"=?";
         String[] whereArgs = new String[] {team_name};
@@ -140,7 +143,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.update(TABLE_TEAMS, contentValues, where, whereArgs);
     }
 
-    public void updateIntoCards(String card_id, String description, long approved, long disapproved, String image, String card_type) {
+    public void updateIntoCards(String card_id, String description, long approved, long disapproved, String image, String card_type, int priority, String team) {
         String where = CARD_ID+"=?";
         String[] whereArgs = new String[] {card_id};
 
@@ -152,6 +155,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(CARD_DISAPPROVED, disapproved);
         contentValues.put(CARD_IMAGE, image);
         contentValues.put(CARD_TYPE, card_type);
+        contentValues.put(CARD_PRIORITY, priority);
+        contentValues.put(CARD_TEAM, team);
 
         db.update(TABLE_CARDS, contentValues, where, whereArgs);
 
@@ -191,6 +196,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void deleteTableCards(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("drop table if exists "+TABLE_SCHEDULE);
+        createTableCards(db);
+    }
+
+    public void createTableCards(SQLiteDatabase db){
+        String create_cards_table = "create table "+TABLE_CARDS+" ("+CARD_ID+" text primary key, "+CARD_DESCRIPTION+" text, "+CARD_APPROVED+" number, "+CARD_DISAPPROVED+
+                " number, "+CARD_IMAGE+" text, "+CARD_SEEN+" number, "+CARD_TYPE+" text, "+CARD_PRIORITY+" number, "+CARD_TEAM+" text);";
+        db.execSQL(create_cards_table);
+        db.close();
+    }
 
     public void createTableSchedule(){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -272,7 +289,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getUnseenCards(){
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.rawQuery("select * from "+TABLE_CARDS+" where "+CARD_SEEN+" = 0;", null);
+        return db.rawQuery("select * from "+TABLE_CARDS+" where "+CARD_SEEN+" = 0 and "+CARD_TYPE+" = 'card' or "+CARD_TYPE+" = 'photo' order by "+CARD_PRIORITY+" desc", null);
+    }
+    public Cursor getUnseenVideos(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery("select * from "+TABLE_CARDS+" where "+CARD_SEEN+" = 0 and "+CARD_TYPE+" = 'video' order by "+CARD_PRIORITY+" desc", null);
     }
 
 
@@ -308,12 +329,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
-    public void insertIntoCards(String card_id, String description, long approved, long disapproved, String image, String card_type){
+    public void insertIntoCards(String card_id, String description, long approved, long disapproved, String image, String card_type, int priority, String team){
         SQLiteDatabase db = this.getWritableDatabase();
 
         Cursor cursor = db.rawQuery("select * from "+TABLE_CARDS+" where "+CARD_ID+" = '"+card_id+"';", null);
         if(cursor.getCount() > 0){
-            updateIntoCards(card_id, description, approved, disapproved, image, card_type);
+            updateIntoCards(card_id, description, approved, disapproved, image, card_type, priority, team);
         }else{
             ContentValues contentValues = new ContentValues();
             contentValues.put(CARD_ID, card_id);
@@ -323,6 +344,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             contentValues.put(CARD_IMAGE, image);
             contentValues.put(CARD_SEEN, 0);
             contentValues.put(CARD_TYPE, card_type);
+            contentValues.put(CARD_PRIORITY, priority);
+            contentValues.put(CARD_TEAM, team);
+
             db.insert(TABLE_CARDS, null, contentValues);
         }
         cursor.close();

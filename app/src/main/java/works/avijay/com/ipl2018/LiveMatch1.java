@@ -11,16 +11,23 @@ import android.os.Message;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
-
-import com.cjj.MaterialRefreshLayout;
-import com.cjj.MaterialRefreshListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.like.LikeButton;
@@ -32,11 +39,15 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
 import works.avijay.com.ipl2018.helper.Cricbuzz;
+import works.avijay.com.ipl2018.helper.chat_adapter;
 
 
 /**
@@ -62,7 +73,10 @@ public class LiveMatch1 extends Fragment {
     int match_id;
     LikeButton refresh_scores;
     InterstitialAd interstitialAd ;
-
+    EditText push_message;
+    ImageView push_icon;
+    FirebaseDatabase database;
+    DatabaseReference myRef;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -101,8 +115,7 @@ public class LiveMatch1 extends Fragment {
             }
         });
 
-
-
+        receiveChatMessages();
         return view;
     }
 
@@ -182,6 +195,19 @@ public class LiveMatch1 extends Fragment {
 
         coming_soon = view.findViewById(R.id.coming_soon);
 
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("match_1");
+
+        push_message = view.findViewById(R.id.push_message);
+        push_icon = view.findViewById(R.id.push_icon);
+        push_icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String key =  myRef.push().getKey();
+                chat_adapter chat_adapter = new chat_adapter("avinash_ks", push_message.getText().toString(), System.currentTimeMillis()/1000);
+                myRef.child(key).setValue(chat_adapter);
+            }
+        });
 
         team_score_card.setVisibility(View.GONE);
         batting_score_card.setVisibility(View.GONE);
@@ -190,9 +216,35 @@ public class LiveMatch1 extends Fragment {
     }
 
 
+
+    private void receiveChatMessages(){
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot child : dataSnapshot.getChildren()){
+                    new chat_adapter(child.child("username").getValue().toString(),
+                            child.child("user_message").getValue().toString(),
+                            Integer.parseInt(child.child("time").getValue().toString())
+                            );
+                }
+                displayMessages();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.w("CHATS", "Failed to read value.", error.toException());
+            }
+        });
+    }
+
+
+    private void displayMessages(){
+
+    }
+
     private void populateData(){
         if(match_id == 0){
-            coming_soon.setText("Coming soon..!");
+            coming_soon.setText("No active matches..");
         }else{
             team_score_card.setVisibility(View.VISIBLE);
             batting_score_card.setVisibility(View.VISIBLE);
@@ -267,4 +319,8 @@ public class LiveMatch1 extends Fragment {
         }
 
     }
+
+
+
+
 }

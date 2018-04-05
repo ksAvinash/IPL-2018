@@ -49,7 +49,6 @@ public class TeamActivity extends AppCompatActivity {
 
         getDetails();
         initializeViews();
-        populateData();
 
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -87,57 +86,68 @@ public class TeamActivity extends AppCompatActivity {
     }
 
     public void getDetails(){
+        team_image = findViewById(R.id.team_image);
+
+
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         image_url = extras.getString("team_image");
         rate = extras.getString("rate");
         original_name = extras.getString("team_name");
-        setTeamName(original_name);
+        setTeamNameAndImage(original_name);
         win = extras.getInt("wins");
         loss = extras.getInt("loss");
         remaining = extras.getInt("remaining");
         points = extras.getInt("points");
     }
 
-    public void setTeamName(String name){
+    public void setTeamNameAndImage(String name){
+        team_image.setScaleType(ImageView.ScaleType.CENTER_CROP);
         switch (name){
             case "KINGS XI PUNJAB":
                         team_name = "KXIP";
+                        team_image.setImageDrawable(getResources().getDrawable(R.drawable.card_punjab));
                 break;
 
             case "CHENNAI SUPER KINGS":
                         team_name = "CSK";
+                        team_image.setImageDrawable(getResources().getDrawable(R.drawable.card_chennai));
                 break;
 
             case "KOLKATA KNIGHT RIDERS":
                         team_name = "KKR";
+                        team_image.setImageDrawable(getResources().getDrawable(R.drawable.card_kolkata));
                 break;
 
             case "MUMBAI INDIANS":
                         team_name = "MI";
+                        team_image.setImageDrawable(getResources().getDrawable(R.drawable.card_mumbai));
                 break;
 
             case "DELHI DAREDEVILS":
                         team_name = "DD";
+                        team_image.setImageDrawable(getResources().getDrawable(R.drawable.card_delhi));
                 break;
 
             case "ROYAL CHALLENGERS BANGALORE":
                         team_name = "RCB";
+                        team_image.setImageDrawable(getResources().getDrawable(R.drawable.card_bengaluru));
                 break;
 
             case "RAJASTHAN ROYALS":
                         team_name = "RR";
+                        team_image.setImageDrawable(getResources().getDrawable(R.drawable.card_rajastan));
                 break;
 
             case "SUNRISERS HYDERABAD":
                         team_name = "SRH";
+                        team_image.setImageDrawable(getResources().getDrawable(R.drawable.card_hyderabad));
                 break;
         }
     }
 
     public void initializeViews(){
         context = getApplicationContext();
-        team_image = findViewById(R.id.team_image);
         playersList = findViewById(R.id.playersList);
         helper = new DatabaseHelper(context);
         playersAdapter.clear();
@@ -160,15 +170,6 @@ public class TeamActivity extends AppCompatActivity {
 
         displayList();
 
-    }
-
-    public void populateData(){
-        Glide.with(this).load(image_url)
-                .thumbnail(0.5f)
-                .centerCrop()
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(team_image);
     }
 
 

@@ -17,7 +17,6 @@ import java.net.URL;
 
 import works.avijay.com.ipl2018.MatchResultsFragment;
 import works.avijay.com.ipl2018.PointsFragment;
-import works.avijay.com.ipl2018.PreviousCards;
 import works.avijay.com.ipl2018.R;
 import works.avijay.com.ipl2018.ScheduleFragment;
 import works.avijay.com.ipl2018.TeamsStatsFragment;
@@ -253,7 +252,7 @@ public class BackendHelper {
 
                                 SharedPreferences sharedPreferences = context.getSharedPreferences("ipl_sp", MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putBoolean("first_fetch_v2", false);
+                                editor.putBoolean("first_fetch_v4", false);
                                 editor.apply();
                             } else {
                                 Log.d("IPL : PLAYERS : ", "Error fetching players");
@@ -528,7 +527,9 @@ public class BackendHelper {
                                         JSONObject current_team = items.getJSONObject(i);
                                         helper.insertIntoCards(current_team.getString("card_id"),
                                                 current_team.getString("card_description"), current_team.getLong("card_approved"),
-                                                current_team.getLong("card_disapproved"), current_team.getString("card_image"), current_team.getString("card_type")
+                                                current_team.getLong("card_disapproved"), current_team.getString("card_image"),
+                                                current_team.getString("card_type"), current_team.optInt("order"),
+                                                current_team.optString("card_team")
                                                 );
                                     }
 
@@ -545,9 +546,9 @@ public class BackendHelper {
                 }).start();
 
 
-                if(stopRefresh){
-                    PreviousCards.loadCards();
-                }
+//                if(stopRefresh){
+//                    PreviousCards.loadCards();
+//                }
             }
 
         }

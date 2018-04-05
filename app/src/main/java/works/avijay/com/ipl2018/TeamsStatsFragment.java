@@ -206,12 +206,49 @@ public class TeamsStatsFragment extends Fragment{
 
 
             ImageView team_image = itemView.findViewById(R.id.team_image);
-            Glide.with(context).load(current.getTeam_image())
-                    .thumbnail(0.5f)
-                    .centerCrop()
-                    .crossFade()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(team_image);
+            team_image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+            switch (current.getTeam_name()){
+                case "KINGS XI PUNJAB":
+                    team_image.setImageDrawable(context.getResources().getDrawable(R.drawable.card_punjab));
+                    break;
+
+                case "CHENNAI SUPER KINGS":
+                    team_image.setImageDrawable(context.getResources().getDrawable(R.drawable.card_chennai));
+                    break;
+
+                case "KOLKATA KNIGHT RIDERS":
+                    team_image.setImageDrawable(context.getResources().getDrawable(R.drawable.card_kolkata));
+                    break;
+
+                case "MUMBAI INDIANS":
+                    team_image.setImageDrawable(context.getResources().getDrawable(R.drawable.card_mumbai));
+                    break;
+
+                case "DELHI DAREDEVILS":
+                    team_image.setImageDrawable(context.getResources().getDrawable(R.drawable.card_delhi));
+                    break;
+
+                case "ROYAL CHALLENGERS BANGALORE":
+                    team_image.setImageDrawable(context.getResources().getDrawable(R.drawable.card_bengaluru));
+                    break;
+
+                case "RAJASTHAN ROYALS":
+                    team_image.setImageDrawable(context.getResources().getDrawable(R.drawable.card_rajastan));
+                    break;
+
+                case "SUNRISERS HYDERABAD":
+                    team_image.setImageDrawable(context.getResources().getDrawable(R.drawable.card_hyderabad));
+                    break;
+
+            }
+
+//            Glide.with(context).load(current.getTeam_image())
+//                    .thumbnail(0.5f)
+//                    .centerCrop()
+//                    .crossFade()
+//                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                    .into(team_image);
 
 
             return itemView;

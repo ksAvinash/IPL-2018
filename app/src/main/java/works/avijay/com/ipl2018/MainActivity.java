@@ -190,8 +190,9 @@ public class MainActivity extends AppCompatActivity
                 if(i <= 20){
                     cardsAdapter.add(new cards_adapter(cursor.getString(0), cursor.getString(1),
                             cursor.getInt(2), cursor.getInt(3), cursor.getString(4),
-                            cursor.getInt(5), cursor.getString(6)
+                            cursor.getInt(5), cursor.getString(6), cursor.getString(8)
                     ));
+
                 }
 
             }
@@ -237,7 +238,49 @@ public class MainActivity extends AppCompatActivity
             TextView skip_card = itemView.findViewById(R.id.skip_card);
             LikeButton heart_icon = itemView.findViewById(R.id.heart_icon);
             ImageView share_card = itemView.findViewById(R.id.share_card);
+            card_image.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
+            switch (current.getCard_team()){
+                case "RCB":
+                    card_image.setImageDrawable(getResources().getDrawable(R.drawable.card_bengaluru));
+                    break;
+
+                case "DD":
+                    card_image.setImageDrawable(getResources().getDrawable(R.drawable.card_delhi));
+                    break;
+
+                case "RR":
+                    card_image.setImageDrawable(getResources().getDrawable(R.drawable.card_rajastan));
+                    break;
+
+                case "KKR":
+                    card_image.setImageDrawable(getResources().getDrawable(R.drawable.card_kolkata));
+                    break;
+
+                case "CSK":
+                    card_image.setImageDrawable(getResources().getDrawable(R.drawable.card_chennai));
+                    break;
+
+                case "SRH":
+                    card_image.setImageDrawable(getResources().getDrawable(R.drawable.card_hyderabad));
+                    break;
+
+                case "MI":
+                    card_image.setImageDrawable(getResources().getDrawable(R.drawable.card_mumbai));
+                    break;
+
+                case "KXIP":
+                    card_image.setImageDrawable(getResources().getDrawable(R.drawable.card_punjab));
+                    break;
+
+                case "COMMON":
+                    card_image.setImageDrawable(getResources().getDrawable(R.drawable.card_common));
+                    break;
+
+                default:
+                    card_image.setImageDrawable(getResources().getDrawable(R.drawable.card_common));
+                    break;
+            }
 
             if(current.getCard_type().equals("card")){
                 card_image.setAlpha((float)0.85);
@@ -311,7 +354,7 @@ public class MainActivity extends AppCompatActivity
                 });
 
 
-            }else{
+            }else if(current.getCard_type().equals("photo")){
                 card_image.setAlpha((float)1.0);
 
 
@@ -359,12 +402,13 @@ public class MainActivity extends AppCompatActivity
 
 
 
-            Glide.with(context).load(current.getCard_image())
-                    .thumbnail(0.5f)
-                    .centerCrop()
-                    .crossFade()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(card_image);
+
+//            Glide.with(context).load(current.getCard_image())
+//                    .thumbnail(0.5f)
+//                    .centerCrop()
+//                    .crossFade()
+//                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                    .into(card_image);
 
 
 
@@ -638,14 +682,6 @@ public class MainActivity extends AppCompatActivity
                 rateapp();
                 break;
 
-            case R.id.nav_previous_cards:
-                PreviousCards previousCards = new PreviousCards();
-                fragmentManager = getSupportFragmentManager();
-                fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.main_activity_content, previousCards).addToBackStack(null).commit();
-                break;
-
-
             case R.id.nav_live_scores:
                 intent = new Intent(MainActivity.this, LiveScores.class);
                 startActivity(intent);
@@ -657,6 +693,7 @@ public class MainActivity extends AppCompatActivity
                 fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.main_activity_content, resultsFragment).addToBackStack(null).commit();
                 break;
+
         }
 
 
