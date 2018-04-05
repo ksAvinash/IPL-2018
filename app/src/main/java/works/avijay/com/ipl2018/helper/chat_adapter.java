@@ -1,13 +1,12 @@
 package works.avijay.com.ipl2018.helper;
 
 public class chat_adapter {
-    private String username, user_message;
-    private long time;
+    private String username, user_message, chat_color;
 
-    public chat_adapter(String username, String user_message, long time) {
+    public chat_adapter(String username, String user_message, String chat_color) {
         this.username = username;
         this.user_message = user_message;
-        this.time = time;
+        this.chat_color = chat_color;
     }
 
     public void setUsername(String username) {
@@ -18,9 +17,10 @@ public class chat_adapter {
         this.user_message = user_message;
     }
 
-    public void setTime(long time) {
-        this.time = time;
+    public void setChat_color(String chat_color) {
+        this.chat_color = chat_color;
     }
+
 
     public String getUsername() {
 
@@ -31,7 +31,7 @@ public class chat_adapter {
         return user_message;
     }
 
-    public long getTime() {
-        return time;
+    public String getChat_color() {
+        return chat_color;
     }
 }

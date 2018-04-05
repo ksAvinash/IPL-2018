@@ -6,6 +6,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.google.firebase.database.ValueEventListener;
+
 import works.avijay.com.ipl2018.helper.MatchesTabsAdapter;
 
 public class LiveScores extends AppCompatActivity {
@@ -26,6 +28,7 @@ public class LiveScores extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         initializeViews();
+
     }
 
 
@@ -42,7 +45,8 @@ public class LiveScores extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        LiveMatch1.removeReference(false);
+        LiveMatch2.removeReference(false);
         finish();
     }
 

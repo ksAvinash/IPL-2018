@@ -1,20 +1,33 @@
 package works.avijay.com.ipl2018;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +35,11 @@ import com.cjj.MaterialRefreshLayout;
 import com.cjj.MaterialRefreshListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.like.LikeButton;
@@ -36,11 +54,15 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Vector;
 
 import works.avijay.com.ipl2018.helper.Cricbuzz;
+import works.avijay.com.ipl2018.helper.chat_adapter;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -60,20 +82,33 @@ public class LiveMatch2 extends Fragment {
             batsman1_name, batsman1_balls, batsman1_4s, batsman1_6s, batsman1_sr, batsman1_runs,
             batsman2_name, batsman2_balls, batsman2_4s, batsman2_6s, batsman2_sr, batsman2_runs,
             bowler1_name, bowler1_overs, bowler1_maidens, bowler1_runs, bowler1_wickets, bowler1_economy,
-            bowler2_name, bowler2_overs, bowler2_maidens, bowler2_runs, bowler2_wickets, bowler2_economy, coming_soon;
+            bowler2_name, bowler2_overs, bowler2_maidens, bowler2_runs, bowler2_wickets, bowler2_economy;
 
     CardView team_score_card, batting_score_card, bowling_score_card;
     float ads_value;
-    Context context;
+    static Context context;
     int match_id;
     LikeButton refresh_scores;
     InterstitialAd interstitialAd ;
+    EditText push_message;
+    ImageView push_icon;
+    FirebaseDatabase database;
+    public static DatabaseReference myRef;
+    static ListView chatList;
+    private static List<chat_adapter> chatAdapter = new ArrayList<>();
+    public static ValueEventListener myChats;
+    static SharedPreferences sharedPreferences2;
+    public static boolean receive_again = true;
+    static String user_name;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view =  inflater.inflate(R.layout.fragment_live_match1, container, false);
         initializeViews();
+
+        receiveChatMessages(receive_again);
+
 
         if(isNetworkConnected())
             new Handler().postDelayed(new Runnable() {
@@ -83,10 +118,10 @@ public class LiveMatch2 extends Fragment {
                 }
             }, 200);
 
+
         refresh_scores.setOnLikeListener(new OnLikeListener() {
             @Override
             public void liked(LikeButton likeButton) {
-                Log.d("LONG CLICK", "GREAT");
                 refresh_scores.setEnabled(false);
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -106,7 +141,6 @@ public class LiveMatch2 extends Fragment {
             public void unLiked(LikeButton likeButton) {
             }
         });
-
 
         return view;
     }
@@ -133,17 +167,17 @@ public class LiveMatch2 extends Fragment {
     }
 
 
-
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null;
     }
 
-    private void initializeViews() {
-        context = getActivity().getApplicationContext();
 
-        SharedPreferences sharedPreferences = context.getSharedPreferences("ipl_sp", Context.MODE_PRIVATE);
-        match_id = sharedPreferences.getInt("match2", 0);
+    private void initializeViews() {
+        context = getActivity();
+
+        final SharedPreferences sharedPreferences = context.getSharedPreferences("ipl_sp", Context.MODE_PRIVATE);
+        match_id = sharedPreferences.getInt("match2", 999);
         ads_value = sharedPreferences.getFloat("ads", (float) 0.2);
 
         match_description = view.findViewById(R.id.match_description);
@@ -185,20 +219,195 @@ public class LiveMatch2 extends Fragment {
         batting_score_card = view.findViewById(R.id.batting_score_card);
         bowling_score_card = view.findViewById(R.id.bowling_score_card);
 
-        coming_soon = view.findViewById(R.id.coming_soon);
+        chatList = view.findViewById(R.id.chatList);
+
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("match_"+match_id);
+        sharedPreferences2 = context.getSharedPreferences("ipl_profile", Context.MODE_PRIVATE);
+        user_name = sharedPreferences2.getString("user_name", "");
+
+        push_message = view.findViewById(R.id.push_message);
+        push_icon = view.findViewById(R.id.push_icon);
+        push_icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(validateUser()){
+                    String key =  myRef.push().getKey();
+
+                    chat_adapter chat_adapter = new chat_adapter(sharedPreferences2.getString("user_name",""), push_message.getText().toString(), sharedPreferences2.getString("user_color","#42a5f5"));
+                    myRef.child(key).setValue(chat_adapter);
+                    push_message.setText("");
+                    receiveChatMessageOnce();
+                }else{
+                    createuser();
+                }
+
+            }
+        });
 
         team_score_card.setVisibility(View.GONE);
         batting_score_card.setVisibility(View.GONE);
         bowling_score_card.setVisibility(View.GONE);
+    }
 
+
+    private boolean validateUser(){
+        int user_valid = sharedPreferences2.getInt("user_valid", 0);
+        if(user_valid == 0)
+            return false;
+        return true;
+    }
+
+
+    public void createuser(){
+        final EditText input = new EditText(context);
+        input.setTextColor(Color.WHITE);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+
+
+        AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Dialog_Alert);
+        } else {
+            builder = new AlertDialog.Builder(context);
+        }
+        builder.setTitle("Create Profile")
+                .setMessage("Please select an unique username. This username which will be displayed to all users.\nNOTE: THIS CANNOT BE UNDONE")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(validateusername(input.getText().toString())){
+                            Snackbar.make(view, "Profile created successfully", Snackbar.LENGTH_SHORT)
+                                    .setAction("Action", null).show();
+
+                            SharedPreferences.Editor editor = sharedPreferences2.edit();
+                            editor.putInt("user_valid", 1);
+                            editor.putString("user_name", input.getText().toString());
+                            user_name = input.getText().toString();
+                            Random random = new Random();
+                            int number = random.nextInt(5)+1;
+                            switch (number){
+                                case 1:
+                                    editor.putString("user_color", "#3f51b5");
+                                    break;
+                                case 2:
+                                    editor.putString("user_color", "#009688");
+                                    break;
+                                case 3:
+                                    editor.putString("user_color", "#9e9e9e");
+                                    break;
+                                case 4:
+                                    editor.putString("user_color", "#90a4ae");
+                                    break;
+                                case 5:
+                                    editor.putString("user_color", "#512da8");
+                                    break;
+                            }
+                            editor.commit();
+                        }
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setView(input)
+                .show();
+    }
+
+    private boolean validateusername(String username){
+        if(username.length() < 6) {
+            Snackbar.make(view, "Min 6 characters for username is required", Snackbar.LENGTH_SHORT)
+                    .setAction("Action", null).show();
+            return false;
+        }else if(!username.matches("[a-z0-9_]*")){
+            Snackbar.make(view, "Only a-z  0-9  _ can be used", Snackbar.LENGTH_SHORT)
+                    .setAction("Action", null).show();
+            return false;
+        }
+        return true;
+    }
+
+
+    private void receiveChatMessages(boolean value){
+        if(value){
+            Log.d("RECEIVING MESSAGE 1 : ","RECURSIVE");
+            chatAdapter.clear();
+            myChats = myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for(DataSnapshot child : dataSnapshot.getChildren()){
+                        chatAdapter.add(new chat_adapter(child.child("username").getValue().toString(),
+                                child.child("user_message").getValue().toString(),
+                                child.child("chat_color").getValue().toString()
+                        ));
+                    }
+                    displayMessages();
+                    removeReference(true);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            receiveChatMessages(receive_again);
+                        }
+                    }, 5000);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    Log.w("CHATS", "Failed to read value.", error.toException());
+                    myRef.removeEventListener(myChats);
+                }
+            });
+        }else{
+            Log.d("RECEIVING MESSAGE 1 : ","LAST");
+        }
+    }
+
+    public static void removeReference(boolean again){
+        myRef.removeEventListener(myChats);
+
+        if(!again)
+            receive_again = false;
+    }
+
+
+    public void receiveChatMessageOnce(){
+        Log.d("RECEIVING MESSAGE 1 : ","ONCE");
+        chatAdapter.clear();
+        myChats = myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot child : dataSnapshot.getChildren()){
+                    chatAdapter.add(new chat_adapter(child.child("username").getValue().toString(),
+                            child.child("user_message").getValue().toString(),
+                            child.child("chat_color").getValue().toString()
+                    ));
+                }
+                displayMessages();
+                myRef.removeEventListener(myChats);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.w("CHATS", "Failed to read value.", error.toException());
+                myRef.removeEventListener(myChats);
+            }
+        });
+    }
+
+
+    private static void displayMessages(){
+        ArrayAdapter<chat_adapter> adapter = new myChatAdapterClass();
+        chatList.setAdapter(adapter);
     }
 
 
 
     private void populateData(){
-        if(match_id == 0){
-            coming_soon.setText("No active matches..");
-        }else{
+        if(match_id != 0){
             team_score_card.setVisibility(View.VISIBLE);
             batting_score_card.setVisibility(View.VISIBLE);
             bowling_score_card.setVisibility(View.VISIBLE);
@@ -274,6 +483,57 @@ public class LiveMatch2 extends Fragment {
     }
 
 
+    public static class myChatAdapterClass extends ArrayAdapter<chat_adapter> {
+
+        myChatAdapterClass() {
+            super(context, R.layout.chat_ui, chatAdapter);
+        }
+
+
+        @NonNull
+        @Override
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+            View itemView = convertView;
+            if (itemView == null) {
+                LayoutInflater inflater = LayoutInflater.from(context);
+                itemView = inflater.inflate(R.layout.chat_ui, parent, false);
+            }
+
+            try {
+                chat_adapter current = chatAdapter.get(position);
+
+                TextView chat_message = itemView.findViewById(R.id.chat_message);
+                chat_message.setText(current.getUser_message());
+
+
+                TextView chat_user = itemView.findViewById(R.id.chat_user);
+                chat_user.setText(current.getUsername());
+
+
+                if(user_name.equals(current.getUsername())){
+                    CoordinatorLayout.LayoutParams params = new CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    params.gravity = Gravity.END|Gravity.BOTTOM;
+                    params.topMargin = 70;
+                    params.rightMargin = 3;
+                    chat_message.setLayoutParams(params);
+
+                    CoordinatorLayout.LayoutParams params2 = new CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    params2.gravity = Gravity.END|Gravity.TOP;
+                    params2.rightMargin = 15;
+                    chat_user.setLayoutParams(params2);
+                }
+                GradientDrawable bgShape = (GradientDrawable)chat_message.getBackground();
+                bgShape.setColor(Color.parseColor(current.getChat_color()));
+
+            }catch (IndexOutOfBoundsException e){
+
+            }
+
+
+
+            return itemView;
+        }
+    }
 
 
 

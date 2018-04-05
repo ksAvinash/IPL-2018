@@ -63,7 +63,7 @@ public class SplasherActivity extends AppCompatActivity {
         FirebaseMessaging.getInstance().subscribeToTopic("ipl_all_users_2");
 
         firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("match_type");
+        databaseReference = firebaseDatabase.getReference("match_type_test");
 
 
         mylistener = databaseReference.addValueEventListener(new ValueEventListener() {
