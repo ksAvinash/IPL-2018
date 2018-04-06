@@ -545,10 +545,6 @@ public class BackendHelper {
                     }
                 }).start();
 
-
-//                if(stopRefresh){
-//                    PreviousCards.loadCards();
-//                }
             }
 
         }

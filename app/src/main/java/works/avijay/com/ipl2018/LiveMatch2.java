@@ -85,14 +85,14 @@ public class LiveMatch2 extends Fragment {
             bowler2_name, bowler2_overs, bowler2_maidens, bowler2_runs, bowler2_wickets, bowler2_economy;
 
     CardView team_score_card, batting_score_card, bowling_score_card;
-    float ads_value;
+    static float ads_value;
     static Context context;
-    int match_id;
+    static int match_id;
     LikeButton refresh_scores;
-    InterstitialAd interstitialAd ;
-    EditText push_message;
-    ImageView push_icon;
-    FirebaseDatabase database;
+    static InterstitialAd interstitialAd ;
+    static EditText push_message;
+    static ImageView push_icon;
+    static FirebaseDatabase database;
     public static DatabaseReference myRef;
     static ListView chatList;
     private static List<chat_adapter> chatAdapter = new ArrayList<>();
@@ -100,6 +100,7 @@ public class LiveMatch2 extends Fragment {
     static SharedPreferences sharedPreferences2;
     public static boolean receive_again = true;
     static String user_name;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -146,26 +147,24 @@ public class LiveMatch2 extends Fragment {
     }
 
 
-    private void showAd() {
-        Log.d("ADS : VALUE : ", ads_value+"");
+    private static void showAd() {
+        if(Math.random() < 0.2){
+            if(context != null){
+                interstitialAd = new InterstitialAd(context);
+                interstitialAd.setAdUnitId("ca-app-pub-9681985190789334/8358998025");
+                AdRequest adRequest = new AdRequest.Builder().build();
+                interstitialAd.loadAd(adRequest);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
 
-        if(Math.random() < ads_value){
-            interstitialAd = new InterstitialAd(context);
-            interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
-            AdRequest adRequest = new AdRequest.Builder().build();
-            interstitialAd.loadAd(adRequest);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-                    if(interstitialAd.isLoaded())
-                        interstitialAd.show();
-                }
-            }, 3000);
+                        if(interstitialAd.isLoaded())
+                            interstitialAd.show();
+                    }
+                }, 2000);
+            }
         }
-
     }
-
 
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -175,7 +174,6 @@ public class LiveMatch2 extends Fragment {
 
     private void initializeViews() {
         context = getActivity();
-
         final SharedPreferences sharedPreferences = context.getSharedPreferences("ipl_sp", Context.MODE_PRIVATE);
         match_id = sharedPreferences.getInt("match2", 999);
         ads_value = sharedPreferences.getFloat("ads", (float) 0.2);
@@ -231,13 +229,16 @@ public class LiveMatch2 extends Fragment {
         push_icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                bowling_score_card.setVisibility(View.GONE);
                 if(validateUser()){
-                    String key =  myRef.push().getKey();
+                    if(push_message.getText().length() >0){
+                        String key =  myRef.push().getKey();
 
-                    chat_adapter chat_adapter = new chat_adapter(sharedPreferences2.getString("user_name",""), push_message.getText().toString(), sharedPreferences2.getString("user_color","#42a5f5"));
-                    myRef.child(key).setValue(chat_adapter);
-                    push_message.setText("");
-                    receiveChatMessageOnce();
+                        chat_adapter chat_adapter = new chat_adapter(sharedPreferences2.getString("user_name",""), push_message.getText().toString(), sharedPreferences2.getString("user_color","#42a5f5"));
+                        myRef.child(key).setValue(chat_adapter);
+                        push_message.setText("");
+                        receiveChatMessageOnce();
+                    }
                 }else{
                     createuser();
                 }
@@ -274,8 +275,7 @@ public class LiveMatch2 extends Fragment {
         } else {
             builder = new AlertDialog.Builder(context);
         }
-        builder.setTitle("Create Profile")
-                .setMessage("Please select an unique username. This username which will be displayed to all users.\nNOTE: THIS CANNOT BE UNDONE")
+        builder.setMessage("Please select an unique USERNAME, this username which will be displayed to all users during the entire period of your chat history and believe us we are not using your information anywhere\n\nNOTE: THIS USERNAME CANNOT BE CHANGED")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         if(validateusername(input.getText().toString())){
@@ -332,9 +332,9 @@ public class LiveMatch2 extends Fragment {
     }
 
 
-    private void receiveChatMessages(boolean value){
+    private static void receiveChatMessages(boolean value){
         if(value){
-            Log.d("RECEIVING MESSAGE 1 : ","RECURSIVE");
+            showAd();
             chatAdapter.clear();
             myChats = myRef.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -362,7 +362,7 @@ public class LiveMatch2 extends Fragment {
                 }
             });
         }else{
-            Log.d("RECEIVING MESSAGE 1 : ","LAST");
+            Log.d("RECEIVING MESSAGE 2 : ","LAST");
         }
     }
 
@@ -373,9 +373,16 @@ public class LiveMatch2 extends Fragment {
             receive_again = false;
     }
 
+    public static void initializeAdapterValueEventListenersDatabaseReference(){
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("match_"+match_id);
+        receive_again = true;
+        receiveChatMessages(true);
+    }
 
-    public void receiveChatMessageOnce(){
-        Log.d("RECEIVING MESSAGE 1 : ","ONCE");
+
+    public static void receiveChatMessageOnce(){
+        Log.d("RECEIVING MESSAGE 2 : ","ONCE");
         chatAdapter.clear();
         myChats = myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -519,7 +526,7 @@ public class LiveMatch2 extends Fragment {
 
                     CoordinatorLayout.LayoutParams params2 = new CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     params2.gravity = Gravity.END|Gravity.TOP;
-                    params2.rightMargin = 15;
+                    params2.rightMargin = 50;
                     chat_user.setLayoutParams(params2);
                 }
                 GradientDrawable bgShape = (GradientDrawable)chat_message.getBackground();

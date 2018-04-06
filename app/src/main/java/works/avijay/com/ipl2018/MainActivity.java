@@ -18,6 +18,7 @@ import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -190,14 +191,14 @@ public class MainActivity extends AppCompatActivity
                 if(i <= 20){
                     cardsAdapter.add(new cards_adapter(cursor.getString(0), cursor.getString(1),
                             cursor.getInt(2), cursor.getInt(3), cursor.getString(4),
-                            cursor.getInt(5), cursor.getString(6), cursor.getString(8)
+                            cursor.getInt(5), cursor.getString(6), cursor.getString(8),
+                            cursor.getInt(7)
                     ));
+
 
                 }
 
             }
-
-
         displayCards(position);
     }
 
@@ -401,24 +402,17 @@ public class MainActivity extends AppCompatActivity
 
 
 
-
-
-//            Glide.with(context).load(current.getCard_image())
-//                    .thumbnail(0.5f)
-//                    .centerCrop()
-//                    .crossFade()
-//                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                    .into(card_image);
-
-
-
-
             skip_card.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DatabaseHelper helper = new DatabaseHelper(context);
-                    helper.setCardAsSeen(current.getCard_id(),3, 0);
-                    loadCards(position);
+                    if(current.getOrder() < 10){
+                        DatabaseHelper helper = new DatabaseHelper(context);
+                        helper.setCardAsSeen(current.getCard_id(),3, 0);
+                        loadCards(position);
+                    }else{
+                        Snackbar.make(view, "Cannot dismiss primary card", Snackbar.LENGTH_SHORT)
+                                .setAction("Action", null).show();
+                    }
                 }
             });
 

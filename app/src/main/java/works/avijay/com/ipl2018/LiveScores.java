@@ -5,6 +5,9 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 
 import com.google.firebase.database.ValueEventListener;
 
@@ -29,6 +32,8 @@ public class LiveScores extends AppCompatActivity {
 
         initializeViews();
 
+        LiveMatch1.initializeAdapterValueEventListenersDatabaseReference();
+        LiveMatch2.initializeAdapterValueEventListenersDatabaseReference();
     }
 
 
@@ -54,5 +59,30 @@ public class LiveScores extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.live_scores_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.action_stop_chat){
+            LiveMatch1.removeReference(false);
+            LiveMatch2.removeReference(false);
+            LiveMatch1.chatList.setVisibility(View.GONE);
+            LiveMatch2.chatList.setVisibility(View.GONE);
+            LiveMatch1.push_icon.setVisibility(View.GONE);
+            LiveMatch2.push_icon.setVisibility(View.GONE);
+            LiveMatch1.push_message.setVisibility(View.GONE);
+            LiveMatch2.push_message.setVisibility(View.GONE);
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
