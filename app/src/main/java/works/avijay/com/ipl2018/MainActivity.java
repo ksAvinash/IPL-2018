@@ -30,35 +30,39 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Vector;
 
-import cn.iwgang.countdownview.CountdownView;
 import works.avijay.com.ipl2018.helper.BackendHelper;
+import works.avijay.com.ipl2018.helper.Cricbuzz;
 import works.avijay.com.ipl2018.helper.DatabaseHelper;
 import works.avijay.com.ipl2018.helper.cards_adapter;
 
@@ -74,41 +78,31 @@ public class MainActivity extends AppCompatActivity
     List<cards_adapter> cardsAdapter = new ArrayList<>();
     Context context;
     InterstitialAd interstitialAd ;
-    CountdownView mCvCountdownView;
     float ads_value;
     SharedPreferences sharedPreferences;
     View view;
     boolean doubleBackToExitPressedOnce = false;
-
+    CardView nextLiveCard;
+    TextView nextLive;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        cardsList = findViewById(R.id.cardsList);
-        context = getApplicationContext();
-        mCvCountdownView = findViewById(R.id.count_down);
 
-        sharedPreferences = getSharedPreferences("ipl_sp", MODE_PRIVATE);
-        view = findViewById(android.R.id.content);
+        drawer = findViewById(R.id.drawer_layout);
 
+
+        initializeViews();
 
         //allow sharing cards
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
 
 
-        FloatingActionButton fab =  findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, LiveScores.class);
-                startActivity(intent);
-            }
-        });
 
-        drawer = findViewById(R.id.drawer_layout);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -116,7 +110,6 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
 
 
 
@@ -129,14 +122,37 @@ public class MainActivity extends AppCompatActivity
 
         startCountDown();
         showAd();
+
+        FloatingActionButton fab =  findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (drawer.isDrawerOpen(GravityCompat.START)) {
+                    drawer.closeDrawer(GravityCompat.START);
+                } else {
+                    drawer.openDrawer(GravityCompat.START);
+                }
+            }
+        });
+
     }
 
 
+    private void initializeViews(){
+        cardsList = findViewById(R.id.cardsList);
+        context = getApplicationContext();
+
+        sharedPreferences = getSharedPreferences("ipl_sp", MODE_PRIVATE);
+        view = findViewById(android.R.id.content);
+
+        nextLive = findViewById(R.id.nextLive);
+        nextLiveCard = findViewById(R.id.nextLiveCard);
+    }
+
+
+
     private void showAd() {
-        ads_value = sharedPreferences.getFloat("ads", (float) 0.2);
-
-        Log.d("ADS : VALUE : ", ads_value+"");
-
+        ads_value = sharedPreferences.getFloat("ads", (float) 0.3);
         if(Math.random() < ads_value){
             interstitialAd = new InterstitialAd(context);
             interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
@@ -149,37 +165,58 @@ public class MainActivity extends AppCompatActivity
                     if(interstitialAd.isLoaded())
                         interstitialAd.show();
                 }
-            }, 5000);
+            }, 3000);
         }
 
     }
 
 
     public void startCountDown(){
-        mCvCountdownView.setVisibility(View.GONE);
-        Date date2 = new Date();
-        Date date1 = new Date(118, 3, 7, 20, 0);
 
-        final long mills = date1.getTime() - date2.getTime();
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(mills > 0){
-                    mCvCountdownView.setVisibility(View.VISIBLE);
-                    mCvCountdownView.start(mills);
-                    mCvCountdownView.setOnCountdownEndListener(new CountdownView.OnCountdownEndListener() {
-                        @Override
-                        public void onEnd(CountdownView cv) {
-                            mCvCountdownView.setVisibility(View.GONE);
-
-                        }
-                    });
-                }
+                    getCricbuzzMatches();
             }
-        }, 1000);
+        }, 600);
     }
 
+
+    public void getCricbuzzMatches(){
+            try {
+
+                Cricbuzz cricbuzz = new Cricbuzz();
+                Vector<HashMap<String,String>> matches = cricbuzz.matches();
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                String data = gson.toJson(matches);
+                try {
+                    JSONArray matches_list = new JSONArray(data);
+                    for(int i=0; i<matches_list.length(); i++){
+                        JSONObject match = matches_list.getJSONObject(i);
+                        String mchstate = match.getString("mchstate");
+                        String match_srs = match.getString("srs");
+
+                        if(match_srs.equals("Indian Premier League, 2018") && (mchstate.equals("inprogress") || mchstate.equals("innings break") || mchstate.equals("nextlive"))){
+                               nextLiveCard.setVisibility(View.VISIBLE);
+                               nextLive.setText(match.getString("mchdesc"));
+                                   nextLiveCard.setOnClickListener(new View.OnClickListener() {
+                                       @Override
+                                       public void onClick(View v) {
+                                           Intent intent = new Intent(MainActivity.this, LiveScores.class);
+                                           startActivity(intent);
+                                       }
+                                   });
+                               break;
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+    }
 
     private void loadCards(int position) {
         cardsAdapter.clear();
@@ -227,13 +264,13 @@ public class MainActivity extends AppCompatActivity
             }
             final cards_adapter current = cardsAdapter.get(position);
 
-            DecimalFormat decimalFormat = new DecimalFormat("###.#");
+            final DecimalFormat decimalFormat = new DecimalFormat("###.#");
 
             final CardView card_view = itemView.findViewById(R.id.card_view);
             final ImageView card_image = itemView.findViewById(R.id.card_image);
             TextView card_description = itemView.findViewById(R.id.card_description);
-            TextView like_points = itemView.findViewById(R.id.like_points);
-            TextView dislike_points = itemView.findViewById(R.id.dislike_points);
+            final TextView like_points = itemView.findViewById(R.id.like_points);
+            final TextView dislike_points = itemView.findViewById(R.id.dislike_points);
             final LikeButton like_icon = itemView.findViewById(R.id.like_icon);
             final LikeButton dislike_icon = itemView.findViewById(R.id.dislike_icon);
             TextView skip_card = itemView.findViewById(R.id.skip_card);
@@ -312,16 +349,21 @@ public class MainActivity extends AppCompatActivity
                         BackendHelper.update_card_count update_card_count = new BackendHelper.update_card_count();
                         update_card_count.execute(context, current.getCard_id(), "approve");
 
-                        DatabaseHelper helper = new DatabaseHelper(context);
-                        helper.setCardAsSeen(current.getCard_id(), 1, current.getCard_approved());
+                        if(current.getOrder() < 10){
+                            DatabaseHelper helper = new DatabaseHelper(context);
+                            helper.setCardAsSeen(current.getCard_id(), 1, current.getCard_approved());
 
 
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                loadCards(position);
-                            }
-                        }, 400);
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    loadCards(position);
+                                }
+                            }, 400);
+                        }else{
+                            Snackbar.make(view, "Great", Snackbar.LENGTH_SHORT)
+                                    .setAction("Action", null).show();
+                        }
 
                     }
 
@@ -334,18 +376,26 @@ public class MainActivity extends AppCompatActivity
                 dislike_icon.setOnLikeListener(new OnLikeListener() {
                     @Override
                     public void liked(LikeButton likeButton) {
+
                         BackendHelper.update_card_count update_card_count = new BackendHelper.update_card_count();
                         update_card_count.execute(context, current.getCard_id(), "disapprove");
 
-                        DatabaseHelper helper = new DatabaseHelper(context);
-                        helper.setCardAsSeen(current.getCard_id(),2, current.getCard_disapproved());
+                        if(current.getOrder() < 10){
+                            DatabaseHelper helper = new DatabaseHelper(context);
+                            helper.setCardAsSeen(current.getCard_id(),2, current.getCard_disapproved());
 
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                loadCards(position);
-                            }
-                        }, 400);
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    loadCards(position);
+                                }
+                            }, 400);
+                        }else{
+                            Snackbar.make(view, "Oh okay!", Snackbar.LENGTH_SHORT)
+                                    .setAction("Action", null).show();
+                        }
+
+
                     }
 
                     @Override
@@ -688,6 +738,13 @@ public class MainActivity extends AppCompatActivity
                 fragmentTransaction.replace(R.id.main_activity_content, resultsFragment).addToBackStack(null).commit();
                 break;
 
+
+            case R.id.nav_previous_cards:
+                PreviousCards previousCards = new PreviousCards();
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.main_activity_content, previousCards).addToBackStack(null).commit();
+                break;
         }
 
 

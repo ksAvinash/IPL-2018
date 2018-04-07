@@ -41,8 +41,8 @@ public class SplasherActivity extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     Context context;
     FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
-    ValueEventListener mylistener;
+    DatabaseReference databaseReference, databaseReference2;
+    ValueEventListener mylistener, mylistener2;
     String match_type_firebase = "IPL";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,27 +59,48 @@ public class SplasherActivity extends AppCompatActivity {
         editor.putInt("match2", 0);
         editor.commit();
 
+
+
+
         MobileAds.initialize(this, "ca-app-pub-9681985190789334~8534666961");
         FirebaseMessaging.getInstance().subscribeToTopic("ipl_all_users_2");
 
         firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("match_type_test");
+        databaseReference = firebaseDatabase.getReference("match_type");
+
+        databaseReference2 = firebaseDatabase.getReference("ads_value");
+        mylistener2 = databaseReference2.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Float value = dataSnapshot.getValue(Float.class);
+
+                SharedPreferences sharedPreferences = context.getSharedPreferences("ipl_sp", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putFloat("ads", value);
+                editor.commit();
+                Log.i("ADS_VALUE", value+"");
+                databaseReference2.removeEventListener(mylistener2);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.i("ADS_VALUE", error.toString());
+                databaseReference2.removeEventListener(mylistener2);
+            }
+        });
 
 
         mylistener = databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String value = dataSnapshot.getValue(String.class);
-                match_type_firebase = value;
-                Log.d("FIREBASE", "Value is: " + value);
+                match_type_firebase = dataSnapshot.getValue(String.class);
                 getCricbuzzMatches();
                 databaseReference.removeEventListener(mylistener);
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                match_type_firebase = "IPL";
-                Log.w("FIREBASE", "Failed to read value.", error.toException());
+                match_type_firebase = "T20";
                 getCricbuzzMatches();
                 databaseReference.removeEventListener(mylistener);
             }
@@ -106,29 +127,12 @@ public class SplasherActivity extends AppCompatActivity {
                 BackendHelper.fetch_cards fetch_cards = new BackendHelper.fetch_cards();
                 fetch_cards.execute(context, false);
 
-                BackendHelper.fetch_setting fetch_setting = new BackendHelper.fetch_setting();
-                fetch_setting.execute(context, "ads");
-
             }
         }else if(get_previous_fetch_history()){
-
-            if(isNetworkConnected()){
-                BackendHelper.fetch_cards fetch_cards = new BackendHelper.fetch_cards();
-                fetch_cards.execute(context, false);
-
-
-                BackendHelper.fetch_setting fetch_setting = new BackendHelper.fetch_setting();
-                fetch_setting.execute(context, "ads");
-
-                Date current_date = new Date();
-                editor = sharedPreferences.edit();
-                editor.putLong("last_fetch_date", current_date.getTime());
-                editor.apply();
-            }
-
-        }else {
-            Log.d("FETCH AGAIN", "NOT FETCHING ANY DATA");
+            BackendHelper.fetch_cards fetch_cards = new BackendHelper.fetch_cards();
+            fetch_cards.execute(context, false);
         }
+
 
 
         new Handler().postDelayed(new Runnable() {
@@ -158,7 +162,6 @@ public class SplasherActivity extends AppCompatActivity {
                     Cricbuzz cricbuzz = new Cricbuzz();
                     Vector<HashMap<String,String>> matches = cricbuzz.matches();
                     Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
                     String data = gson.toJson(matches);
                     Log.d("DATA", data);
                     try {
@@ -168,9 +171,10 @@ public class SplasherActivity extends AppCompatActivity {
                             JSONObject match = matches_list.getJSONObject(i);
                             String mchstate = match.getString("mchstate");
                             String match_type = match.getString("type");
+                            String match_srs = match.getString("srs");
 
                             //CHANGE TO IPL DURING 3.0 RELEASE
-                            if((mchstate.equals("inprogress") || mchstate.equals("innings break")) && match_type.equals(match_type_firebase)){
+                            if((mchstate.equals("inprogress") || mchstate.equals("innings break")) && match_type.equals(match_type_firebase) && match_srs.equals("Indian Premier League, 2018")){
                                 Log.d("VALID MATCH", match.getInt("id")+"");
                                 editor.putInt("match"+match_id, match.getInt("id"));
                                 editor.commit();

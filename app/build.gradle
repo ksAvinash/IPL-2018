@@ -6,8 +6,9 @@ android {
         applicationId "works.avijay.com.ipl2018"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 10
-        versionName "3.02"
+        versionCode 15
+
+        versionName "4.04"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -41,9 +42,7 @@ dependencies {
     compile 'com.cjj.materialrefeshlayout:library:1.3.0'
     //like and favourites button
     compile 'com.github.jd-alexander:LikeButton:0.2.3'
-    //count-down library
 
-    compile 'com.github.iwgang:countdownview:2.1.6'
     implementation files('libs/jsoup-1.11.2.jar')
     implementation files('libs/gson-2.3.1.jar')
 }

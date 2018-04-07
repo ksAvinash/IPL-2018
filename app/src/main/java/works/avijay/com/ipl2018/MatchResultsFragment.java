@@ -92,8 +92,6 @@ public class MatchResultsFragment extends Fragment implements View.OnClickListen
 
 
     private void showAd() {
-        Log.d("ADS : VALUE : ", ads_value+"");
-
         if(Math.random() < ads_value){
             interstitialAd = new InterstitialAd(context);
             interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
@@ -107,7 +105,7 @@ public class MatchResultsFragment extends Fragment implements View.OnClickListen
                     if(interstitialAd.isLoaded())
                         interstitialAd.show();
                 }
-            }, 2000);
+            }, 4000);
         }
     }
 

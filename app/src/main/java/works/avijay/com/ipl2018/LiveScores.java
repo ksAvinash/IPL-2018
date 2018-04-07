@@ -9,8 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.google.firebase.database.ValueEventListener;
-
 import works.avijay.com.ipl2018.helper.MatchesTabsAdapter;
 
 public class LiveScores extends AppCompatActivity {
@@ -32,8 +30,8 @@ public class LiveScores extends AppCompatActivity {
 
         initializeViews();
 
-        LiveMatch1.initializeAdapterValueEventListenersDatabaseReference();
-        LiveMatch2.initializeAdapterValueEventListenersDatabaseReference();
+        LiveMatch1.initializeAdapterAndStartAutoRefresh();
+        LiveMatch2.initializeAdapterAndStartAutoRefresh();
     }
 
 
@@ -52,6 +50,8 @@ public class LiveScores extends AppCompatActivity {
     public void onBackPressed() {
         LiveMatch1.removeReference(false);
         LiveMatch2.removeReference(false);
+        LiveMatch1.stopAutoRefresh(true);
+        LiveMatch2.stopAutoRefresh(true);
         finish();
     }
 

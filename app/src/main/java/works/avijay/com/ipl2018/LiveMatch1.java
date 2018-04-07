@@ -1,7 +1,6 @@
 package works.avijay.com.ipl2018;
 
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,20 +11,15 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -35,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.firebase.database.DataSnapshot;
@@ -44,8 +39,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.like.LikeButton;
-import com.like.OnLikeListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,15 +46,10 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Vector;
 
 import works.avijay.com.ipl2018.helper.Cricbuzz;
 import works.avijay.com.ipl2018.helper.chat_adapter;
@@ -78,17 +66,16 @@ public class LiveMatch1 extends Fragment {
     }
 
     View view;
-    TextView current_team, current_score, match_description,
+    static TextView current_team, current_score, match_description,
             batsman1_name, batsman1_balls, batsman1_4s, batsman1_6s, batsman1_sr, batsman1_runs,
             batsman2_name, batsman2_balls, batsman2_4s, batsman2_6s, batsman2_sr, batsman2_runs,
             bowler1_name, bowler1_overs, bowler1_maidens, bowler1_runs, bowler1_wickets, bowler1_economy,
             bowler2_name, bowler2_overs, bowler2_maidens, bowler2_runs, bowler2_wickets, bowler2_economy;
 
-    CardView team_score_card, batting_score_card, bowling_score_card;
+    static CardView team_score_card, batting_score_card, bowling_score_card;
     static float ads_value;
     static Context context;
     static  int match_id;
-    LikeButton refresh_scores;
     static InterstitialAd interstitialAd ;
     static EditText push_message;
     static ImageView push_icon;
@@ -98,7 +85,7 @@ public class LiveMatch1 extends Fragment {
     private static List<chat_adapter> chatAdapter = new ArrayList<>();
     public static ValueEventListener myChats;
     static SharedPreferences sharedPreferences2;
-    public static boolean receive_again = true;
+    public static boolean receive_again = true, auto_refresh;
     static String user_name;
 
     @Override
@@ -109,36 +96,12 @@ public class LiveMatch1 extends Fragment {
 
         receiveChatMessages(receive_again);
 
-        if(isNetworkConnected())
-            new Handler().postDelayed(new Runnable() {
+        new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                populateData();
+                populateDataOnce();
             }
-        }, 200);
-
-        refresh_scores.setOnLikeListener(new OnLikeListener() {
-            @Override
-            public void liked(LikeButton likeButton) {
-                refresh_scores.setEnabled(false);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                      refresh_scores.setEnabled(true);
-                      refresh_scores.setLiked(false);
-                    }
-                }, 4000);
-                Snackbar.make(view, "Refreshing scores..", Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
-
-                populateData();
-                showAd();
-            }
-
-            @Override
-            public void unLiked(LikeButton likeButton) {
-            }
-        });
+        }, 500);
 
         return view;
     }
@@ -146,11 +109,10 @@ public class LiveMatch1 extends Fragment {
 
 
     private static void showAd() {
-
-        if(Math.random() < 0.2){
+        if(Math.random() < 0.05){
             if(context != null){
                 interstitialAd = new InterstitialAd(context);
-                interstitialAd.setAdUnitId("ca-app-pub-9681985190789334/8358998025");
+                interstitialAd.setAdUnitId("ca-app-pub-9681985190789334/4854428286");
                 AdRequest adRequest = new AdRequest.Builder().build();
                 interstitialAd.loadAd(adRequest);
                 new Handler().postDelayed(new Runnable() {
@@ -160,7 +122,7 @@ public class LiveMatch1 extends Fragment {
                         if(interstitialAd.isLoaded())
                             interstitialAd.show();
                     }
-                }, 2000);
+                }, 3000);
             }
         }
     }
@@ -211,8 +173,6 @@ public class LiveMatch1 extends Fragment {
         bowler2_economy = view.findViewById(R.id.bowler2_economy);
         bowler2_runs = view.findViewById(R.id.bowler2_runs);
 
-        refresh_scores = view.findViewById(R.id.refresh_scores);
-
         team_score_card = view.findViewById(R.id.team_score_card);
         batting_score_card = view.findViewById(R.id.batting_score_card);
         bowling_score_card = view.findViewById(R.id.bowling_score_card);
@@ -228,7 +188,6 @@ public class LiveMatch1 extends Fragment {
         push_message.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    bowling_score_card.setVisibility(View.GONE);
                     if(validateUser()){
 
                         if(push_message.getText().length() >0){
@@ -298,7 +257,7 @@ public class LiveMatch1 extends Fragment {
         } else {
             builder = new AlertDialog.Builder(context);
         }
-        builder.setMessage("Please select an unique USERNAME, this username which will be displayed to all users during the entire period of your chat history and believe us we are not using your information anywhere\n\nNOTE: THIS USERNAME CANNOT BE CHANGED")
+        builder.setMessage("Please select an unique USERNAME, this username will be displayed to all users during the entire period of your chat history and believe us, we are not using your information anywhere\n\nNOTE: THIS USERNAME CANNOT BE CHANGED")
             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     if(validateusername(input.getText().toString())){
@@ -357,6 +316,7 @@ public class LiveMatch1 extends Fragment {
 
     private static void receiveChatMessages(boolean value){
         if(value){
+            Log.d("REFRESH 1","RECURSIVE");
             showAd();
             chatAdapter.clear();
             myChats = myRef.addValueEventListener(new ValueEventListener() {
@@ -382,26 +342,17 @@ public class LiveMatch1 extends Fragment {
                 public void onCancelled(DatabaseError error) {
                     Log.w("CHATS", "Failed to read value.", error.toException());
                     myRef.removeEventListener(myChats);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            receiveChatMessages(receive_again);
+                        }
+                    }, 5000);
                 }
             });
         }else{
             Log.d("RECEIVING MESSAGE 1 : ","LAST");
         }
-    }
-
-    public static void removeReference(boolean again){
-        myRef.removeEventListener(myChats);
-
-        if(!again)
-            receive_again = false;
-    }
-
-
-    public static void initializeAdapterValueEventListenersDatabaseReference(){
-        database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("match_"+match_id);
-        receive_again = true;
-        receiveChatMessages(true);
     }
 
     public static void receiveChatMessageOnce(){
@@ -429,6 +380,30 @@ public class LiveMatch1 extends Fragment {
     }
 
 
+    public static void removeReference(boolean again){
+        myRef.removeEventListener(myChats);
+
+        if(!again)
+            receive_again = false;
+    }
+
+
+    public static void stopAutoRefresh(boolean stop_refresh){
+        if(stop_refresh)
+            auto_refresh = false;
+    }
+
+    public static void initializeAdapterAndStartAutoRefresh(){
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("match_"+match_id);
+        receive_again = true;
+        auto_refresh = true;
+        receiveChatMessages(true);
+        populateData(true);
+    }
+
+
+
     private static void displayMessages(){
         ArrayAdapter<chat_adapter> adapter = new myChatAdapterClass();
         chatList.setAdapter(adapter);
@@ -436,8 +411,154 @@ public class LiveMatch1 extends Fragment {
 
 
 
-    private void populateData(){
+    private static void populateData(boolean refresh){
+        if(refresh){
+            if(match_id != 0){
+                Log.d("AUTO_REFRESH 1", auto_refresh+"");
+
+                team_score_card.setVisibility(View.VISIBLE);
+                batting_score_card.setVisibility(View.VISIBLE);
+                bowling_score_card.setVisibility(View.VISIBLE);
+
+                try {
+                    DecimalFormat format = new DecimalFormat("###.##");
+                    Cricbuzz cricbuzz = new Cricbuzz();
+                    Map<String,Map> score = cricbuzz.livescore(match_id+"");
+                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                    String data = gson.toJson(score);
+
+                    JSONObject _data = new JSONObject(data);
+                    JSONObject matchinfo = _data.getJSONObject("matchinfo");
+                    match_description.setText(matchinfo.getString("mchdesc"));
+
+                    JSONObject batting = _data.getJSONObject("batting");
+                    JSONArray team = batting.getJSONArray("team");
+                    JSONObject _team = team.getJSONObject(0);
+                    current_team.setText(_team.getString("team"));
+
+                    JSONArray _score = batting.getJSONArray("score");
+                    JSONObject __score = _score.getJSONObject(0);
+                    current_score.setText(__score.getString("runs")+"-"+__score.getString("wickets")+" ("+__score.getString("overs")+")");
+
+                    JSONArray batsmen = batting.getJSONArray("batsman");
+                    JSONObject bat1 = batsmen.getJSONObject(0);
+                    batsman1_name.setText(bat1.getString("name"));
+                    batsman1_4s.setText(bat1.getString("fours"));
+                    batsman1_6s.setText(bat1.getString("six"));
+                    batsman1_balls.setText(bat1.getString("balls"));
+                    batsman1_runs.setText(bat1.getString("runs"));
+                    double bat1_sr = (float)Integer.parseInt(bat1.getString("runs")) * 100 / Integer.parseInt(bat1.getString("balls"));
+                    batsman1_sr.setText(format.format(bat1_sr));
+
+                    JSONObject bowling = _data.getJSONObject("bowling");
+                    JSONArray bowlers = bowling.getJSONArray("bowler");
+                    JSONObject ball1 = bowlers.getJSONObject(0);
+                    bowler1_name.setText(ball1.getString("name"));
+                    bowler1_overs.setText(ball1.getString("overs"));
+                    bowler1_maidens.setText(ball1.getString("maidens"));
+                    bowler1_wickets.setText(ball1.getString("wickets"));
+                    bowler1_runs.setText(ball1.getString("runs"));
+                    double ball1_eco = Integer.parseInt(ball1.getString("runs")) / Double.parseDouble(ball1.getString("overs"));
+                    bowler1_economy.setText(format.format(ball1_eco));
+
+                    JSONObject bat2 = batsmen.getJSONObject(1);
+                    batsman2_name.setText(bat2.getString("name"));
+                    batsman2_4s.setText(bat2.getString("fours"));
+                    batsman2_6s.setText(bat2.getString("six"));
+                    batsman2_balls.setText(bat2.getString("balls"));
+                    batsman2_runs.setText(bat2.getString("runs"));
+                    double bat2_sr = (float)Integer.parseInt(bat2.getString("runs")) * 100 / Integer.parseInt(bat2.getString("balls"));
+                    batsman2_sr.setText(format.format(bat2_sr));
+
+                    JSONObject ball2 = bowlers.getJSONObject(1);
+                    bowler2_name.setText(ball2.getString("name"));
+                    bowler2_overs.setText(ball2.getString("overs"));
+                    bowler2_maidens.setText(ball2.getString("maidens"));
+                    bowler2_wickets.setText(ball2.getString("wickets"));
+                    bowler2_runs.setText(ball2.getString("runs"));
+                    double ball2_eco = Integer.parseInt(ball2.getString("runs")) / Double.parseDouble(ball2.getString("overs"));
+                    bowler2_economy.setText(format.format(ball2_eco));
+
+                } catch (IOException e){
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (NumberFormatException e){
+                    e.printStackTrace();
+                }finally {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            populateData(auto_refresh);
+                        }
+                    }, 10000);
+                }
+            }
+        }else {
+            Log.d("AUTO_REFRESH 1", "LAST");
+        }
+    }
+
+
+
+    public static class myChatAdapterClass extends ArrayAdapter<chat_adapter> {
+
+        myChatAdapterClass() {
+            super(context, R.layout.chat_ui, chatAdapter);
+        }
+
+
+        @NonNull
+        @Override
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+            View itemView = convertView;
+            if (itemView == null) {
+                LayoutInflater inflater = LayoutInflater.from(context);
+                itemView = inflater.inflate(R.layout.chat_ui, parent, false);
+            }
+
+            try {
+                chat_adapter current = chatAdapter.get(position);
+
+                TextView chat_message = itemView.findViewById(R.id.chat_message);
+                chat_message.setText(current.getUser_message());
+
+
+                TextView chat_user = itemView.findViewById(R.id.chat_user);
+                chat_user.setText(current.getUsername());
+
+
+                if(user_name.equals(current.getUsername())){
+                    CoordinatorLayout.LayoutParams params = new CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    params.gravity = Gravity.END|Gravity.BOTTOM;
+                    params.topMargin = 70;
+                    params.rightMargin = 3;
+                    chat_message.setLayoutParams(params);
+
+                    CoordinatorLayout.LayoutParams params2 = new CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    params2.gravity = Gravity.END|Gravity.TOP;
+                    params2.rightMargin = 50;
+                    chat_user.setLayoutParams(params2);
+                }
+                GradientDrawable bgShape = (GradientDrawable)chat_message.getBackground();
+                bgShape.setColor(Color.parseColor(current.getChat_color()));
+
+            }catch (IndexOutOfBoundsException e){
+
+            }
+
+
+
+            return itemView;
+        }
+    }
+
+
+
+    private static void populateDataOnce(){
         if(match_id != 0){
+            Log.d("AUTO_REFRESH 1", "ONCE");
+
             team_score_card.setVisibility(View.VISIBLE);
             batting_score_card.setVisibility(View.VISIBLE);
             bowling_score_card.setVisibility(View.VISIBLE);
@@ -510,61 +631,6 @@ public class LiveMatch1 extends Fragment {
             }
         }
 
-    }
-
-
-
-
-    public static class myChatAdapterClass extends ArrayAdapter<chat_adapter> {
-
-        myChatAdapterClass() {
-            super(context, R.layout.chat_ui, chatAdapter);
-        }
-
-
-        @NonNull
-        @Override
-        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-            View itemView = convertView;
-            if (itemView == null) {
-                LayoutInflater inflater = LayoutInflater.from(context);
-                itemView = inflater.inflate(R.layout.chat_ui, parent, false);
-            }
-
-            try {
-                chat_adapter current = chatAdapter.get(position);
-
-                TextView chat_message = itemView.findViewById(R.id.chat_message);
-                chat_message.setText(current.getUser_message());
-
-
-                TextView chat_user = itemView.findViewById(R.id.chat_user);
-                chat_user.setText(current.getUsername());
-
-
-                if(user_name.equals(current.getUsername())){
-                    CoordinatorLayout.LayoutParams params = new CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    params.gravity = Gravity.END|Gravity.BOTTOM;
-                    params.topMargin = 70;
-                    params.rightMargin = 3;
-                    chat_message.setLayoutParams(params);
-
-                    CoordinatorLayout.LayoutParams params2 = new CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    params2.gravity = Gravity.END|Gravity.TOP;
-                    params2.rightMargin = 50;
-                    chat_user.setLayoutParams(params2);
-                }
-                GradientDrawable bgShape = (GradientDrawable)chat_message.getBackground();
-                bgShape.setColor(Color.parseColor(current.getChat_color()));
-
-            }catch (IndexOutOfBoundsException e){
-
-            }
-
-
-
-            return itemView;
-        }
     }
 
 
