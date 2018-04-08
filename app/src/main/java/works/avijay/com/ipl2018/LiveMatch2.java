@@ -65,50 +65,51 @@ public class LiveMatch2 extends Fragment {
         // Required empty public constructor
     }
 
+    static FirebaseDatabase database;
+    static DatabaseReference myRef;
+    public static ValueEventListener myChats;
+    static int match_id;
+    public static boolean receive_again = true, auto_refresh = true;
+
+
+    float ads_value;
+    private List<chat_adapter> chatAdapter = new ArrayList<>();
+    SharedPreferences sharedPreferences2;
+    String user_name;
     View view;
-    static TextView current_team, current_score, match_description,
+    TextView current_team, current_score, match_description,
             batsman1_name, batsman1_balls, batsman1_4s, batsman1_6s, batsman1_sr, batsman1_runs,
             batsman2_name, batsman2_balls, batsman2_4s, batsman2_6s, batsman2_sr, batsman2_runs,
             bowler1_name, bowler1_overs, bowler1_maidens, bowler1_runs, bowler1_wickets, bowler1_economy,
-            bowler2_name, bowler2_overs, bowler2_maidens, bowler2_runs, bowler2_wickets, bowler2_economy;
-
-    static CardView team_score_card, batting_score_card, bowling_score_card;
-    static float ads_value;
-    static Context context;
-    static  int match_id;
-    static InterstitialAd interstitialAd ;
-    static EditText push_message;
-    static ImageView push_icon;
-    static FirebaseDatabase database;
-    public static DatabaseReference myRef;
-    static ListView chatList;
-    private static List<chat_adapter> chatAdapter = new ArrayList<>();
-    public static ValueEventListener myChats;
-    static SharedPreferences sharedPreferences2;
-    public static boolean receive_again = true, auto_refresh;
-    static String user_name;
+            bowler2_name, bowler2_overs, bowler2_maidens, bowler2_runs, bowler2_wickets, bowler2_economy, match_status;
+    CardView team_score_card, batting_score_card, bowling_score_card;
+    InterstitialAd interstitialAd ;
+    EditText push_message;
+    ImageView push_icon;
+    ListView chatList;
+    Context context;
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view =  inflater.inflate(R.layout.fragment_live_match1, container, false);
         initializeViews();
 
-        receiveChatMessages(receive_again);
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                populateDataOnce();
+                receiveChatMessages(receive_again);
+                refreshScores(auto_refresh);
             }
         }, 500);
+
         return view;
     }
 
 
-
-    private static void showAd() {
+    private void showAd() {
         if(Math.random() < 0.05){
             if(context != null){
                 interstitialAd = new InterstitialAd(context);
@@ -127,10 +128,6 @@ public class LiveMatch2 extends Fragment {
         }
     }
 
-    private boolean isNetworkConnected() {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        return cm.getActiveNetworkInfo() != null;
-    }
 
 
     private void initializeViews() {
@@ -143,6 +140,7 @@ public class LiveMatch2 extends Fragment {
         match_description = view.findViewById(R.id.match_description);
         current_team = view.findViewById(R.id.current_team);
         current_score = view.findViewById(R.id.current_score);
+        match_status = view.findViewById(R.id.match_status);
 
         batsman1_name = view.findViewById(R.id.batsman1_name);
         batsman1_runs = view.findViewById(R.id.batsman1_runs);
@@ -314,9 +312,9 @@ public class LiveMatch2 extends Fragment {
     }
 
 
-    private static void receiveChatMessages(boolean value){
-        if(value){
-            Log.d("REFRESH 1","RECURSIVE");
+    private void receiveChatMessages(boolean receive_again_){
+        if(receive_again_){
+            Log.d("LIVE_CHAT 2","REFRESH CHAT RECURSIVE");
             showAd();
             chatAdapter.clear();
             myChats = myRef.addValueEventListener(new ValueEventListener() {
@@ -329,7 +327,7 @@ public class LiveMatch2 extends Fragment {
                         ));
                     }
                     displayMessages();
-                    removeReference(true);
+                    stopChats(true);
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -351,12 +349,13 @@ public class LiveMatch2 extends Fragment {
                 }
             });
         }else{
-            Log.d("RECEIVING MESSAGE 1 : ","LAST");
+            stopChat();
+            Log.d("LIVE_CHAT 2","REFRESH CHAT COMPLETE");
         }
     }
 
-    public static void receiveChatMessageOnce(){
-        Log.d("RECEIVING MESSAGE 1 : ","ONCE");
+    public void receiveChatMessageOnce(){
+        Log.d("LIVE_CHAT 2","REFRESH CHAT ONCE");
         chatAdapter.clear();
         myChats = myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -373,24 +372,23 @@ public class LiveMatch2 extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError error) {
-                Log.w("CHATS", "Failed to read value.", error.toException());
                 myRef.removeEventListener(myChats);
             }
         });
     }
 
 
-    public static void removeReference(boolean again){
+    public static void stopChats(boolean receive_again_){
         myRef.removeEventListener(myChats);
 
-        if(!again)
+        if(!receive_again_){
             receive_again = false;
+        }
     }
 
 
-    public static void stopAutoRefresh(boolean stop_refresh){
-        if(stop_refresh)
-            auto_refresh = false;
+    public static void stopAutoRefresh(){
+        auto_refresh = false;
     }
 
     public static void initializeAdapterAndStartAutoRefresh(){
@@ -398,24 +396,28 @@ public class LiveMatch2 extends Fragment {
         myRef = database.getReference("match_"+match_id);
         receive_again = true;
         auto_refresh = true;
-        receiveChatMessages(true);
-        populateData(true);
+    }
+
+    public void stopChat(){
+        Log.d("LIVE_CHAT 1","CLEAR VISIBILITY");
+        chatList.setVisibility(View.GONE);
+        push_icon.setVisibility(View.GONE);
+        push_message.setVisibility(View.GONE);
     }
 
 
 
-    private static void displayMessages(){
+    private void displayMessages(){
         ArrayAdapter<chat_adapter> adapter = new myChatAdapterClass();
         chatList.setAdapter(adapter);
     }
 
 
 
-    private static void populateData(boolean refresh){
-        if(refresh){
+    private void refreshScores(boolean auto_refresh_){
+        if(auto_refresh_){
+            Log.d("LIVE_CHAT 2", "REFRESH SCORE RECURSIVE");
             if(match_id != 0){
-                Log.d("AUTO_REFRESH 2", auto_refresh+"");
-
                 team_score_card.setVisibility(View.VISIBLE);
                 batting_score_card.setVisibility(View.VISIBLE);
                 bowling_score_card.setVisibility(View.VISIBLE);
@@ -430,6 +432,7 @@ public class LiveMatch2 extends Fragment {
                     JSONObject _data = new JSONObject(data);
                     JSONObject matchinfo = _data.getJSONObject("matchinfo");
                     match_description.setText(matchinfo.getString("mchdesc"));
+                    match_status.setText(matchinfo.getString("status"));
 
                     JSONObject batting = _data.getJSONObject("batting");
                     JSONArray team = batting.getJSONArray("team");
@@ -489,19 +492,21 @@ public class LiveMatch2 extends Fragment {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            populateData(auto_refresh);
+                            refreshScores(auto_refresh);
                         }
                     }, 10000);
                 }
+            }else {
+                Log.d("LIVE_CHAT 2", "NO ACTIVE MATCHES");
             }
         }else {
-            Log.d("AUTO_REFRESH 2", "LAST");
+            Log.d("LIVE_CHAT 2", "REFRESH SCORE LAST");
         }
     }
 
 
 
-    public static class myChatAdapterClass extends ArrayAdapter<chat_adapter> {
+    public class myChatAdapterClass extends ArrayAdapter<chat_adapter> {
 
         myChatAdapterClass() {
             super(context, R.layout.chat_ui, chatAdapter);
@@ -547,97 +552,9 @@ public class LiveMatch2 extends Fragment {
 
             }
 
-
-
             return itemView;
         }
     }
-
-
-
-    private static void populateDataOnce(){
-            if(match_id != 0){
-                Log.d("AUTO_REFRESH 2", "ONCE");
-
-                team_score_card.setVisibility(View.VISIBLE);
-                batting_score_card.setVisibility(View.VISIBLE);
-                bowling_score_card.setVisibility(View.VISIBLE);
-
-                try {
-                    DecimalFormat format = new DecimalFormat("###.##");
-                    Cricbuzz cricbuzz = new Cricbuzz();
-                    Map<String,Map> score = cricbuzz.livescore(match_id+"");
-                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                    String data = gson.toJson(score);
-
-                    JSONObject _data = new JSONObject(data);
-                    JSONObject matchinfo = _data.getJSONObject("matchinfo");
-                    match_description.setText(matchinfo.getString("mchdesc"));
-
-                    JSONObject batting = _data.getJSONObject("batting");
-                    JSONArray team = batting.getJSONArray("team");
-                    JSONObject _team = team.getJSONObject(0);
-                    current_team.setText(_team.getString("team"));
-
-                    JSONArray _score = batting.getJSONArray("score");
-                    JSONObject __score = _score.getJSONObject(0);
-                    current_score.setText(__score.getString("runs")+"-"+__score.getString("wickets")+" ("+__score.getString("overs")+")");
-
-                    JSONArray batsmen = batting.getJSONArray("batsman");
-                    JSONObject bat1 = batsmen.getJSONObject(0);
-                    batsman1_name.setText(bat1.getString("name"));
-                    batsman1_4s.setText(bat1.getString("fours"));
-                    batsman1_6s.setText(bat1.getString("six"));
-                    batsman1_balls.setText(bat1.getString("balls"));
-                    batsman1_runs.setText(bat1.getString("runs"));
-                    double bat1_sr = (float)Integer.parseInt(bat1.getString("runs")) * 100 / Integer.parseInt(bat1.getString("balls"));
-                    batsman1_sr.setText(format.format(bat1_sr));
-
-                    JSONObject bowling = _data.getJSONObject("bowling");
-                    JSONArray bowlers = bowling.getJSONArray("bowler");
-                    JSONObject ball1 = bowlers.getJSONObject(0);
-                    bowler1_name.setText(ball1.getString("name"));
-                    bowler1_overs.setText(ball1.getString("overs"));
-                    bowler1_maidens.setText(ball1.getString("maidens"));
-                    bowler1_wickets.setText(ball1.getString("wickets"));
-                    bowler1_runs.setText(ball1.getString("runs"));
-                    double ball1_eco = Integer.parseInt(ball1.getString("runs")) / Double.parseDouble(ball1.getString("overs"));
-                    bowler1_economy.setText(format.format(ball1_eco));
-
-                    JSONObject bat2 = batsmen.getJSONObject(1);
-                    batsman2_name.setText(bat2.getString("name"));
-                    batsman2_4s.setText(bat2.getString("fours"));
-                    batsman2_6s.setText(bat2.getString("six"));
-                    batsman2_balls.setText(bat2.getString("balls"));
-                    batsman2_runs.setText(bat2.getString("runs"));
-                    double bat2_sr = (float)Integer.parseInt(bat2.getString("runs")) * 100 / Integer.parseInt(bat2.getString("balls"));
-                    batsman2_sr.setText(format.format(bat2_sr));
-
-                    JSONObject ball2 = bowlers.getJSONObject(1);
-                    bowler2_name.setText(ball2.getString("name"));
-                    bowler2_overs.setText(ball2.getString("overs"));
-                    bowler2_maidens.setText(ball2.getString("maidens"));
-                    bowler2_wickets.setText(ball2.getString("wickets"));
-                    bowler2_runs.setText(ball2.getString("runs"));
-                    double ball2_eco = Integer.parseInt(ball2.getString("runs")) / Double.parseDouble(ball2.getString("overs"));
-                    bowler2_economy.setText(format.format(ball2_eco));
-
-                } catch (IOException e){
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (NumberFormatException e){
-                    e.printStackTrace();
-                }
-            }
-
-    }
-
-
-
-
-
-
 
 
 }

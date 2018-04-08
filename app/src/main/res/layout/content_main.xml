@@ -11,24 +11,45 @@
     android:id="@+id/main_activity_content"
     >
 
-
-       <android.support.v7.widget.CardView
+       <RelativeLayout
            android:id="@+id/nextLiveCard"
            android:layout_width="match_parent"
-           android:layout_height="60dp"
-           android:visibility="gone"
-           app:cardBackgroundColor="@color/colorAccent"
+           android:layout_height="wrap_content"
+           android:background="@color/colorAccent"
            >
-           <works.avijay.com.ipl2018.fonts.titles_font
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:id="@+id/nextLive"
-               android:layout_gravity="center"
-               android:textSize="36sp"
-               android:textStyle="bold"
-               android:textColor="@color/colorWhite"
-               />
-       </android.support.v7.widget.CardView>
+       <works.avijay.com.ipl2018.fonts.scores_font
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="TODAYS MATCHES"
+           android:textColor="@color/playerTexts"
+           android:layout_centerHorizontal="true"
+           android:textSize="18sp"
+           android:layout_margin="6dp"
+           />
+
+       <works.avijay.com.ipl2018.fonts.titles_font
+           android:layout_marginTop="24dp"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:id="@+id/nextLive"
+           android:layout_centerHorizontal="true"
+           android:textSize="30sp"
+           android:textStyle="bold"
+           android:textColor="@color/colorWhite"
+           />
+
+       <works.avijay.com.ipl2018.fonts.titles_font
+           android:layout_marginBottom="8dp"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:id="@+id/nextLive2"
+           android:layout_below="@+id/nextLive"
+           android:layout_centerHorizontal="true"
+           android:textSize="30sp"
+           android:textStyle="bold"
+           android:textColor="@color/colorWhite"
+           />
+       </RelativeLayout>
 
 
     <ListView

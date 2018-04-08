@@ -128,25 +128,37 @@ public class TeamsStatsFragment extends Fragment{
 
     public static void populateData(){
         teamAdapter.clear();
-        if(materialRefreshLayout.isShown())
-            materialRefreshLayout.finishRefresh();
 
 
-        Cursor cursor = helper.getAllTeamStats();
-        while (cursor.moveToNext()){
-            teamAdapter.add(new teams_list_adapter(
-                    cursor.getString(0),
-                    cursor.getInt(1),
-                    cursor.getInt(2),
-                    cursor.getInt(3),
-                    cursor.getInt(4),
-                    cursor.getString(5),
-                    cursor.getString(6),
-                    cursor.getInt(7)
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Cursor cursor = helper.getAllTeamStats();
+                while (cursor.moveToNext()){
+                    teamAdapter.add(new teams_list_adapter(
+                            cursor.getString(0),
+                            cursor.getInt(1),
+                            cursor.getInt(2),
+                            cursor.getInt(3),
+                            cursor.getInt(4),
+                            cursor.getString(5),
+                            cursor.getString(6),
+                            cursor.getInt(7)
                     ));
-        }
+                }
+                cursor.close();
+            }
+        }).start();
 
-        displayList();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(materialRefreshLayout.isShown())
+                    materialRefreshLayout.finishRefresh();
+                displayList();
+            }
+        }, 200);
+
     }
 
 

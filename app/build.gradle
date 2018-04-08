@@ -6,9 +6,9 @@ android {
         applicationId "works.avijay.com.ipl2018"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 15
+        versionCode 16
 
-        versionName "4.04"
+        versionName "4.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

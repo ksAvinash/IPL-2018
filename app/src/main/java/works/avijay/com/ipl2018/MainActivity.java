@@ -38,6 +38,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -82,8 +83,10 @@ public class MainActivity extends AppCompatActivity
     SharedPreferences sharedPreferences;
     View view;
     boolean doubleBackToExitPressedOnce = false;
-    CardView nextLiveCard;
-    TextView nextLive;
+    RelativeLayout nextLiveCard;
+    TextView nextLive, nextLive2;
+    DatabaseHelper helper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,7 +102,6 @@ public class MainActivity extends AppCompatActivity
         //allow sharing cards
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
-
 
 
 
@@ -127,11 +129,8 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (drawer.isDrawerOpen(GravityCompat.START)) {
-                    drawer.closeDrawer(GravityCompat.START);
-                } else {
-                    drawer.openDrawer(GravityCompat.START);
-                }
+              Intent intent = new Intent(MainActivity.this, LiveScores.class);
+              startActivity(intent);
             }
         });
 
@@ -146,7 +145,10 @@ public class MainActivity extends AppCompatActivity
         view = findViewById(android.R.id.content);
 
         nextLive = findViewById(R.id.nextLive);
+        nextLive2 = findViewById(R.id.nextLive2);
         nextLiveCard = findViewById(R.id.nextLiveCard);
+
+        helper = new DatabaseHelper(context);
     }
 
 
@@ -190,6 +192,7 @@ public class MainActivity extends AppCompatActivity
                 Vector<HashMap<String,String>> matches = cricbuzz.matches();
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 String data = gson.toJson(matches);
+                int m1 = 1;
                 try {
                     JSONArray matches_list = new JSONArray(data);
                     for(int i=0; i<matches_list.length(); i++){
@@ -197,17 +200,23 @@ public class MainActivity extends AppCompatActivity
                         String mchstate = match.getString("mchstate");
                         String match_srs = match.getString("srs");
 
-                        if(match_srs.equals("Indian Premier League, 2018") && (mchstate.equals("inprogress") || mchstate.equals("innings break") || mchstate.equals("nextlive"))){
+                        if(match_srs.equals("Indian Premier League, 2018") && (mchstate.equals("inprogress") || mchstate.equals("innings break") || mchstate.equals("nextlive") || mchstate.equals("preview"))){
                                nextLiveCard.setVisibility(View.VISIBLE);
-                               nextLive.setText(match.getString("mchdesc"));
-                                   nextLiveCard.setOnClickListener(new View.OnClickListener() {
-                                       @Override
-                                       public void onClick(View v) {
-                                           Intent intent = new Intent(MainActivity.this, LiveScores.class);
-                                           startActivity(intent);
-                                       }
-                                   });
-                               break;
+                                nextLiveCard.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent(MainActivity.this, LiveScores.class);
+                                        startActivity(intent);
+                                    }
+                                });
+                               if(m1 == 1){
+                                   m1++;
+                                   nextLive.setText(match.getString("mchdesc"));
+                               }else if(m1 == 2){
+                                   nextLive2.setText(match.getString("mchdesc"));
+                               }else{
+                                   break;
+                               }
                         }
                     }
                 } catch (JSONException e) {
@@ -218,25 +227,34 @@ public class MainActivity extends AppCompatActivity
             }
     }
 
-    private void loadCards(int position) {
+    private void loadCards(final int position) {
         cardsAdapter.clear();
-        int i=0;
-        DatabaseHelper helper = new DatabaseHelper(this);
-        Cursor cursor = helper.getUnseenCards();
-            while (cursor.moveToNext()){
-                i++;
-                if(i <= 20){
-                    cardsAdapter.add(new cards_adapter(cursor.getString(0), cursor.getString(1),
-                            cursor.getInt(2), cursor.getInt(3), cursor.getString(4),
-                            cursor.getInt(5), cursor.getString(6), cursor.getString(8),
-                            cursor.getInt(7)
-                    ));
-
-
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int i=0;
+                Cursor cursor = helper.getUnseenCards();
+                while (cursor.moveToNext()){
+                    i++;
+                    if(i <= 20){
+                        cardsAdapter.add(new cards_adapter(cursor.getString(0), cursor.getString(1),
+                                cursor.getInt(2), cursor.getInt(3), cursor.getString(4),
+                                cursor.getInt(5), cursor.getString(6), cursor.getString(8),
+                                cursor.getInt(7)
+                        ));
+                    }
                 }
-
+                cursor.close();
             }
-        displayCards(position);
+        }).start();
+
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                displayCards(position);
+            }
+        }, 50);
     }
 
 

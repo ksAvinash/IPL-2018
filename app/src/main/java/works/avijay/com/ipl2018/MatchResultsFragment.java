@@ -209,33 +209,43 @@ public class MatchResultsFragment extends Fragment implements View.OnClickListen
 
     }
 
-    public static void populateTeamSpecificMatchResult(String team_name){
+    public static void populateTeamSpecificMatchResult(final String team_name){
         scheduleAdapter.clear();
 
-        Cursor cursor = helper.getMatchResultsByTeamName(team_name);
-        while (cursor.moveToNext()) {
-            if (!cursor.getString(6).equals("")) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Cursor cursor = helper.getMatchResultsByTeamName(team_name);
+                while (cursor.moveToNext()) {
+                    if (!cursor.getString(6).equals("")) {
 
-                scheduleAdapter.add(new schedule_list_adapter(
-                        cursor.getInt(0), cursor.getString(1),
-                        cursor.getString(2), cursor.getString(3),
-                        cursor.getString(4), cursor.getString(5),
-                        cursor.getString(6), cursor.getString(7),
-                        cursor.getInt(8), cursor.getInt(9)
-                ));
+                        scheduleAdapter.add(new schedule_list_adapter(
+                                cursor.getInt(0), cursor.getString(1),
+                                cursor.getString(2), cursor.getString(3),
+                                cursor.getString(4), cursor.getString(5),
+                                cursor.getString(6), cursor.getString(7),
+                                cursor.getInt(8), cursor.getInt(9)
+                        ));
+                    }
+                }
+                cursor.close();
             }
-        }
-        cursor.close();
-        displayList();
+        }).start();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                displayList();
+            }
+        }, 50);
     }
 
 
 
     public static void populateData(){
         scheduleAdapter.clear();
-        if(materialRefreshLayout.isShown())
-            materialRefreshLayout.finishRefresh();
-        new Handler().postDelayed(new Runnable() {
+
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 Cursor cursor = helper.getAllSchedule();
@@ -253,10 +263,18 @@ public class MatchResultsFragment extends Fragment implements View.OnClickListen
 
                 }
                 cursor.close();
-                displayList();
             }
-        }, 100);
+        }).start();
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(materialRefreshLayout.isShown())
+                    materialRefreshLayout.finishRefresh();
+                displayList();
+
+            }
+        }, 200);
 
     }
 

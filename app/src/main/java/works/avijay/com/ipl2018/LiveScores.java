@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import works.avijay.com.ipl2018.helper.MatchesTabsAdapter;
 
@@ -30,6 +31,9 @@ public class LiveScores extends AppCompatActivity {
 
         initializeViews();
 
+
+        Toast.makeText(getApplicationContext(), "Autorefresh of 10s set", Toast.LENGTH_LONG).show();
+
         LiveMatch1.initializeAdapterAndStartAutoRefresh();
         LiveMatch2.initializeAdapterAndStartAutoRefresh();
     }
@@ -48,10 +52,10 @@ public class LiveScores extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        LiveMatch1.removeReference(false);
-        LiveMatch2.removeReference(false);
-        LiveMatch1.stopAutoRefresh(true);
-        LiveMatch2.stopAutoRefresh(true);
+        LiveMatch1.stopChats(false);
+        LiveMatch2.stopChats(false);
+        LiveMatch1.stopAutoRefresh();
+        LiveMatch2.stopAutoRefresh();
         finish();
     }
 
@@ -73,14 +77,10 @@ public class LiveScores extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(id == R.id.action_stop_chat){
-            LiveMatch1.removeReference(false);
-            LiveMatch2.removeReference(false);
-            LiveMatch1.chatList.setVisibility(View.GONE);
-            LiveMatch2.chatList.setVisibility(View.GONE);
-            LiveMatch1.push_icon.setVisibility(View.GONE);
-            LiveMatch2.push_icon.setVisibility(View.GONE);
-            LiveMatch1.push_message.setVisibility(View.GONE);
-            LiveMatch2.push_message.setVisibility(View.GONE);
+            Toast.makeText(getApplicationContext(), "Stopping chats..", Toast.LENGTH_LONG).show();
+
+            LiveMatch1.stopChats(false);
+            LiveMatch2.stopChats(false);
         }
 
         return super.onOptionsItemSelected(item);

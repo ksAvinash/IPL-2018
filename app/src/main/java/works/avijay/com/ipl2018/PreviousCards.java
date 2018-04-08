@@ -139,21 +139,31 @@ public class PreviousCards extends Fragment {
 
     public static void loadCards() {
         cardsAdapter.clear();
-        if(materialRefreshLayout.isShown())
-            materialRefreshLayout.finishRefresh();
 
-        Cursor cursor = helper.getSeenCards();
-        while (cursor.moveToNext()){
-            cardsAdapter.add(new cards_adapter(cursor.getString(0), cursor.getString(1),
-                    cursor.getInt(2), cursor.getInt(3), cursor.getString(4),
-                    cursor.getInt(5), cursor.getString(6), cursor.getString(8),
-                    cursor.getInt(7)
-            ));
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Cursor cursor = helper.getSeenCards();
+                while (cursor.moveToNext()){
+                    cardsAdapter.add(new cards_adapter(cursor.getString(0), cursor.getString(1),
+                            cursor.getInt(2), cursor.getInt(3), cursor.getString(4),
+                            cursor.getInt(5), cursor.getString(6), cursor.getString(8),
+                            cursor.getInt(7)
+                    ));
+                }
+                cursor.close();
+            }
+        }).start();
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(materialRefreshLayout.isShown())
+                    materialRefreshLayout.finishRefresh();
+                displayCards();
+            }
+        }, 200);
 
-        }
-
-        displayCards();
     }
 
     public static  void displayCards(){

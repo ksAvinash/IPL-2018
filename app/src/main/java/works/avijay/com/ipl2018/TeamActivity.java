@@ -157,19 +157,29 @@ public class TeamActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = context.getSharedPreferences("ipl_sp", MODE_PRIVATE);
         ads_value = sharedPreferences.getFloat("ads", (float) 0.2);
 
-        Cursor cursor = helper.getTeamMembers(team_name);
-        while (cursor.moveToNext()){
-            playersAdapter.add(new players_list_adapter(
-                    cursor.getString(0), Integer.parseInt(cursor.getString(1)),
-                    cursor.getInt(2)>0,
-                    cursor.getString(3), cursor.getString(4),
-                    cursor.getString(5), cursor.getString(6)
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Cursor cursor = helper.getTeamMembers(team_name);
+                while (cursor.moveToNext()){
+                    playersAdapter.add(new players_list_adapter(
+                            cursor.getString(0), Integer.parseInt(cursor.getString(1)),
+                            cursor.getInt(2)>0,
+                            cursor.getString(3), cursor.getString(4),
+                            cursor.getString(5), cursor.getString(6)
 
-            ));
-        }
+                    ));
+                }
+                cursor.close();
+            }
+        }).start();
 
-        displayList();
-
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                displayList();
+            }
+        }, 200);
     }
 
 

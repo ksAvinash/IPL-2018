@@ -4,6 +4,7 @@ package works.avijay.com.ipl2018;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -61,19 +62,30 @@ public class SearchPlayersFragment extends Fragment {
 
         helper = new DatabaseHelper(context);
 
-        Cursor cursor = helper.getPlayerByName(search_string);
-        while (cursor.moveToNext()){
-            searchAdapter.add(new players_list_adapter(
-                    cursor.getString(0), Integer.parseInt(cursor.getString(1)),
-                    cursor.getInt(2)>0,
-                    cursor.getString(3), cursor.getString(4),
-                    cursor.getString(5), cursor.getString(6)
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Cursor cursor = helper.getPlayerByName(search_string);
+                while (cursor.moveToNext()){
+                    searchAdapter.add(new players_list_adapter(
+                            cursor.getString(0), Integer.parseInt(cursor.getString(1)),
+                            cursor.getInt(2)>0,
+                            cursor.getString(3), cursor.getString(4),
+                            cursor.getString(5), cursor.getString(6)
 
-            ));
-        }
+                    ));
+                }
+                cursor.close();
+            }
+        }).start();
 
-        displayList();
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                displayList();
+            }
+        }, 20);
     }
 
 

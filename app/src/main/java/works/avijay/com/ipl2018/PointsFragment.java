@@ -48,13 +48,7 @@ public class PointsFragment extends Fragment {
 
         initializeViews();
 
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                populateData();
-            }
-        }, 50);
+        populateData();
 
         materialRefreshLayout.setMaterialRefreshListener(new MaterialRefreshListener() {
             @Override
@@ -91,24 +85,33 @@ public class PointsFragment extends Fragment {
     public static void populateData(){
         pointsAdapter.clear();
 
-        if(materialRefreshLayout.isShown())
-            materialRefreshLayout.finishRefresh();
-
-        Cursor cursor = helper.getAllTeamPoints();
-        while (cursor.moveToNext()){
-            pointsAdapter.add(new points_adapter(
-                    cursor.getString(0),
-                    cursor.getInt(4), //points
-                    cursor.getInt(3), //remaining
-                    (cursor.getInt(2)+cursor.getInt(1)), //played = win+loss
-                    cursor.getDouble(5) //rate
-            ));
-        }
 
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Cursor cursor = helper.getAllTeamPoints();
+                while (cursor.moveToNext()){
+                    pointsAdapter.add(new points_adapter(
+                            cursor.getString(0),
+                            cursor.getInt(4), //points
+                            cursor.getInt(3), //remaining
+                            (cursor.getInt(2)+cursor.getInt(1)), //played = win+loss
+                            cursor.getDouble(5) //rate
+                    ));
+                }
+            }
+        }).start();
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(materialRefreshLayout.isShown())
+                    materialRefreshLayout.finishRefresh();
+                displayList();
+            }
+        }, 200);
 
-        displayList();
     }
 
 
