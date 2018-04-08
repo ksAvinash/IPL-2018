@@ -15,12 +15,13 @@
            android:id="@+id/nextLiveCard"
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
+           android:visibility="gone"
            android:background="@color/colorAccent"
            >
        <works.avijay.com.ipl2018.fonts.scores_font
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
-           android:text="TODAYS MATCHES"
+           android:text="TODAY'S MATCHES"
            android:textColor="@color/playerTexts"
            android:layout_centerHorizontal="true"
            android:textSize="18sp"

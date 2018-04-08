@@ -37,12 +37,12 @@ public class PointsFragment extends Fragment {
 
     static Context context;
     View view;
-    private static  ListView pointsList;
-    private static List<points_adapter> pointsAdapter = new ArrayList<>();
-    private static MaterialRefreshLayout materialRefreshLayout;
-    static DatabaseHelper helper;
+    static ListView pointsList;
+    static List<points_adapter> pointsAdapter = new ArrayList<>();
+    static MaterialRefreshLayout materialRefreshLayout;
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view =  inflater.inflate(R.layout.fragment_points, container, false);
 
@@ -79,17 +79,15 @@ public class PointsFragment extends Fragment {
         context = getActivity().getApplicationContext();
         pointsList = view.findViewById(R.id.pointsList);
         materialRefreshLayout = view.findViewById(R.id.swipe_refresh);
-        helper = new DatabaseHelper(context);
     }
 
     public static void populateData(){
         pointsAdapter.clear();
 
-
-
         new Thread(new Runnable() {
             @Override
             public void run() {
+                DatabaseHelper helper = new DatabaseHelper(context);
                 Cursor cursor = helper.getAllTeamPoints();
                 while (cursor.moveToNext()){
                     pointsAdapter.add(new points_adapter(
@@ -100,6 +98,8 @@ public class PointsFragment extends Fragment {
                             cursor.getDouble(5) //rate
                     ));
                 }
+                cursor.close();
+                helper.close();
             }
         }).start();
 
@@ -110,12 +110,12 @@ public class PointsFragment extends Fragment {
                     materialRefreshLayout.finishRefresh();
                 displayList();
             }
-        }, 200);
+        }, 300);
 
     }
 
 
-    private static  void displayList(){
+    private static void displayList(){
         ArrayAdapter<points_adapter> adapter = new myPointsAdapterClass();
         pointsList.setAdapter(adapter);
     }

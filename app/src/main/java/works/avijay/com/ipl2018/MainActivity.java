@@ -245,6 +245,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
                 cursor.close();
+                helper.close();
             }
         }).start();
 

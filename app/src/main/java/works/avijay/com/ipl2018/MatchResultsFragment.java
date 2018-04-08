@@ -118,7 +118,6 @@ public class MatchResultsFragment extends Fragment implements View.OnClickListen
     public void initializeViews(){
         context = getActivity().getApplicationContext();
         matchResultsList = view.findViewById(R.id.scheduleList);
-        helper = new DatabaseHelper(context);
 
         SharedPreferences sharedPreferences = context.getSharedPreferences("ipl_sp", MODE_PRIVATE);
         ads_value = sharedPreferences.getFloat("ads", (float) 0.2);
@@ -209,12 +208,13 @@ public class MatchResultsFragment extends Fragment implements View.OnClickListen
 
     }
 
-    public static void populateTeamSpecificMatchResult(final String team_name){
+    public void populateTeamSpecificMatchResult(final String team_name){
         scheduleAdapter.clear();
 
         new Thread(new Runnable() {
             @Override
             public void run() {
+                helper = new DatabaseHelper(context);
                 Cursor cursor = helper.getMatchResultsByTeamName(team_name);
                 while (cursor.moveToNext()) {
                     if (!cursor.getString(6).equals("")) {
@@ -229,6 +229,7 @@ public class MatchResultsFragment extends Fragment implements View.OnClickListen
                     }
                 }
                 cursor.close();
+                helper.close();
             }
         }).start();
 
@@ -248,6 +249,7 @@ public class MatchResultsFragment extends Fragment implements View.OnClickListen
         new Thread(new Runnable() {
             @Override
             public void run() {
+                helper = new DatabaseHelper(context);
                 Cursor cursor = helper.getAllSchedule();
                 while (cursor.moveToNext()){
                     Log.d("CURSOR", cursor.getString(6));
@@ -274,7 +276,7 @@ public class MatchResultsFragment extends Fragment implements View.OnClickListen
                 displayList();
 
             }
-        }, 200);
+        }, 300);
 
     }
 

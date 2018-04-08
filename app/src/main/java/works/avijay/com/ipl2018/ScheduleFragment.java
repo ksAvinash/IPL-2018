@@ -52,6 +52,7 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
     InterstitialAd interstitialAd ;
     float ads_value;
     static MaterialRefreshLayout materialRefreshLayout;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -122,7 +123,6 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
     public void initializeViews(){
         context = getActivity().getApplicationContext();
         scheduleList = view.findViewById(R.id.scheduleList);
-        helper = new DatabaseHelper(context);
 
         SharedPreferences sharedPreferences = context.getSharedPreferences("ipl_sp", MODE_PRIVATE);
         ads_value = sharedPreferences.getFloat("ads", (float) 0.2);
@@ -155,6 +155,7 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
         new Thread(new Runnable() {
             @Override
             public void run() {
+                helper = new DatabaseHelper(context);
                 Cursor cursor = helper.getAllSchedule();
                 while (cursor.moveToNext()){
                     scheduleAdapter.add(new schedule_list_adapter(
@@ -166,6 +167,7 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
                     ));
                 }
                 cursor.close();
+                helper.close();
             }
         }).start();
 
@@ -177,11 +179,11 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
                     materialRefreshLayout.finishRefresh();
                 displayList();
             }
-        }, 200);
+        }, 300);
     }
 
 
-    public static void populateTeamSpecificData(final String team_name){
+    public void populateTeamSpecificData(final String team_name){
         scheduleAdapter.clear();
 
         new Thread(new Runnable() {
@@ -410,8 +412,6 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
 
                     break;
             }
-
-
 
             return itemView;
         }
