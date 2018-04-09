@@ -1,14 +1,17 @@
 package works.avijay.com.ipl2018;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,6 +33,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,6 +46,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cjj.MaterialRefreshLayout;
+import com.cjj.MaterialRefreshListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.gson.Gson;
@@ -134,8 +140,15 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-    }
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                RateMyApp();
+            }
+        }, 2000);
+
+    }
 
     private void initializeViews(){
         cardsList = findViewById(R.id.cardsList);
@@ -202,6 +215,7 @@ public class MainActivity extends AppCompatActivity
 
                         if(match_srs.equals("Indian Premier League, 2018") && (mchstate.equals("inprogress") || mchstate.equals("innings break") || mchstate.equals("nextlive") || mchstate.equals("preview"))){
                                nextLiveCard.setVisibility(View.VISIBLE);
+
                                 nextLiveCard.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -211,8 +225,10 @@ public class MainActivity extends AppCompatActivity
                                 });
                                if(m1 == 1){
                                    m1++;
+                                   nextLive.setVisibility(View.VISIBLE);
                                    nextLive.setText(match.getString("mchdesc"));
                                }else if(m1 == 2){
+                                   nextLive2.setVisibility(View.VISIBLE);
                                    nextLive2.setText(match.getString("mchdesc"));
                                }else{
                                    break;
@@ -772,6 +788,42 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+
+    private void RateMyApp(){
+        int rate = sharedPreferences.getInt("rate_now", 0);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("rate_now", rate+1);
+        editor.apply();
+
+        if(rate == 3){
+            RateMyAppAlert();
+        }else if(rate%6 == 0 && rate!=0){
+            RateMyAppAlert();
+        }
+    }
+
+
+    private void RateMyAppAlert(){
+        final AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert);
+        } else {
+            builder = new AlertDialog.Builder(this);
+        }
+        builder.setMessage("Your review means a lot to us!\nCan you take up a couple moments to appreciate our work?\n")
+            .setPositiveButton("Sure", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    rateapp();
+                    dialog.dismiss();
+                }
+            })
+            .setNegativeButton("Not now", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            })
+            .show();
+    }
 
 
     private void rateapp() {

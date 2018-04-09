@@ -72,7 +72,6 @@ public class LiveMatch2 extends Fragment {
     public static boolean receive_again = true, auto_refresh = true;
 
 
-    float ads_value;
     private List<chat_adapter> chatAdapter = new ArrayList<>();
     SharedPreferences sharedPreferences2;
     String user_name;
@@ -83,7 +82,6 @@ public class LiveMatch2 extends Fragment {
             bowler1_name, bowler1_overs, bowler1_maidens, bowler1_runs, bowler1_wickets, bowler1_economy,
             bowler2_name, bowler2_overs, bowler2_maidens, bowler2_runs, bowler2_wickets, bowler2_economy, match_status;
     CardView team_score_card, batting_score_card, bowling_score_card;
-    InterstitialAd interstitialAd ;
     EditText push_message;
     ImageView push_icon;
     ListView chatList;
@@ -109,33 +107,11 @@ public class LiveMatch2 extends Fragment {
     }
 
 
-    private void showAd() {
-        if(Math.random() < 0.05){
-            if(context != null){
-                interstitialAd = new InterstitialAd(context);
-                interstitialAd.setAdUnitId("ca-app-pub-9681985190789334/4854428286");
-                AdRequest adRequest = new AdRequest.Builder().build();
-                interstitialAd.loadAd(adRequest);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        if(interstitialAd.isLoaded())
-                            interstitialAd.show();
-                    }
-                }, 3000);
-            }
-        }
-    }
-
-
-
     private void initializeViews() {
         context = getActivity();
 
         final SharedPreferences sharedPreferences = context.getSharedPreferences("ipl_sp", Context.MODE_PRIVATE);
         match_id = sharedPreferences.getInt("match2", 0);
-        ads_value = sharedPreferences.getFloat("ads", (float) 0.2);
 
         match_description = view.findViewById(R.id.match_description);
         current_team = view.findViewById(R.id.current_team);
@@ -234,6 +210,7 @@ public class LiveMatch2 extends Fragment {
 
     private boolean validateUser(){
         int user_valid = sharedPreferences2.getInt("user_valid", 0);
+
         if(user_valid == 0)
             return false;
         return true;
@@ -315,7 +292,6 @@ public class LiveMatch2 extends Fragment {
     private void receiveChatMessages(boolean receive_again_){
         if(receive_again_){
             Log.d("LIVE_CHAT 2","REFRESH CHAT RECURSIVE");
-            showAd();
             chatAdapter.clear();
             myChats = myRef.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -333,7 +309,7 @@ public class LiveMatch2 extends Fragment {
                         public void run() {
                             receiveChatMessages(receive_again);
                         }
-                    }, 5000);
+                    }, 6000);
                 }
 
                 @Override
@@ -345,7 +321,7 @@ public class LiveMatch2 extends Fragment {
                         public void run() {
                             receiveChatMessages(receive_again);
                         }
-                    }, 5000);
+                    }, 6000);
                 }
             });
         }else{

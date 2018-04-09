@@ -70,7 +70,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String create_team_stats = "create table "
                 +TABLE_TEAMS+" ("+TEAM_NAME+" text primary key, "+TEAM_LOSS+" number, "+TEAM_WINS+
-                " number, "+TEAM_REMAINING+" number, "+TEAM_POINTS+" number, "+TEAM_RATE+" text, "+TEAM_IMAGE+" text, "+TEAM_FAN_COUNT+" number);";
+                " number, "+TEAM_REMAINING+" number, "+TEAM_POINTS+" number, "+TEAM_RATE+" number, "+TEAM_IMAGE+" text, "+TEAM_FAN_COUNT+" number);";
         db.execSQL(create_team_stats);
 
         String create_schedule_table = "create table "+TABLE_SCHEDULE+

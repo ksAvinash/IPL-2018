@@ -5,8 +5,6 @@
     android:layout_height="wrap_content">
 
 
-    <solid android:color="#BDBDBD" />
-
-
+    <solid android:color="#81c784" />
     <corners android:radius="8dp" />
 </shape>

@@ -116,67 +116,35 @@ public class ChampionsFragment extends Fragment {
         winner_2016_text.setText("2016 - SRH");
         winner_2017_text.setText("2017 - MI");
 
+        winner_2017.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        winner_2017.setImageDrawable(context.getResources().getDrawable(R.mipmap.image_2017));
 
-        Glide.with(context).load("https://s3.ap-south-1.amazonaws.com/ipl-2018/team_images/2017.jpg")
-                .thumbnail(0.5f)
-                .centerCrop()
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(winner_2017);
-        Glide.with(context).load("https://s3.ap-south-1.amazonaws.com/ipl-2018/team_images/2016.jpg")
-                .thumbnail(0.5f)
-                .centerCrop()
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(winner_2016);
-        Glide.with(context).load("https://s3.ap-south-1.amazonaws.com/ipl-2018/team_images/2015.jpg")
-                .thumbnail(0.5f)
-                .centerCrop()
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(winner_2015);
-        Glide.with(context).load("https://s3.ap-south-1.amazonaws.com/ipl-2018/team_images/2014.jpg")
-                .thumbnail(0.5f)
-                .centerCrop()
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(winner_2014);
-        Glide.with(context).load("https://s3.ap-south-1.amazonaws.com/ipl-2018/team_images/2013.jpg")
-                .thumbnail(0.5f)
-                .centerCrop()
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(winner_2013);
-        Glide.with(context).load("https://s3.ap-south-1.amazonaws.com/ipl-2018/team_images/2012.jpg")
-                .thumbnail(0.5f)
-                .centerCrop()
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(winner_2012);
-        Glide.with(context).load("https://s3.ap-south-1.amazonaws.com/ipl-2018/team_images/2011.jpg")
-                .thumbnail(0.5f)
-                .centerCrop()
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(winner_2011);
-        Glide.with(context).load("https://s3.ap-south-1.amazonaws.com/ipl-2018/team_images/2010.jpg")
-                .thumbnail(0.5f)
-                .centerCrop()
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(winner_2010);
-        Glide.with(context).load("https://s3.ap-south-1.amazonaws.com/ipl-2018/team_images/2009.jpg")
-                .thumbnail(0.5f)
-                .centerCrop()
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(winner_2009);
-        Glide.with(context).load("https://s3.ap-south-1.amazonaws.com/ipl-2018/team_images/2008.jpg")
-                .thumbnail(0.5f)
-                .centerCrop()
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(winner_2008);
+        winner_2016.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        winner_2016.setImageDrawable(context.getResources().getDrawable(R.mipmap.image_2016));
+
+        winner_2015.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        winner_2015.setImageDrawable(context.getResources().getDrawable(R.mipmap.image_2015));
+
+        winner_2014.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        winner_2014.setImageDrawable(context.getResources().getDrawable(R.mipmap.image_2014));
+
+        winner_2013.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        winner_2013.setImageDrawable(context.getResources().getDrawable(R.mipmap.image_2013));
+
+        winner_2012.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        winner_2012.setImageDrawable(context.getResources().getDrawable(R.mipmap.image_2012));
+
+        winner_2011.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        winner_2011.setImageDrawable(context.getResources().getDrawable(R.mipmap.image_2011));
+
+        winner_2010.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        winner_2010.setImageDrawable(context.getResources().getDrawable(R.mipmap.image_2010));
+
+        winner_2009.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        winner_2009.setImageDrawable(context.getResources().getDrawable(R.mipmap.image_2009));
+
+        winner_2008.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        winner_2008.setImageDrawable(context.getResources().getDrawable(R.mipmap.image_2008));
 
     }
 

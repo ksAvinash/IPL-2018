@@ -55,7 +55,7 @@ public class MatchResultsFragment extends Fragment implements View.OnClickListen
     private static List<schedule_list_adapter> scheduleAdapter = new ArrayList<>();
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view =  inflater.inflate(R.layout.fragment_schedule, container, false);
 
@@ -84,7 +84,6 @@ public class MatchResultsFragment extends Fragment implements View.OnClickListen
                 }
             }
         });
-
 
 
         return view;

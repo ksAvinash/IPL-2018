@@ -12,10 +12,10 @@
     >
 
        <RelativeLayout
+           android:visibility="gone"
            android:id="@+id/nextLiveCard"
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
-           android:visibility="gone"
            android:background="@color/colorAccent"
            >
        <works.avijay.com.ipl2018.fonts.scores_font
@@ -23,28 +23,29 @@
            android:layout_height="wrap_content"
            android:text="TODAY'S MATCHES"
            android:textColor="@color/playerTexts"
-           android:layout_centerHorizontal="true"
-           android:textSize="18sp"
-           android:layout_margin="6dp"
+           android:textSize="16sp"
+           android:layout_margin="4dp"
            />
 
        <works.avijay.com.ipl2018.fonts.titles_font
-           android:layout_marginTop="24dp"
+           android:layout_marginTop="26dp"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            android:id="@+id/nextLive"
            android:layout_centerHorizontal="true"
            android:textSize="30sp"
            android:textStyle="bold"
+           android:visibility="gone"
            android:textColor="@color/colorWhite"
            />
 
        <works.avijay.com.ipl2018.fonts.titles_font
+           android:visibility="gone"
+           android:layout_marginTop="58dp"
            android:layout_marginBottom="8dp"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            android:id="@+id/nextLive2"
-           android:layout_below="@+id/nextLive"
            android:layout_centerHorizontal="true"
            android:textSize="30sp"
            android:textStyle="bold"

@@ -108,11 +108,11 @@ public class SplasherActivity extends AppCompatActivity {
 
 
 
-        boolean first_fetch = sharedPreferences.getBoolean("first_fetch_v4", true);
+        boolean first_fetch = sharedPreferences.getBoolean("first_fetch_v5", true);
         if(first_fetch){
             DatabaseHelper helper = new DatabaseHelper(context);
             helper.deleteTables();
-
+            helper.close();
             if(isNetworkConnected()){
 
                 BackendHelper.fetch_schedule fetch_schedule = new BackendHelper.fetch_schedule();
@@ -125,12 +125,18 @@ public class SplasherActivity extends AppCompatActivity {
                 fetch_players.execute(context);
 
                 BackendHelper.fetch_cards fetch_cards = new BackendHelper.fetch_cards();
-                fetch_cards.execute(context, false);
+                fetch_cards.execute(context);
 
             }
         }else if(get_previous_fetch_history()){
+            BackendHelper.fetch_team_stats fetch_team_stats = new BackendHelper.fetch_team_stats();
+            fetch_team_stats.execute(context, false, false, false);
+
+            BackendHelper.fetch_schedule fetch_schedule = new BackendHelper.fetch_schedule();
+            fetch_schedule.execute(context, false, false);
+        }else{
             BackendHelper.fetch_cards fetch_cards = new BackendHelper.fetch_cards();
-            fetch_cards.execute(context, false);
+            fetch_cards.execute(context);
         }
 
 

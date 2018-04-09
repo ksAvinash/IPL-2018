@@ -65,6 +65,9 @@ public class PointsFragment extends Fragment {
             }
         });
 
+        Snackbar.make(view, "Swipe to refresh contents", Snackbar.LENGTH_SHORT)
+                .setAction("Action", null).show();
+
         return view;
     }
 
@@ -110,7 +113,7 @@ public class PointsFragment extends Fragment {
                     materialRefreshLayout.finishRefresh();
                 displayList();
             }
-        }, 300);
+        }, 100);
 
     }
 

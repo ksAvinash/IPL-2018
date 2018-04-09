@@ -110,8 +110,11 @@ public class LiveMatch1 extends Fragment {
 
 
     private void showAd() {
-        if(Math.random() < 0.05){
+        Log.d("IPL_ADS", "CALLED");
+        if(Math.random() < 0.08){
+            Log.d("IPL_ADS", "VALID");
             if(context != null){
+                Log.d("IPL_ADS", "LOAD");
                 interstitialAd = new InterstitialAd(context);
                 interstitialAd.setAdUnitId("ca-app-pub-9681985190789334/4854428286");
                 AdRequest adRequest = new AdRequest.Builder().build();
@@ -119,11 +122,12 @@ public class LiveMatch1 extends Fragment {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        Log.d("IPL_ADS", "SHOW");
 
                         if(interstitialAd.isLoaded())
                             interstitialAd.show();
                     }
-                }, 3000);
+                }, 4000);
             }
         }
     }
@@ -333,7 +337,7 @@ public class LiveMatch1 extends Fragment {
                             public void run() {
                                 receiveChatMessages(receive_again);
                             }
-                        }, 5000);
+                        }, 6000);
                     }
 
                     @Override
@@ -345,7 +349,7 @@ public class LiveMatch1 extends Fragment {
                             public void run() {
                                 receiveChatMessages(receive_again);
                             }
-                        }, 5000);
+                        }, 6000);
                     }
                 });
             }else{

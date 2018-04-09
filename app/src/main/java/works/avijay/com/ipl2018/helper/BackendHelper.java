@@ -252,7 +252,7 @@ public class BackendHelper {
 
                                 SharedPreferences sharedPreferences = context.getSharedPreferences("ipl_sp", MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putBoolean("first_fetch_v4", false);
+                                editor.putBoolean("first_fetch_v5", false);
                                 editor.apply();
                             } else {
                                 Log.d("IPL : PLAYERS : ", "Error fetching players");
@@ -507,7 +507,6 @@ public class BackendHelper {
 
     public static class fetch_cards extends AsyncTask<Object, String, String>{
         Context context;
-        boolean stopRefresh;
         @Override
         protected void onPostExecute(final String str) {
             super.onPostExecute(str);
@@ -551,7 +550,6 @@ public class BackendHelper {
         @Override
         protected String doInBackground(Object... objects) {
             context =  (Context) objects[0];
-            stopRefresh = (boolean) objects[1];
             try{
                 URL url = new URL(context.getResources().getString(R.string.backend_cards_fetch));
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
