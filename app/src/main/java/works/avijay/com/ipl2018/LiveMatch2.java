@@ -36,6 +36,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -70,8 +71,9 @@ public class LiveMatch2 extends Fragment {
     public static ValueEventListener myChats;
     static int match_id;
     public static boolean receive_again = true, auto_refresh = true;
+    static Query query;
 
-
+    float ads_value;
     private List<chat_adapter> chatAdapter = new ArrayList<>();
     SharedPreferences sharedPreferences2;
     String user_name;
@@ -86,7 +88,6 @@ public class LiveMatch2 extends Fragment {
     ImageView push_icon;
     ListView chatList;
     Context context;
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -107,11 +108,13 @@ public class LiveMatch2 extends Fragment {
     }
 
 
+
     private void initializeViews() {
         context = getActivity();
 
         final SharedPreferences sharedPreferences = context.getSharedPreferences("ipl_sp", Context.MODE_PRIVATE);
         match_id = sharedPreferences.getInt("match2", 0);
+        ads_value = sharedPreferences.getFloat("ads", (float) 0.2);
 
         match_description = view.findViewById(R.id.match_description);
         current_team = view.findViewById(R.id.current_team);
@@ -155,6 +158,8 @@ public class LiveMatch2 extends Fragment {
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("match_"+match_id);
+        query = database.getReference("match_"+match_id).limitToLast(10);
+
         sharedPreferences2 = context.getSharedPreferences("ipl_profile", Context.MODE_PRIVATE);
         user_name = sharedPreferences2.getString("user_name", "");
 
@@ -210,7 +215,6 @@ public class LiveMatch2 extends Fragment {
 
     private boolean validateUser(){
         int user_valid = sharedPreferences2.getInt("user_valid", 0);
-
         if(user_valid == 0)
             return false;
         return true;
@@ -291,9 +295,9 @@ public class LiveMatch2 extends Fragment {
 
     private void receiveChatMessages(boolean receive_again_){
         if(receive_again_){
-            Log.d("LIVE_CHAT 2","REFRESH CHAT RECURSIVE");
+            Log.d("LIVE_CHAT 1","REFRESH CHAT RECURSIVE");
             chatAdapter.clear();
-            myChats = myRef.addValueEventListener(new ValueEventListener() {
+            myChats = query.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for(DataSnapshot child : dataSnapshot.getChildren()){
@@ -309,31 +313,31 @@ public class LiveMatch2 extends Fragment {
                         public void run() {
                             receiveChatMessages(receive_again);
                         }
-                    }, 6000);
+                    }, 8000);
                 }
 
                 @Override
                 public void onCancelled(DatabaseError error) {
                     Log.w("CHATS", "Failed to read value.", error.toException());
-                    myRef.removeEventListener(myChats);
+                    query.removeEventListener(myChats);
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             receiveChatMessages(receive_again);
                         }
-                    }, 6000);
+                    }, 8000);
                 }
             });
         }else{
             stopChat();
-            Log.d("LIVE_CHAT 2","REFRESH CHAT COMPLETE");
+            Log.d("LIVE_CHAT 1","REFRESH CHAT COMPLETE");
         }
     }
 
     public void receiveChatMessageOnce(){
-        Log.d("LIVE_CHAT 2","REFRESH CHAT ONCE");
+        Log.d("LIVE_CHAT 1","REFRESH CHAT ONCE");
         chatAdapter.clear();
-        myChats = myRef.addValueEventListener(new ValueEventListener() {
+        myChats = query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot child : dataSnapshot.getChildren()){
@@ -343,19 +347,19 @@ public class LiveMatch2 extends Fragment {
                     ));
                 }
                 displayMessages();
-                myRef.removeEventListener(myChats);
+                query.removeEventListener(myChats);
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                myRef.removeEventListener(myChats);
+                query.removeEventListener(myChats);
             }
         });
     }
 
 
     public static void stopChats(boolean receive_again_){
-        myRef.removeEventListener(myChats);
+        query.removeEventListener(myChats);
 
         if(!receive_again_){
             receive_again = false;
@@ -392,12 +396,11 @@ public class LiveMatch2 extends Fragment {
 
     private void refreshScores(boolean auto_refresh_){
         if(auto_refresh_){
-            Log.d("LIVE_CHAT 2", "REFRESH SCORE RECURSIVE");
+            Log.d("LIVE_CHAT 1", "REFRESH SCORE RECURSIVE");
             if(match_id != 0){
                 team_score_card.setVisibility(View.VISIBLE);
                 batting_score_card.setVisibility(View.VISIBLE);
                 bowling_score_card.setVisibility(View.VISIBLE);
-
                 try {
                     DecimalFormat format = new DecimalFormat("###.##");
                     Cricbuzz cricbuzz = new Cricbuzz();
@@ -472,11 +475,11 @@ public class LiveMatch2 extends Fragment {
                         }
                     }, 10000);
                 }
-            }else {
-                Log.d("LIVE_CHAT 2", "NO ACTIVE MATCHES");
+            }else{
+                Log.d("LIVE_CHAT 1", "NO ACTIVE MATCHES");
             }
         }else {
-            Log.d("LIVE_CHAT 2", "REFRESH SCORE LAST");
+            Log.d("LIVE_CHAT 1", "REFRESH SCORE LAST");
         }
     }
 
@@ -531,6 +534,5 @@ public class LiveMatch2 extends Fragment {
             return itemView;
         }
     }
-
 
 }

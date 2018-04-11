@@ -36,6 +36,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -70,7 +71,7 @@ public class LiveMatch1 extends Fragment {
     public static ValueEventListener myChats;
     static int match_id;
     public static boolean receive_again = true, auto_refresh = true;
-
+    static Query query;
 
     float ads_value;
     private List<chat_adapter> chatAdapter = new ArrayList<>();
@@ -110,25 +111,19 @@ public class LiveMatch1 extends Fragment {
 
 
     private void showAd() {
-        Log.d("IPL_ADS", "CALLED");
-        if(Math.random() < 0.08){
-            Log.d("IPL_ADS", "VALID");
-            if(context != null){
-                Log.d("IPL_ADS", "LOAD");
-                interstitialAd = new InterstitialAd(context);
-                interstitialAd.setAdUnitId("ca-app-pub-9681985190789334/4854428286");
-                AdRequest adRequest = new AdRequest.Builder().build();
-                interstitialAd.loadAd(adRequest);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d("IPL_ADS", "SHOW");
+        if(context != null){
+            interstitialAd = new InterstitialAd(context);
+            interstitialAd.setAdUnitId("ca-app-pub-9681985190789334/4854428286");
+            AdRequest adRequest = new AdRequest.Builder().build();
+            interstitialAd.loadAd(adRequest);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
 
-                        if(interstitialAd.isLoaded())
-                            interstitialAd.show();
-                    }
-                }, 4000);
-            }
+                    if(interstitialAd.isLoaded())
+                        interstitialAd.show();
+                }
+            }, 4000);
         }
     }
 
@@ -183,6 +178,8 @@ public class LiveMatch1 extends Fragment {
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("match_"+match_id);
+        query = database.getReference("match_"+match_id).limitToLast(10);
+
         sharedPreferences2 = context.getSharedPreferences("ipl_profile", Context.MODE_PRIVATE);
         user_name = sharedPreferences2.getString("user_name", "");
 
@@ -321,7 +318,7 @@ public class LiveMatch1 extends Fragment {
                 Log.d("LIVE_CHAT 1","REFRESH CHAT RECURSIVE");
                 showAd();
                 chatAdapter.clear();
-                myChats = myRef.addValueEventListener(new ValueEventListener() {
+                myChats = query.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for(DataSnapshot child : dataSnapshot.getChildren()){
@@ -337,19 +334,19 @@ public class LiveMatch1 extends Fragment {
                             public void run() {
                                 receiveChatMessages(receive_again);
                             }
-                        }, 6000);
+                        }, 8000);
                     }
 
                     @Override
                     public void onCancelled(DatabaseError error) {
                         Log.w("CHATS", "Failed to read value.", error.toException());
-                        myRef.removeEventListener(myChats);
+                        query.removeEventListener(myChats);
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 receiveChatMessages(receive_again);
                             }
-                        }, 6000);
+                        }, 8000);
                     }
                 });
             }else{
@@ -361,7 +358,7 @@ public class LiveMatch1 extends Fragment {
     public void receiveChatMessageOnce(){
         Log.d("LIVE_CHAT 1","REFRESH CHAT ONCE");
         chatAdapter.clear();
-        myChats = myRef.addValueEventListener(new ValueEventListener() {
+        myChats = query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot child : dataSnapshot.getChildren()){
@@ -371,19 +368,19 @@ public class LiveMatch1 extends Fragment {
                     ));
                 }
                 displayMessages();
-                myRef.removeEventListener(myChats);
+                query.removeEventListener(myChats);
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                myRef.removeEventListener(myChats);
+                query.removeEventListener(myChats);
             }
         });
     }
 
 
     public static void stopChats(boolean receive_again_){
-        myRef.removeEventListener(myChats);
+        query.removeEventListener(myChats);
 
         if(!receive_again_){
             receive_again = false;

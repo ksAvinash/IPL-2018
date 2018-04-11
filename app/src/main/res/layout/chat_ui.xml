@@ -10,7 +10,7 @@
             android:layout_marginLeft="15dp"
             android:textStyle="bold"
             android:layout_gravity="start|top"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:layout_marginTop="10dp"
             />
         <works.avijay.com.ipl2018.fonts.chat_font
@@ -20,7 +20,7 @@
             android:layout_below="@+id/chat_user"
             android:textColor="#fff"
             android:id="@+id/chat_message"
-            android:textSize="18sp"
+            android:textSize="14sp"
             android:background="@drawable/rounded_corner"
             android:layout_gravity="start|bottom"
             android:layout_marginTop="30dp"

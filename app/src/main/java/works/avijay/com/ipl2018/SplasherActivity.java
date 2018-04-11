@@ -42,8 +42,8 @@ public class SplasherActivity extends AppCompatActivity {
     Context context;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference, databaseReference2;
-    ValueEventListener mylistener, mylistener2;
-    String match_type_firebase = "IPL";
+    ValueEventListener mylistener2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,22 +90,7 @@ public class SplasherActivity extends AppCompatActivity {
         });
 
 
-        mylistener = databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                match_type_firebase = dataSnapshot.getValue(String.class);
-                getCricbuzzMatches();
-                databaseReference.removeEventListener(mylistener);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                match_type_firebase = "T20";
-                getCricbuzzMatches();
-                databaseReference.removeEventListener(mylistener);
-            }
-        });
-
+        getCricbuzzMatches();
 
 
         boolean first_fetch = sharedPreferences.getBoolean("first_fetch_v5", true);
@@ -135,6 +120,10 @@ public class SplasherActivity extends AppCompatActivity {
             BackendHelper.fetch_schedule fetch_schedule = new BackendHelper.fetch_schedule();
             fetch_schedule.execute(context, false, false);
         }else{
+            DatabaseHelper helper = new DatabaseHelper(context);
+            helper.deleteTableCards();
+            helper.close();
+
             BackendHelper.fetch_cards fetch_cards = new BackendHelper.fetch_cards();
             fetch_cards.execute(context);
         }
@@ -180,7 +169,7 @@ public class SplasherActivity extends AppCompatActivity {
                             String match_srs = match.getString("srs");
 
                             //CHANGE TO IPL DURING 3.0 RELEASE
-                            if((mchstate.equals("inprogress") || mchstate.equals("innings break")) && match_type.equals(match_type_firebase) && match_srs.equals("Indian Premier League, 2018")){
+                            if((mchstate.equals("inprogress") || mchstate.equals("innings break")) && match_type.equals("T20") && match_srs.equals("Indian Premier League, 2018")){
                                 Log.d("VALID MATCH", match.getInt("id")+"");
                                 editor.putInt("match"+match_id, match.getInt("id"));
                                 editor.commit();
