@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -57,8 +58,6 @@ public class TeamActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Great!, you started following '"+team_name+"'", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-                BackendHelper.update_fan_count update_fan_count = new BackendHelper.update_fan_count();
-                update_fan_count.execute(getApplicationContext(), original_name);
             }
         });
 
@@ -67,9 +66,9 @@ public class TeamActivity extends AppCompatActivity {
 
 
     private void showAd() {
-        Log.d("ADS : VALUE : ", ads_value+"");
 
         if(Math.random() < ads_value){
+            Toast.makeText(context, "An ad appears in a few moments", Toast.LENGTH_SHORT).show();
             interstitialAd = new InterstitialAd(this);
             interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
             AdRequest adRequest = new AdRequest.Builder().build();

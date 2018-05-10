@@ -113,12 +113,6 @@ public class SplasherActivity extends AppCompatActivity {
                 fetch_cards.execute(context);
 
             }
-        }else if(get_previous_fetch_history()){
-            BackendHelper.fetch_team_stats fetch_team_stats = new BackendHelper.fetch_team_stats();
-            fetch_team_stats.execute(context, false, false, false);
-
-            BackendHelper.fetch_schedule fetch_schedule = new BackendHelper.fetch_schedule();
-            fetch_schedule.execute(context, false, false);
         }else{
             DatabaseHelper helper = new DatabaseHelper(context);
             helper.deleteTableCards();

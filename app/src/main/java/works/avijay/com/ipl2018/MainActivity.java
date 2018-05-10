@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity
         }, 100);
 
         startCountDown();
-        showAd();
+        showAd(false);
 
         FloatingActionButton fab =  findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -141,12 +141,12 @@ public class MainActivity extends AppCompatActivity
         });
 
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                RateMyApp();
-            }
-        }, 2000);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    RateMyApp();
+                }
+            }, 2000);
 
     }
 
@@ -166,9 +166,9 @@ public class MainActivity extends AppCompatActivity
 
 
 
-    private void showAd() {
-        ads_value = sharedPreferences.getFloat("ads", (float) 0.3);
-        if(Math.random() < ads_value){
+    private void showAd(boolean force_show) {
+        if(force_show){
+            Toast.makeText(context, "An ad appears in few seconds", Toast.LENGTH_SHORT).show();
             interstitialAd = new InterstitialAd(context);
             interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
             AdRequest adRequest = new AdRequest.Builder().build();
@@ -181,7 +181,25 @@ public class MainActivity extends AppCompatActivity
                         interstitialAd.show();
                 }
             }, 3000);
+        }else {
+            ads_value = sharedPreferences.getFloat("ads", (float) 0.3);
+            if(Math.random() < ads_value){
+                Toast.makeText(context, "An ad appears in a few moments", Toast.LENGTH_SHORT).show();
+                interstitialAd = new InterstitialAd(context);
+                interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
+                AdRequest adRequest = new AdRequest.Builder().build();
+                interstitialAd.loadAd(adRequest);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if(interstitialAd.isLoaded())
+                            interstitialAd.show();
+                    }
+                }, 3000);
+            }
         }
+
 
     }
 
@@ -780,6 +798,22 @@ public class MainActivity extends AppCompatActivity
                 fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.main_activity_content, previousCards).addToBackStack(null).commit();
                 break;
+
+            case R.id.nav_dream_11:
+                showAd(true);
+                Intent viewIntent =
+                        new Intent("android.intent.action.VIEW",
+                                Uri.parse("https://www.dream11.com"));
+                startActivity(viewIntent);
+                break;
+
+            case R.id.nav_ticket:
+                showAd(true);
+                Intent view_Intent =
+                        new Intent("android.intent.action.VIEW",
+                                Uri.parse("https://www.iplt20.com/schedule"));
+                startActivity(view_Intent);
+                break;
         }
 
 
@@ -795,9 +829,9 @@ public class MainActivity extends AppCompatActivity
         editor.putInt("rate_now", rate+1);
         editor.apply();
 
-        if(rate == 3){
+        if(rate == 4){
             RateMyAppAlert();
-        }else if(rate%6 == 0 && rate!=0){
+        }else if(rate%15 == 0 && rate!=0){
             RateMyAppAlert();
         }
     }
@@ -822,6 +856,7 @@ public class MainActivity extends AppCompatActivity
                     dialog.dismiss();
                 }
             })
+            .setCancelable(false)
             .show();
     }
 

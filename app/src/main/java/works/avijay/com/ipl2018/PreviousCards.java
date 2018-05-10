@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cjj.MaterialRefreshLayout;
 import com.cjj.MaterialRefreshListener;
@@ -101,11 +102,11 @@ public class PreviousCards extends Fragment {
         Log.d("ADS : VALUE : ", ads_value+"");
 
         if(Math.random() < ads_value){
+            Toast.makeText(context, "An ad appears in a few moments", Toast.LENGTH_SHORT).show();
             interstitialAd = new InterstitialAd(context);
             interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
             AdRequest adRequest = new AdRequest.Builder().build();
             interstitialAd.loadAd(adRequest);
-
 
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -113,7 +114,7 @@ public class PreviousCards extends Fragment {
                     if(interstitialAd.isLoaded())
                         interstitialAd.show();
                 }
-            }, 8000);
+            }, 3000);
         }
 
     }

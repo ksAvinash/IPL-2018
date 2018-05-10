@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cjj.MaterialRefreshLayout;
 import com.cjj.MaterialRefreshListener;
@@ -97,6 +98,7 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
 
     private void showAd() {
         if(Math.random() < ads_value){
+            Toast.makeText(context, "An ad appears in a few moments", Toast.LENGTH_SHORT).show();
             interstitialAd = new InterstitialAd(context);
             interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
             AdRequest adRequest = new AdRequest.Builder().build();
@@ -108,7 +110,7 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
                     if(interstitialAd.isLoaded())
                         interstitialAd.show();
                 }
-            }, 7000);
+            }, 3000);
         }
 
     }

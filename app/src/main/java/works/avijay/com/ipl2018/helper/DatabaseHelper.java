@@ -199,6 +199,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void deleteTableCards(){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("drop table if exists "+TABLE_CARDS);
+        createTableCards(db);
     }
 
     public void createTableCards(SQLiteDatabase db){

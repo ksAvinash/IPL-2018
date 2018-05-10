@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cjj.MaterialRefreshLayout;
 import com.cjj.MaterialRefreshListener;
@@ -94,6 +95,7 @@ public class TeamsStatsFragment extends Fragment{
         Log.d("ADS : VALUE : ", ads_value+"");
 
         if(Math.random() < ads_value){
+            Toast.makeText(context, "An ad appears in a few moments", Toast.LENGTH_SHORT).show();
             interstitialAd = new InterstitialAd(context);
             interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
             AdRequest adRequest = new AdRequest.Builder().build();
@@ -253,12 +255,6 @@ public class TeamsStatsFragment extends Fragment{
 
             }
 
-//            Glide.with(context).load(current.getTeam_image())
-//                    .thumbnail(0.5f)
-//                    .centerCrop()
-//                    .crossFade()
-//                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                    .into(team_image);
 
 
             return itemView;

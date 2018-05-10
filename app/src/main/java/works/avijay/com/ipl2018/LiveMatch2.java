@@ -158,7 +158,7 @@ public class LiveMatch2 extends Fragment {
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("match_"+match_id);
-        query = database.getReference("match_"+match_id).limitToLast(10);
+        query = database.getReference("match_"+match_id).limitToLast(20);
 
         sharedPreferences2 = context.getSharedPreferences("ipl_profile", Context.MODE_PRIVATE);
         user_name = sharedPreferences2.getString("user_name", "");
@@ -175,7 +175,7 @@ public class LiveMatch2 extends Fragment {
                             chat_adapter chat_adapter = new chat_adapter(sharedPreferences2.getString("user_name",""), push_message.getText().toString(), sharedPreferences2.getString("user_color","#42a5f5"));
                             myRef.child(key).setValue(chat_adapter);
                             push_message.setText("");
-                            receiveChatMessageOnce();
+                            //receiveChatMessageOnce();
                         }
 
                     }else{
@@ -198,7 +198,7 @@ public class LiveMatch2 extends Fragment {
                         chat_adapter chat_adapter = new chat_adapter(sharedPreferences2.getString("user_name",""), push_message.getText().toString(), sharedPreferences2.getString("user_color","#42a5f5"));
                         myRef.child(key).setValue(chat_adapter);
                         push_message.setText("");
-                        receiveChatMessageOnce();
+                        //receiveChatMessageOnce();
                     }
 
                 }else{
@@ -307,25 +307,25 @@ public class LiveMatch2 extends Fragment {
                         ));
                     }
                     displayMessages();
-                    stopChats(true);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            receiveChatMessages(receive_again);
-                        }
-                    }, 8000);
+//                    stopChats(true);
+//                    new Handler().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            receiveChatMessages(receive_again);
+//                        }
+//                    }, 8000);
                 }
 
                 @Override
                 public void onCancelled(DatabaseError error) {
                     Log.w("CHATS", "Failed to read value.", error.toException());
-                    query.removeEventListener(myChats);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            receiveChatMessages(receive_again);
-                        }
-                    }, 8000);
+//                    query.removeEventListener(myChats);
+//                    new Handler().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            receiveChatMessages(receive_again);
+//                        }
+//                    }, 8000);
                 }
             });
         }else{
@@ -347,12 +347,12 @@ public class LiveMatch2 extends Fragment {
                     ));
                 }
                 displayMessages();
-                query.removeEventListener(myChats);
+                //query.removeEventListener(myChats);
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                query.removeEventListener(myChats);
+                //query.removeEventListener(myChats);
             }
         });
     }

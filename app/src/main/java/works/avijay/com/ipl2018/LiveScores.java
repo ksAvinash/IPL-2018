@@ -73,16 +73,16 @@ public class LiveScores extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if(id == R.id.action_stop_chat){
-            Toast.makeText(getApplicationContext(), "Stopping chats..", Toast.LENGTH_LONG).show();
-
-            LiveMatch1.stopChats(false);
-            LiveMatch2.stopChats(false);
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//        if(id == R.id.action_stop_chat){
+//            Toast.makeText(getApplicationContext(), "Stopping chats..", Toast.LENGTH_LONG).show();
+//
+//            LiveMatch1.stopChats(false);
+//            LiveMatch2.stopChats(false);
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 }

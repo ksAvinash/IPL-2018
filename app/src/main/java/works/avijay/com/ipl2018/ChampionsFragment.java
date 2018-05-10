@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -52,9 +53,8 @@ public class ChampionsFragment extends Fragment {
     }
 
     private void showAd() {
-        Log.d("ADS : VALUE : ", ads_value+"");
-
         if(Math.random() < ads_value){
+            Toast.makeText(context, "An ad appears in a few moments", Toast.LENGTH_SHORT).show();
             interstitialAd = new InterstitialAd(context);
             interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
             AdRequest adRequest = new AdRequest.Builder().build();
