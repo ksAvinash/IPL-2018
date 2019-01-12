@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,30 +28,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
-import works.avijay.com.ipl2018.helper.Cricbuzz;
 import works.avijay.com.ipl2018.helper.chat_adapter;
 
 
@@ -100,7 +86,7 @@ public class LiveMatch2 extends Fragment {
             @Override
             public void run() {
                 receiveChatMessages(receive_again);
-                refreshScores(auto_refresh);
+                //refreshScores(auto_refresh);
             }
         }, 500);
 
@@ -393,7 +379,7 @@ public class LiveMatch2 extends Fragment {
     }
 
 
-
+/*
     private void refreshScores(boolean auto_refresh_){
         if(auto_refresh_){
             Log.d("LIVE_CHAT 1", "REFRESH SCORE RECURSIVE");
@@ -482,7 +468,7 @@ public class LiveMatch2 extends Fragment {
             Log.d("LIVE_CHAT 1", "REFRESH SCORE LAST");
         }
     }
-
+*/
 
 
     public class myChatAdapterClass extends ArrayAdapter<chat_adapter> {

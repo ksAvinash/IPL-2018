@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.cjj.MaterialRefreshLayout;
 import com.cjj.MaterialRefreshListener;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class MatchResultsFragment extends Fragment implements View.OnClickListen
     float ads_value;
     ImageView team_rcb, team_csk, team_srh, team_rr, team_kkr, team_k11p, team_mi, team_dd ;
     static MaterialRefreshLayout materialRefreshLayout;
-    InterstitialAd interstitialAd ;
+    private AdView mAdView;
     private static List<schedule_list_adapter> scheduleAdapter = new ArrayList<>();
 
     @Override
@@ -92,22 +93,8 @@ public class MatchResultsFragment extends Fragment implements View.OnClickListen
 
 
     private void showAd() {
-        if(Math.random() < ads_value){
-            Toast.makeText(context, "An ad appears in a few moments", Toast.LENGTH_SHORT).show();
-            interstitialAd = new InterstitialAd(context);
-            interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
-            AdRequest adRequest = new AdRequest.Builder().build();
-            interstitialAd.loadAd(adRequest);
-
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if(interstitialAd.isLoaded())
-                        interstitialAd.show();
-                }
-            }, 4000);
-        }
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 
 
@@ -132,6 +119,7 @@ public class MatchResultsFragment extends Fragment implements View.OnClickListen
         team_k11p = view.findViewById(R.id.team_k11p);
         team_dd = view.findViewById(R.id.team_dd);
         materialRefreshLayout = view.findViewById(R.id.swipe_refresh);
+        mAdView = view.findViewById(R.id.adView);
 
         team_csk.setOnClickListener(this);
         team_rcb.setOnClickListener(this);
@@ -141,6 +129,8 @@ public class MatchResultsFragment extends Fragment implements View.OnClickListen
         team_srh.setOnClickListener(this);
         team_k11p.setOnClickListener(this);
         team_dd.setOnClickListener(this);
+
+
 
     }
 

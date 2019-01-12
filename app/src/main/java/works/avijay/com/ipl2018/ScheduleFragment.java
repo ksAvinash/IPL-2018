@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.cjj.MaterialRefreshLayout;
 import com.cjj.MaterialRefreshListener;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 
 import java.util.ArrayList;
@@ -50,9 +51,9 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
     static DatabaseHelper helper;
     private static List<schedule_list_adapter> scheduleAdapter = new ArrayList<>();
     ImageView team_rcb, team_csk, team_srh, team_rr, team_kkr, team_k11p, team_mi, team_dd ;
-    InterstitialAd interstitialAd ;
     float ads_value;
     static MaterialRefreshLayout materialRefreshLayout;
+    private AdView mAdView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -97,22 +98,8 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
 
 
     private void showAd() {
-        if(Math.random() < ads_value){
-            Toast.makeText(context, "An ad appears in a few moments", Toast.LENGTH_SHORT).show();
-            interstitialAd = new InterstitialAd(context);
-            interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
-            AdRequest adRequest = new AdRequest.Builder().build();
-            interstitialAd.loadAd(adRequest);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-                    if(interstitialAd.isLoaded())
-                        interstitialAd.show();
-                }
-            }, 3000);
-        }
-
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 
 
@@ -138,6 +125,8 @@ public class ScheduleFragment extends Fragment implements View.OnClickListener{
         team_k11p = view.findViewById(R.id.team_k11p);
         team_dd = view.findViewById(R.id.team_dd);
         materialRefreshLayout = view.findViewById(R.id.swipe_refresh);
+        mAdView = view.findViewById(R.id.adView);
+
 
         team_csk.setOnClickListener(this);
         team_rcb.setOnClickListener(this);

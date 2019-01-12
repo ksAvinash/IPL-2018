@@ -18,21 +18,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Vector;
 
 import works.avijay.com.ipl2018.helper.BackendHelper;
-import works.avijay.com.ipl2018.helper.Cricbuzz;
 import works.avijay.com.ipl2018.helper.DatabaseHelper;
 
 public class SplasherActivity extends AppCompatActivity {
@@ -63,7 +53,7 @@ public class SplasherActivity extends AppCompatActivity {
 
 
         MobileAds.initialize(this, "ca-app-pub-9681985190789334~8534666961");
-        FirebaseMessaging.getInstance().subscribeToTopic("ipl_all_users_2");
+        FirebaseMessaging.getInstance().subscribeToTopic("ipl_all_users_3");
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("match_type");
@@ -90,7 +80,7 @@ public class SplasherActivity extends AppCompatActivity {
         });
 
 
-        getCricbuzzMatches();
+        //getCricbuzzMatches();
 
 
         boolean first_fetch = sharedPreferences.getBoolean("first_fetch_v5", true);
@@ -139,7 +129,7 @@ public class SplasherActivity extends AppCompatActivity {
 
 
 
-
+/*
 
     public void getCricbuzzMatches(){
         new Thread(new Runnable() {
@@ -183,7 +173,7 @@ public class SplasherActivity extends AppCompatActivity {
     }
 
 
-
+*/
 
 
     private boolean isNetworkConnected() {

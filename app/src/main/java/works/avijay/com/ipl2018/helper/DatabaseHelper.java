@@ -58,6 +58,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CARD_TYPE = "card_type";
     private static final String CARD_PRIORITY = "card_priority";
     private static final String CARD_TEAM = "card_team";
+    private static final String CARD_AUTHOR = "card_author";
 
 
 
@@ -87,7 +88,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
         String create_cards_table = "create table "+TABLE_CARDS+" ("+CARD_ID+" text primary key, "+CARD_DESCRIPTION+" text, "+CARD_APPROVED+" number, "+CARD_DISAPPROVED+
-                " number, "+CARD_IMAGE+" text, "+CARD_SEEN+" number, "+CARD_TYPE+" text, "+CARD_PRIORITY+" number, "+CARD_TEAM+" text);";
+                " number, "+CARD_IMAGE+" text, "+CARD_SEEN+" number, "+CARD_TYPE+" text, "+CARD_PRIORITY+" number, "+CARD_TEAM+" text, "+CARD_AUTHOR+" text);";
         db.execSQL(create_cards_table);
 
     }
@@ -143,7 +144,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.update(TABLE_TEAMS, contentValues, where, whereArgs);
     }
 
-    public void updateIntoCards(String card_id, String description, long approved, long disapproved, String image, String card_type, int priority, String team) {
+    public void updateIntoCards(String card_id, String description, long approved, long disapproved, String image, String card_type, int priority, String team, String author) {
         String where = CARD_ID+"=?";
         String[] whereArgs = new String[] {card_id};
 
@@ -157,6 +158,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(CARD_TYPE, card_type);
         contentValues.put(CARD_PRIORITY, priority);
         contentValues.put(CARD_TEAM, team);
+        contentValues.put(CARD_AUTHOR, author);
 
         db.update(TABLE_CARDS, contentValues, where, whereArgs);
 
@@ -204,7 +206,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void createTableCards(SQLiteDatabase db){
         String create_cards_table = "create table "+TABLE_CARDS+" ("+CARD_ID+" text primary key, "+CARD_DESCRIPTION+" text, "+CARD_APPROVED+" number, "+CARD_DISAPPROVED+
-                " number, "+CARD_IMAGE+" text, "+CARD_SEEN+" number, "+CARD_TYPE+" text, "+CARD_PRIORITY+" number, "+CARD_TEAM+" text);";
+                " number, "+CARD_IMAGE+" text, "+CARD_SEEN+" number, "+CARD_TYPE+" text, "+CARD_PRIORITY+" number, "+CARD_TEAM+" text, "+CARD_AUTHOR+" text);";
         db.execSQL(create_cards_table);
         db.close();
     }
@@ -289,7 +291,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getUnseenCards(){
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.rawQuery("select * from "+TABLE_CARDS+" where "+CARD_SEEN+" = 0 and "+CARD_TYPE+" = 'card' or "+CARD_TYPE+" = 'photo' order by "+CARD_PRIORITY+" desc", null);
+        return db.rawQuery("select * from "+TABLE_CARDS+" where "+CARD_SEEN+" = 0 and "+CARD_TYPE+" = 'card' or "+CARD_TYPE+" = 'photo' or "+CARD_TYPE+" = 'question' order by "+CARD_PRIORITY+" desc", null);
     }
     public Cursor getUnseenVideos(){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -329,12 +331,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
-    public void insertIntoCards(String card_id, String description, long approved, long disapproved, String image, String card_type, int priority, String team){
+    public void insertIntoCards(String card_id, String description, long approved, long disapproved, String image, String card_type, int priority, String team, String author){
         SQLiteDatabase db = this.getWritableDatabase();
 
         Cursor cursor = db.rawQuery("select * from "+TABLE_CARDS+" where "+CARD_ID+" = '"+card_id+"';", null);
         if(cursor.getCount() > 0){
-            updateIntoCards(card_id, description, approved, disapproved, image, card_type, priority, team);
+            updateIntoCards(card_id, description, approved, disapproved, image, card_type, priority, team, author);
         }else{
             ContentValues contentValues = new ContentValues();
             contentValues.put(CARD_ID, card_id);
@@ -346,6 +348,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             contentValues.put(CARD_TYPE, card_type);
             contentValues.put(CARD_PRIORITY, priority);
             contentValues.put(CARD_TEAM, team);
+            contentValues.put(CARD_AUTHOR, author);
 
             db.insert(TABLE_CARDS, null, contentValues);
         }

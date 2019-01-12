@@ -351,6 +351,7 @@ public class BackendHelper {
         protected String doInBackground(Object... objects) {
             Context context = (Context) objects[0];
             String question = (String) objects[1];
+            String author = (String) objects[2];
             try{
                 URL url = new URL(context.getResources().getString(R.string.backend_suggest_question));
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -362,6 +363,7 @@ public class BackendHelper {
 
                 JSONObject jsonParam = new JSONObject();
                 jsonParam.put("question", question);
+                jsonParam.put("author", author);
 
 
                 DataOutputStream os = new DataOutputStream(conn.getOutputStream());
@@ -528,7 +530,7 @@ public class BackendHelper {
                                                 current_team.getString("card_description"), current_team.getLong("card_approved"),
                                                 current_team.getLong("card_disapproved"), current_team.getString("card_image"),
                                                 current_team.getString("card_type"), current_team.optInt("order"),
-                                                current_team.optString("card_team")
+                                                current_team.optString("card_team"), current_team.optString("card_author")+""
                                                 );
                                     }
 

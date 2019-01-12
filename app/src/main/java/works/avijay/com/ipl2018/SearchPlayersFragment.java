@@ -47,7 +47,6 @@ public class SearchPlayersFragment extends Fragment {
         // Inflate the layout for this fragment
         view =  inflater.inflate(R.layout.fragment_search_players, container, false);
 
-
         initializeViews();
 
         return view;

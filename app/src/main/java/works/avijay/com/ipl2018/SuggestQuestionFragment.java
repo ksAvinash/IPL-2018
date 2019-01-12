@@ -28,9 +28,9 @@ public class SuggestQuestionFragment extends Fragment {
     }
 
     View view;
-    EditText question;
+    EditText question, author;
     Button askButton;
-    String card_question;
+    String card_question, card_author;
     Context context;
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
@@ -39,16 +39,17 @@ public class SuggestQuestionFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_suggest_question, container, false);
         question = view.findViewById(R.id.question);
         askButton = view.findViewById(R.id.askButton);
-
+        author = view.findViewById(R.id.author);
         askButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             if(isNetworkConnected()){
                 card_question = question.getText().toString();
-                if(card_question.length() > 0){
+                card_author = author.getText().toString();
+                if(card_question.length() > 0 && card_author.length() > 0){
                     BackendHelper.ask_question ask_question = new BackendHelper.ask_question();
-                    ask_question.execute(context, card_question);
+                    ask_question.execute(context, card_question, card_author);
                     Snackbar.make(view, "Okay, We heard you!", Snackbar.LENGTH_SHORT)
                             .setAction("Action", null).show();
 

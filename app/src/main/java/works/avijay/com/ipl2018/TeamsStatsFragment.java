@@ -54,8 +54,7 @@ public class TeamsStatsFragment extends Fragment{
     static DatabaseHelper helper;
     private static List<teams_list_adapter> teamAdapter = new ArrayList<>();
     static MaterialRefreshLayout materialRefreshLayout;
-    InterstitialAd interstitialAd ;
-    float ads_value;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -85,31 +84,7 @@ public class TeamsStatsFragment extends Fragment{
              }
          });
 
-        showAd();
         return view;
-    }
-
-
-
-    private void showAd() {
-        Log.d("ADS : VALUE : ", ads_value+"");
-
-        if(Math.random() < ads_value){
-            Toast.makeText(context, "An ad appears in a few moments", Toast.LENGTH_SHORT).show();
-            interstitialAd = new InterstitialAd(context);
-            interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
-            AdRequest adRequest = new AdRequest.Builder().build();
-            interstitialAd.loadAd(adRequest);
-
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if(interstitialAd.isLoaded())
-                        interstitialAd.show();
-                }
-            }, 4000);
-        }
     }
 
 
@@ -120,10 +95,6 @@ public class TeamsStatsFragment extends Fragment{
         teamsList = view.findViewById(R.id.teamsList);
         helper = new DatabaseHelper(context);
         materialRefreshLayout = view.findViewById(R.id.swipe_refresh);
-
-        SharedPreferences sharedPreferences = context.getSharedPreferences("ipl_sp", MODE_PRIVATE);
-        ads_value = sharedPreferences.getFloat("ads", (float) 0.2);
-
     }
 
 

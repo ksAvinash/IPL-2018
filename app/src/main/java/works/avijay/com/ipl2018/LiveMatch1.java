@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,31 +28,18 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
-import works.avijay.com.ipl2018.helper.Cricbuzz;
 import works.avijay.com.ipl2018.helper.chat_adapter;
 
 
@@ -85,7 +71,6 @@ public class LiveMatch1 extends Fragment {
             bowler1_name, bowler1_overs, bowler1_maidens, bowler1_runs, bowler1_wickets, bowler1_economy,
             bowler2_name, bowler2_overs, bowler2_maidens, bowler2_runs, bowler2_wickets, bowler2_economy, match_status;
     CardView team_score_card, batting_score_card, bowling_score_card;
-    InterstitialAd interstitialAd ;
     EditText push_message;
     ImageView push_icon;
     ListView chatList;
@@ -102,38 +87,12 @@ public class LiveMatch1 extends Fragment {
             @Override
             public void run() {
                 receiveChatMessages(receive_again);
-                refreshScores(auto_refresh);
+                //refreshScores(auto_refresh);
             }
         }, 500);
 
         return view;
     }
-
-
-
-    private void showAd() {
-        Log.d("SHOWAD","CALLED");
-        if(context != null){
-            Log.d("SHOWAD","VALID CONTEXT");
-            if(Math.random() < 0.3){
-                Log.d("SHOWAD","VALID RANDOM");
-                Toast.makeText(context, "An ad appears in a few moments", Toast.LENGTH_SHORT).show();
-                interstitialAd = new InterstitialAd(context);
-                interstitialAd.setAdUnitId("ca-app-pub-9681985190789334/4854428286");
-                AdRequest adRequest = new AdRequest.Builder().build();
-                interstitialAd.loadAd(adRequest);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(interstitialAd.isLoaded())
-                            interstitialAd.show();
-                    }
-                }, 3000);
-            }
-        }
-    }
-
-
 
     private void initializeViews() {
         context = getActivity();
@@ -196,7 +155,6 @@ public class LiveMatch1 extends Fragment {
                     if(validateUser()){
 
                         if(push_message.getText().length() >0){
-                            showAd();
 
                             String key =  myRef.push().getKey();
 
@@ -204,7 +162,6 @@ public class LiveMatch1 extends Fragment {
                             myRef.child(key).setValue(chat_adapter);
                             push_message.setText("");
                             //receiveChatMessageOnce();
-
                         }
 
                     }else{
@@ -222,8 +179,6 @@ public class LiveMatch1 extends Fragment {
                 if(validateUser()){
 
                     if(push_message.getText().length() >0){
-                        showAd();
-
 
                         String key =  myRef.push().getKey();
 
@@ -425,7 +380,7 @@ public class LiveMatch1 extends Fragment {
     }
 
 
-
+/*
     private void refreshScores(boolean auto_refresh_){
         if(auto_refresh_){
             Log.d("LIVE_CHAT 1", "REFRESH SCORE RECURSIVE");
@@ -516,7 +471,7 @@ public class LiveMatch1 extends Fragment {
     }
 
 
-
+*/
     public class myChatAdapterClass extends ArrayAdapter<chat_adapter> {
 
         myChatAdapterClass() {

@@ -11,7 +11,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,7 +32,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,30 +44,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cjj.MaterialRefreshLayout;
-import com.cjj.MaterialRefreshListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Vector;
 
 import works.avijay.com.ipl2018.helper.BackendHelper;
-import works.avijay.com.ipl2018.helper.Cricbuzz;
 import works.avijay.com.ipl2018.helper.DatabaseHelper;
 import works.avijay.com.ipl2018.helper.cards_adapter;
 
@@ -84,14 +70,16 @@ public class MainActivity extends AppCompatActivity
     ListView cardsList;
     List<cards_adapter> cardsAdapter = new ArrayList<>();
     Context context;
-    InterstitialAd interstitialAd ;
-    float ads_value;
     SharedPreferences sharedPreferences;
     View view;
     boolean doubleBackToExitPressedOnce = false;
     RelativeLayout nextLiveCard;
     TextView nextLive, nextLive2;
     DatabaseHelper helper;
+    InterstitialAd interstitialAd ;
+
+    private int clickCounts = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +117,6 @@ public class MainActivity extends AppCompatActivity
         }, 100);
 
         startCountDown();
-        showAd(false);
 
         FloatingActionButton fab =  findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -165,56 +152,43 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
-    private void showAd(boolean force_show) {
-        if(force_show){
-            Toast.makeText(context, "An ad appears in few seconds", Toast.LENGTH_SHORT).show();
-            interstitialAd = new InterstitialAd(context);
-            interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
-            AdRequest adRequest = new AdRequest.Builder().build();
-            interstitialAd.loadAd(adRequest);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-                    if(interstitialAd.isLoaded())
-                        interstitialAd.show();
-                }
-            }, 3000);
-        }else {
-            ads_value = sharedPreferences.getFloat("ads", (float) 0.3);
-            if(Math.random() < ads_value){
-                Toast.makeText(context, "An ad appears in a few moments", Toast.LENGTH_SHORT).show();
-                interstitialAd = new InterstitialAd(context);
-                interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
-                AdRequest adRequest = new AdRequest.Builder().build();
-                interstitialAd.loadAd(adRequest);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        if(interstitialAd.isLoaded())
-                            interstitialAd.show();
-                    }
-                }, 3000);
-            }
-        }
-
-
+    private void showAd(){
+        if(interstitialAd.isLoaded())
+            interstitialAd.show();
     }
+
+    private void loadAd(){
+        interstitialAd = new InterstitialAd(context);
+        interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
+        AdRequest adRequest = new AdRequest.Builder().build();
+        interstitialAd.loadAd(adRequest);
+    }
+
+    private boolean isValidToLoadAd(){
+        return clickCounts%3 == 0;
+    }
+
+    private boolean isValidToShowAd(){
+        if(clickCounts%5 == 0){
+            clickCounts = 0;
+            return true;
+        }
+        return false;
+    }
+
+
 
 
     public void startCountDown(){
 
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                    getCricbuzzMatches();
+                    //getCricbuzzMatches();
             }
         }, 600);
     }
-
+/*
 
     public void getCricbuzzMatches(){
             try {
@@ -261,6 +235,8 @@ public class MainActivity extends AppCompatActivity
             }
     }
 
+    */
+
     private void loadCards(final int position) {
         cardsAdapter.clear();
         new Thread(new Runnable() {
@@ -274,7 +250,7 @@ public class MainActivity extends AppCompatActivity
                         cardsAdapter.add(new cards_adapter(cursor.getString(0), cursor.getString(1),
                                 cursor.getInt(2), cursor.getInt(3), cursor.getString(4),
                                 cursor.getInt(5), cursor.getString(6), cursor.getString(8),
-                                cursor.getInt(7)
+                                cursor.getInt(7), cursor.getString(9)
                         ));
                     }
                 }
@@ -330,6 +306,7 @@ public class MainActivity extends AppCompatActivity
             LikeButton heart_icon = itemView.findViewById(R.id.heart_icon);
             ImageView share_card = itemView.findViewById(R.id.share_card);
             card_image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            TextView card_author = itemView.findViewById(R.id.card_author);
 
             switch (current.getCard_team()){
                 case "RCB":
@@ -368,12 +345,16 @@ public class MainActivity extends AppCompatActivity
                     card_image.setImageDrawable(getResources().getDrawable(R.drawable.card_common));
                     break;
 
+                case "QUESTION":
+                    card_image.setImageDrawable(getResources().getDrawable(R.drawable.card_question));
+                    break;
+
                 default:
                     card_image.setImageDrawable(getResources().getDrawable(R.drawable.card_common));
                     break;
             }
 
-            if(current.getCard_type().equals("card")){
+            if(current.getCard_type().equals("card") || current.getCard_type().equals("question")){
                 card_image.setAlpha((float)0.85);
 
                 heart_icon.setVisibility(View.GONE);
@@ -385,6 +366,9 @@ public class MainActivity extends AppCompatActivity
                 dislike_icon.setLiked(false);
 
                 card_description.setText(current.getCard_description());
+                if(!current.getCard_author().equals(""))
+                    card_author.setText("- "+current.getCard_author());
+
                 if(current.getCard_approved()<1000)
                     like_points.setText(current.getCard_approved()+"");
                 else
@@ -396,9 +380,16 @@ public class MainActivity extends AppCompatActivity
                     dislike_points.setText(decimalFormat.format(current.getCard_disapproved()/1000.0)+"K");
 
 
+
                 like_icon.setOnLikeListener(new OnLikeListener() {
                     @Override
                     public void liked(LikeButton likeButton) {
+                        clickCounts++;
+                        if(isValidToLoadAd())
+                            loadAd();
+                        else if(isValidToShowAd())
+                            showAd();
+
                         BackendHelper.update_card_count update_card_count = new BackendHelper.update_card_count();
                         update_card_count.execute(context, current.getCard_id(), "approve");
 
@@ -429,6 +420,11 @@ public class MainActivity extends AppCompatActivity
                 dislike_icon.setOnLikeListener(new OnLikeListener() {
                     @Override
                     public void liked(LikeButton likeButton) {
+                        clickCounts++;
+                        if(isValidToLoadAd())
+                            loadAd();
+                        else if(isValidToShowAd())
+                            showAd();
 
                         BackendHelper.update_card_count update_card_count = new BackendHelper.update_card_count();
                         update_card_count.execute(context, current.getCard_id(), "disapprove");
@@ -800,7 +796,6 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case R.id.nav_dream_11:
-                showAd(true);
                 Intent viewIntent =
                         new Intent("android.intent.action.VIEW",
                                 Uri.parse("https://www.dream11.com"));
@@ -808,7 +803,6 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case R.id.nav_ticket:
-                showAd(true);
                 Intent view_Intent =
                         new Intent("android.intent.action.VIEW",
                                 Uri.parse("https://www.iplt20.com/schedule"));

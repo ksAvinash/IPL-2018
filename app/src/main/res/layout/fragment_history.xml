@@ -14,6 +14,31 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         >
+
+        <android.support.v7.widget.CardView
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            app:cardBackgroundColor="@color/colorWhite"
+            >
+            <works.avijay.com.ipl2018.fonts.description_font
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:textColor="#f57f17"
+                android:id="@+id/winner_2018_text"
+                android:layout_gravity="top|center"
+                />
+            <ImageView
+                android:layout_marginTop="40dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/winner_2018"
+                />
+        </android.support.v7.widget.CardView>
+
         <android.support.v7.widget.CardView
             android:layout_marginTop="10dp"
             android:layout_marginLeft="2dp"
@@ -86,6 +111,15 @@
                 />
         </android.support.v7.widget.CardView>
 
+        <com.google.android.gms.ads.AdView
+            android:layout_marginTop="10dp"
+            android:id="@+id/adView1"
+            xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            ads:adSize="SMART_BANNER"
+            android:layout_gravity="center"
+            ads:adUnitId="@string/admob_banner_id"/>
 
         <android.support.v7.widget.CardView
             android:layout_marginTop="10dp"
@@ -111,7 +145,6 @@
                 />
         </android.support.v7.widget.CardView>
 
-
         <android.support.v7.widget.CardView
             android:layout_marginTop="10dp"
             android:layout_marginLeft="2dp"
@@ -135,7 +168,6 @@
                 android:id="@+id/winner_2013"
                 />
         </android.support.v7.widget.CardView>
-
 
         <android.support.v7.widget.CardView
             android:layout_marginTop="10dp"
@@ -161,6 +193,15 @@
                 />
         </android.support.v7.widget.CardView>
 
+        <com.google.android.gms.ads.AdView
+            android:layout_marginTop="10dp"
+            android:id="@+id/adView2"
+            xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            ads:adSize="SMART_BANNER"
+            android:layout_gravity="center"
+            ads:adUnitId="@string/admob_banner_id"/>
 
         <android.support.v7.widget.CardView
             android:layout_marginTop="10dp"
@@ -234,7 +275,6 @@
                 />
         </android.support.v7.widget.CardView>
 
-
         <android.support.v7.widget.CardView
             android:layout_marginTop="10dp"
             android:layout_marginLeft="2dp"
@@ -259,7 +299,21 @@
                 />
         </android.support.v7.widget.CardView>
 
+        <com.google.android.gms.ads.AdView
+            android:layout_marginTop="10dp"
+            android:id="@+id/adView3"
+            xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            ads:adSize="SMART_BANNER"
+            android:layout_gravity="center"
+            ads:adUnitId="@string/admob_banner_id"/>
+
+
     </LinearLayout>
+
+
+
 
 
 </ScrollView>

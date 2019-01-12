@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 
 import java.util.ArrayList;
@@ -41,52 +42,27 @@ public class TeamActivity extends AppCompatActivity {
     Context context;
     DatabaseHelper helper;
     List<players_list_adapter> playersAdapter = new ArrayList<>();
-    InterstitialAd interstitialAd ;
-    float ads_value;
+    private AdView mAdView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team);
-
         getDetails();
+
         initializeViews();
-
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Great!, you started following '"+team_name+"'", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         showAd();
     }
 
-
-    private void showAd() {
-
-        if(Math.random() < ads_value){
-            Toast.makeText(context, "An ad appears in a few moments", Toast.LENGTH_SHORT).show();
-            interstitialAd = new InterstitialAd(this);
-            interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
-            AdRequest adRequest = new AdRequest.Builder().build();
-            interstitialAd.loadAd(adRequest);
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if(interstitialAd.isLoaded())
-                        interstitialAd.show();
-                }
-            }, 3000);
-        }
+    private void showAd(){
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
+
 
     public void getDetails(){
         team_image = findViewById(R.id.team_image);
-
+        mAdView = findViewById(R.id.adView);
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
@@ -150,11 +126,6 @@ public class TeamActivity extends AppCompatActivity {
         playersList = findViewById(R.id.playersList);
         helper = new DatabaseHelper(context);
         playersAdapter.clear();
-
-
-
-        SharedPreferences sharedPreferences = context.getSharedPreferences("ipl_sp", MODE_PRIVATE);
-        ads_value = sharedPreferences.getFloat("ads", (float) 0.2);
 
         new Thread(new Runnable() {
             @Override

@@ -1,24 +1,31 @@
 <resources>
-    <string name="app_name">IPL 2018</string>
+    <string name="app_name">IPL 2019</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
 
-    <string name="backend_fetch_data">https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-fetch-data</string>
+    <string name="backend_fetch_data">https://qssc4uv5h4.execute-api.ap-south-1.amazonaws.com/prod/fetch-data</string>
+    <string name="backend_suggest_question">https://qssc4uv5h4.execute-api.ap-south-1.amazonaws.com/prod/suggest-question</string>
+    <string name="backend_cards_fetch">https://qssc4uv5h4.execute-api.ap-south-1.amazonaws.com/prod/fetch-cards</string>
+    <string name="backend_update_cards_count">https://qssc4uv5h4.execute-api.ap-south-1.amazonaws.com/prod/update-cards-count</string>
+
+
+
+
     <string name="backend_update_fan_count">https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-update-fan-count</string>
-    <string name="backend_suggest_question">https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-suggest-question</string>
-    <string name="backend_cards_fetch">https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-fetch-cards</string>
-    <string name="backend_update_cards_count"> https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-update-cards-count</string>
     <string name="backend_fetch_settings">https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-fetch-settings</string>
     <string name="backend_user_signup">https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-user-signup</string>
     <string name="backend_validate_username">https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-validate-username</string>
     <string name="backend_check_existing_user">https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-check-existing-user</string>
     <string name="backend_update_match_predictions">https://slbq062gud.execute-api.ap-south-1.amazonaws.com/ipl_prod/ipl-update-match-predictions</string>
 
+
+
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_splasher">IPL 2018</string>
+    <string name="title_activity_splasher">IPL 2019</string>
     <string name="title_activity_team" />
 
     <string name="rcb_icon">https://s3.ap-south-1.amazonaws.com/ipl-2018/team_images/icon_rcb.jpg</string>
@@ -30,7 +37,9 @@
     <string name="mi_icon">https://s3.ap-south-1.amazonaws.com/ipl-2018/team_images/mi_icon.jpg</string>
     <string name="k11_icon">https://s3.ap-south-1.amazonaws.com/ipl-2018/team_images/k11_icon.jpg</string>
 
-    <string name="admob_interstitial_id">ca-app-pub-9681985190789334/4854428286</string>
+    <string name="admob_interstitial_id">ca-app-pub-9681985190789334/2584850870</string>
+    <string name="admob_banner_id">ca-app-pub-9681985190789334/6144821932</string>
+
     <string name="title_activity_google_sign_in">GoogleSignInActivity</string>
     <string name="title_activity_live_scores">Live Scores</string>
     <string name="title_activity_best_moments">Best Moments</string>

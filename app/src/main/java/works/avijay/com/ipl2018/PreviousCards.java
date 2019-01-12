@@ -23,8 +23,6 @@ import android.widget.Toast;
 
 import com.cjj.MaterialRefreshLayout;
 import com.cjj.MaterialRefreshListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
 import com.like.LikeButton;
 
 import java.text.DecimalFormat;
@@ -54,7 +52,6 @@ public class PreviousCards extends Fragment {
     static List<cards_adapter> cardsAdapter = new ArrayList<>();
     static DatabaseHelper helper;
     int seen_value ;
-    InterstitialAd interstitialAd;
     static MaterialRefreshLayout materialRefreshLayout;
     float ads_value;
     @Override
@@ -89,36 +86,10 @@ public class PreviousCards extends Fragment {
                     if(materialRefreshLayout.isShown())
                         materialRefreshLayout.finishRefresh();
                 }
-
-
             }
         });
-
-        showAd();
         return view;
     }
-
-    private void showAd() {
-        Log.d("ADS : VALUE : ", ads_value+"");
-
-        if(Math.random() < ads_value){
-            Toast.makeText(context, "An ad appears in a few moments", Toast.LENGTH_SHORT).show();
-            interstitialAd = new InterstitialAd(context);
-            interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
-            AdRequest adRequest = new AdRequest.Builder().build();
-            interstitialAd.loadAd(adRequest);
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if(interstitialAd.isLoaded())
-                        interstitialAd.show();
-                }
-            }, 3000);
-        }
-
-    }
-
 
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -149,7 +120,7 @@ public class PreviousCards extends Fragment {
                     cardsAdapter.add(new cards_adapter(cursor.getString(0), cursor.getString(1),
                             cursor.getInt(2), cursor.getInt(3), cursor.getString(4),
                             cursor.getInt(5), cursor.getString(6), cursor.getString(8),
-                            cursor.getInt(7)
+                            cursor.getInt(7), cursor.getString(9)
                     ));
                 }
                 cursor.close();

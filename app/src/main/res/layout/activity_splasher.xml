@@ -18,7 +18,7 @@
     <works.avijay.com.ipl2018.fonts.description_font
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="IPL 2018"
+        android:text="@string/app_name"
         android:textColor="@color/colorWhite"
         android:textSize="60sp"
         android:layout_gravity="center"

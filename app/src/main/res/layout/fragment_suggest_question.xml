@@ -1,4 +1,4 @@
-<android.support.design.widget.CoordinatorLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,16 +13,25 @@
         android:layout_gravity="top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/title"
         android:text="Tell us your thoughts about any IPL player or team, we'll share on your behalf and let the community debate on it!"
         android:textSize="20sp"
         android:layout_margin="20dp"
         />
 
+    <EditText
+        android:layout_margin="16dp"
+        android:hint="enter your name"
+        android:layout_below="@+id/title"
+        android:id="@+id/author"
+        android:minLines="2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <EditText
-        android:layout_margin="10dp"
-        android:minLines="3"
-        android:layout_gravity="center"
+        android:layout_below="@+id/author"
+        android:layout_margin="16dp"
+        android:minLines="4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/question"
@@ -31,6 +40,7 @@
 
 
     <Button
+        android:layout_below="@+id/question"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
@@ -39,4 +49,4 @@
         android:text="ASK"
         />
 
-</android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>

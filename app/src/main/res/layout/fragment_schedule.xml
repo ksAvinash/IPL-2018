@@ -80,6 +80,15 @@
     </HorizontalScrollView>
 
 
+    <com.google.android.gms.ads.AdView
+        android:layout_below="@+id/teamsSort"
+        android:id="@+id/adView"
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        ads:adSize="SMART_BANNER"
+        ads:adUnitId="@string/admob_banner_id"/>
+
 
     <com.cjj.MaterialRefreshLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -89,7 +98,7 @@
         android:layout_height="match_parent"
         app:overlay="false"
         app:wave_show="true"
-        android:layout_below="@+id/teamsSort"
+        android:layout_below="@+id/adView"
         app:wave_color="@color/colorPrimaryDark"
         >
 
